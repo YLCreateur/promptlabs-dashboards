@@ -1,0 +1,445 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "ylc_families_abc",
+        "label": "YLC Families A, B, C and sublevels",
+        "nodes": [
+          "ylc_agent_auditeur_references_doctrine_v2"
+        ],
+        "relation": "conceptually_related_to",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "ylc-agent-auditeur/references/doctrine_v2.md"
+      },
+      {
+        "id": "ylc_cadrage_payant_process",
+        "label": "Cadrage Payant Process and Deliverables",
+        "nodes": [
+          "ylc_agent_auditeur_references_doctrine_v2",
+          "ylc_agent_auditeur_assets_templates_devis_cadrage"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "ylc-agent-auditeur/references/doctrine_v2.md"
+      },
+      {
+        "id": "ylc_phase2_devis_process",
+        "label": "Phase 2 Devis Process and Clauses",
+        "nodes": [
+          "ylc_agent_auditeur_references_doctrine_v2",
+          "ylc_agent_auditeur_assets_templates_devis_phase2"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "ylc-agent-auditeur/assets/templates/devis_phase2.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "Dashboard Experts Comptables Martinique",
+      "file_type": "document",
+      "source_file": "experts_comptables_martinique.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "experts_comptables_martinique_dashboard",
+      "community": 0,
+      "norm_label": "dashboard experts comptables martinique"
+    },
+    {
+      "label": "Email Prospect Deloitte Martinique",
+      "file_type": "document",
+      "source_file": "preview_campagne_martinique.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "preview_campagne_martinique_email_deloitte",
+      "community": 0,
+      "norm_label": "email prospect deloitte martinique"
+    },
+    {
+      "label": "Email Prospect Mazars Martinique",
+      "file_type": "document",
+      "source_file": "preview_campagne_martinique.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "preview_campagne_martinique_email_mazars",
+      "community": 0,
+      "norm_label": "email prospect mazars martinique"
+    },
+    {
+      "label": "Email Prospect FIDUCIAL Fort-de-France",
+      "file_type": "document",
+      "source_file": "preview_campagne_martinique.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "preview_campagne_martinique_email_fiducial",
+      "community": 0,
+      "norm_label": "email prospect fiducial fort-de-france"
+    },
+    {
+      "label": "PromptLabs Dashboard Opportunit\u00e9s IA",
+      "file_type": "document",
+      "source_file": "promptlabs_dashboard.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "promptlabs_dashboard",
+      "community": 2,
+      "norm_label": "promptlabs dashboard opportunites ia"
+    },
+    {
+      "label": "Radar IA Martinique 21 juillet 2026",
+      "file_type": "document",
+      "source_file": "radar_ia_martinique_lundi_20260721.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "radar_ia_martinique_20260721",
+      "community": 0,
+      "norm_label": "radar ia martinique 21 juillet 2026"
+    },
+    {
+      "label": "Radar IA Remote 8 juillet 2026",
+      "file_type": "document",
+      "source_file": "radar_ia_remote_20260708.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "radar_ia_remote_20260708",
+      "community": 2,
+      "norm_label": "radar ia remote 8 juillet 2026"
+    },
+    {
+      "label": "Radar IA Remote 13 juillet 2026",
+      "file_type": "document",
+      "source_file": "radar_ia_remote_lundi_20260713.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "radar_ia_remote_20260713",
+      "community": 2,
+      "norm_label": "radar ia remote 13 juillet 2026"
+    },
+    {
+      "label": "Radar IA Remote 20 juillet 2026",
+      "file_type": "document",
+      "source_file": "radar_ia_remote_lundi_20260720.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "radar_ia_remote_20260720",
+      "community": 2,
+      "norm_label": "radar ia remote 20 juillet 2026"
+    },
+    {
+      "label": "S\u00e9quence Prospection Experts Comptables Martinique",
+      "file_type": "document",
+      "source_file": "sequence_prospection_experts_comptables.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "sequence_prospection_experts_comptables",
+      "community": 0,
+      "norm_label": "sequence prospection experts comptables martinique"
+    },
+    {
+      "label": "YLC Agent Auditeur",
+      "file_type": "code",
+      "source_file": "ylc-agent-auditeur/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "Youri Le Creau",
+      "contributor": null,
+      "id": "ylc_agent_auditeur",
+      "community": 1,
+      "norm_label": "ylc agent auditeur"
+    },
+    {
+      "label": "Doctrine Commerciale YLC Prompt Labs v2.0",
+      "file_type": "document",
+      "source_file": "doctrine_commerciale_ylc.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "Youri Le Creau",
+      "contributor": null,
+      "id": "doctrine_commerciale_ylc",
+      "community": 3,
+      "norm_label": "doctrine commerciale ylc prompt labs v2.0"
+    },
+    {
+      "label": "Doctrine Commerciale YLC Prompt Labs v2.0 (Condens\u00e9)",
+      "file_type": "document",
+      "source_file": "ylc-agent-auditeur/references/doctrine_v2.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "Youri Le Creau",
+      "contributor": null,
+      "id": "ylc_agent_auditeur_references_doctrine_v2",
+      "community": 1,
+      "norm_label": "doctrine commerciale ylc prompt labs v2.0 (condense)"
+    },
+    {
+      "label": "Grille Tarifaire YLC v2.0",
+      "file_type": "document",
+      "source_file": "ylc-agent-auditeur/references/grille_tarifaire.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "Youri Le Creau",
+      "contributor": null,
+      "id": "ylc_agent_auditeur_references_grille_tarifaire",
+      "community": 1,
+      "norm_label": "grille tarifaire ylc v2.0"
+    },
+    {
+      "label": "Template Devis Audit Express",
+      "file_type": "document",
+      "source_file": "ylc-agent-auditeur/assets/templates/devis_audit_express.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "Youri Le Creau",
+      "contributor": null,
+      "id": "ylc_agent_auditeur_assets_templates_devis_audit_express",
+      "community": 1,
+      "norm_label": "template devis audit express"
+    },
+    {
+      "label": "Template Devis Cadrage Payant",
+      "file_type": "document",
+      "source_file": "ylc-agent-auditeur/assets/templates/devis_cadrage.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "Youri Le Creau",
+      "contributor": null,
+      "id": "ylc_agent_auditeur_assets_templates_devis_cadrage",
+      "community": 1,
+      "norm_label": "template devis cadrage payant"
+    },
+    {
+      "label": "Template Devis Phase 2 Famille B ou C",
+      "file_type": "document",
+      "source_file": "ylc-agent-auditeur/assets/templates/devis_phase2.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "Youri Le Creau",
+      "contributor": null,
+      "id": "ylc_agent_auditeur_assets_templates_devis_phase2",
+      "community": 1,
+      "norm_label": "template devis phase 2 famille b ou c"
+    }
+  ],
+  "links": [
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "preview_campagne_martinique.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "preview_campagne_martinique_email_deloitte",
+      "target": "experts_comptables_martinique_dashboard"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "preview_campagne_martinique.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "preview_campagne_martinique_email_fiducial",
+      "target": "experts_comptables_martinique_dashboard"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "preview_campagne_martinique.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "preview_campagne_martinique_email_mazars",
+      "target": "experts_comptables_martinique_dashboard"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "radar_ia_martinique_lundi_20260721.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "radar_ia_martinique_20260721",
+      "target": "experts_comptables_martinique_dashboard"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "sequence_prospection_experts_comptables.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "sequence_prospection_experts_comptables",
+      "target": "experts_comptables_martinique_dashboard"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "promptlabs_dashboard.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "promptlabs_dashboard",
+      "target": "radar_ia_remote_20260708"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "radar_ia_remote_lundi_20260713.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "radar_ia_remote_20260713",
+      "target": "radar_ia_remote_20260708"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "radar_ia_remote_lundi_20260720.html",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "radar_ia_remote_20260720",
+      "target": "radar_ia_remote_20260713"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ylc_agent_auditeur",
+      "target": "ylc_agent_auditeur_assets_templates_devis_audit_express"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ylc_agent_auditeur",
+      "target": "ylc_agent_auditeur_assets_templates_devis_cadrage"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ylc_agent_auditeur",
+      "target": "ylc_agent_auditeur_assets_templates_devis_phase2"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ylc_agent_auditeur",
+      "target": "ylc_agent_auditeur_references_doctrine_v2"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ylc_agent_auditeur",
+      "target": "ylc_agent_auditeur_references_grille_tarifaire"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/references/doctrine_v2.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ylc_agent_auditeur_references_doctrine_v2",
+      "target": "ylc_agent_auditeur_references_grille_tarifaire"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "ylc_families_abc",
+      "label": "YLC Families A, B, C and sublevels",
+      "nodes": [
+        "ylc_agent_auditeur_references_doctrine_v2"
+      ],
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/references/doctrine_v2.md"
+    },
+    {
+      "id": "ylc_cadrage_payant_process",
+      "label": "Cadrage Payant Process and Deliverables",
+      "nodes": [
+        "ylc_agent_auditeur_references_doctrine_v2",
+        "ylc_agent_auditeur_assets_templates_devis_cadrage"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/references/doctrine_v2.md"
+    },
+    {
+      "id": "ylc_phase2_devis_process",
+      "label": "Phase 2 Devis Process and Clauses",
+      "nodes": [
+        "ylc_agent_auditeur_references_doctrine_v2",
+        "ylc_agent_auditeur_assets_templates_devis_phase2"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ylc-agent-auditeur/assets/templates/devis_phase2.md"
+    }
+  ]
+}

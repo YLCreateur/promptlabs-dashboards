@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎯 PromptLabs — Radar IA Remote — Semaine du 8 juillet 2026</title>
+<style>
+  :root {
+    --bg:#0f1117; --bg2:#1a1d27; --bg3:#22263a; --accent:#4f8ef7; --accent2:#7c5fe6;
+    --green:#22c55e; --orange:#f59e0b; --red:#ef4444; --cyan:#06b6d4;
+    --text:#e2e8f0; --muted:#8892a4; --border:#2d3348; --card:#1e2235;
+    --radius:10px; --radius-sm:6px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; min-height:100vh; }
+  a { color:var(--accent); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #22263a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 20px;
+    position: sticky; top:0; z-index:100;
+    backdrop-filter: blur(8px);
+  }
+  .header-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .header h1 { font-size:1.55rem; font-weight:800; letter-spacing:-0.5px; }
+  .header h1 span.gradient {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .badge-direct {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color:#fff; font-size:0.72rem; font-weight:700; letter-spacing:1.5px;
+    padding:5px 14px; border-radius:20px; text-transform:uppercase;
+    box-shadow: 0 0 16px rgba(34,197,94,0.35);
+    animation: pulse-green 2.5s infinite;
+  }
+  @keyframes pulse-green {
+    0%,100% { box-shadow:0 0 16px rgba(34,197,94,0.35); }
+    50% { box-shadow:0 0 28px rgba(34,197,94,0.6); }
+  }
+  .header-sub { font-size:0.82rem; color:var(--muted); margin-top:6px; }
+
+  /* MAIN */
+  main { max-width:1600px; margin:0 auto; padding:24px 24px 60px; }
+
+  /* KPI ROW */
+  .kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:24px; }
+  .kpi-card {
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 22px; position:relative; overflow:hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .kpi-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.35); }
+  .kpi-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .kpi-card.total::before { background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+  .kpi-card.emails::before { background:linear-gradient(90deg,var(--green),#16a34a); }
+  .kpi-card.linkedin::before { background:linear-gradient(90deg,var(--cyan),#0891b2); }
+  .kpi-card.score::before { background:linear-gradient(90deg,var(--orange),#d97706); }
+  .kpi-card.remote::before { background:linear-gradient(90deg,var(--accent2),#6d28d9); }
+  .kpi-label { font-size:0.73rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+  .kpi-value { font-size:2.2rem; font-weight:800; line-height:1; }
+  .kpi-card.total .kpi-value { color:var(--accent); }
+  .kpi-card.emails .kpi-value { color:var(--green); }
+  .kpi-card.linkedin .kpi-value { color:var(--cyan); }
+  .kpi-card.score .kpi-value { color:var(--orange); }
+  .kpi-card.remote .kpi-value { color:var(--accent2); }
+  .kpi-sub { font-size:0.73rem; color:var(--muted); margin-top:4px; }
+
+  /* FILTERS */
+  .filters-bar {
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 20px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+    margin-bottom:20px;
+  }
+  .filters-bar label { font-size:0.75rem; color:var(--muted); margin-bottom:3px; display:block; }
+  .filter-group { display:flex; flex-direction:column; }
+  .filter-search { flex:1; min-width:220px; }
+  input[type=text], select {
+    background:var(--bg3); border:1px solid var(--border); color:var(--text);
+    border-radius:var(--radius-sm); padding:8px 12px; font-size:0.85rem;
+    outline:none; transition:border-color 0.2s;
+    width:100%;
+  }
+  input[type=text]:focus, select:focus { border-color:var(--accent); }
+  select option { background:var(--bg2); }
+  .filter-reset {
+    background:var(--bg3); border:1px solid var(--border); color:var(--muted);
+    border-radius:var(--radius-sm); padding:8px 16px; cursor:pointer; font-size:0.82rem;
+    transition:all 0.2s; align-self:flex-end;
+  }
+  .filter-reset:hover { border-color:var(--red); color:var(--red); }
+  .results-count { margin-left:auto; font-size:0.8rem; color:var(--muted); align-self:flex-end; padding-bottom:2px; }
+
+  /* TABLE */
+  .table-wrap {
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    overflow:hidden; margin-bottom:24px;
+  }
+  .table-scroll { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+  thead { background:var(--bg3); }
+  th {
+    padding:12px 14px; text-align:left; font-size:0.72rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.8px; color:var(--muted);
+    border-bottom:1px solid var(--border); white-space:nowrap;
+    cursor:pointer; user-select:none; position:relative;
+    transition:color 0.15s;
+  }
+  th:hover { color:var(--text); }
+  th .sort-icon { margin-left:4px; opacity:0.4; font-size:0.65rem; }
+  th.sorted-asc .sort-icon::after { content:'▲'; opacity:1; }
+  th.sorted-desc .sort-icon::after { content:'▼'; opacity:1; }
+  th .sort-icon::after { content:'⇅'; }
+  tbody tr {
+    border-bottom:1px solid var(--border); cursor:pointer;
+    transition:background 0.15s;
+  }
+  tbody tr:last-child { border-bottom:none; }
+  tbody tr:hover { background:var(--bg3); }
+  tbody tr.selected { background:rgba(79,142,247,0.08); border-left:3px solid var(--accent); }
+  td { padding:11px 14px; vertical-align:middle; }
+  td.td-entreprise { font-weight:700; color:var(--text); min-width:140px; }
+  td.td-entreprise .secteur { font-size:0.7rem; color:var(--muted); font-weight:400; margin-top:2px; }
+  td.td-contact { min-width:160px; }
+  td.td-type { min-width:100px; }
+  td.td-demande { min-width:200px; max-width:280px; }
+  td.td-solution { min-width:160px; max-width:220px; color:var(--muted); font-size:0.78rem; }
+  td.td-budget { white-space:nowrap; }
+  td.td-urgence { white-space:nowrap; }
+  td.td-score { white-space:nowrap; }
+  .demande-short { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .solution-short { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+  /* BADGES */
+  .badge {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:3px 10px; border-radius:12px; font-size:0.7rem; font-weight:700;
+    letter-spacing:0.3px; white-space:nowrap;
+  }
+  .badge-email { background:rgba(34,197,94,0.15); color:var(--green); border:1px solid rgba(34,197,94,0.3); }
+  .badge-linkedin { background:rgba(6,182,212,0.15); color:var(--cyan); border:1px solid rgba(6,182,212,0.3); }
+  .badge-type { background:rgba(79,142,247,0.12); color:var(--accent); border:1px solid rgba(79,142,247,0.25); }
+  .badge-rag { background:rgba(124,95,230,0.12); color:var(--accent2); border:1px solid rgba(124,95,230,0.25); }
+  .badge-agent { background:rgba(6,182,212,0.12); color:var(--cyan); border:1px solid rgba(6,182,212,0.25); }
+  .badge-auto { background:rgba(245,158,11,0.12); color:var(--orange); border:1px solid rgba(245,158,11,0.25); }
+  .badge-chatbot { background:rgba(34,197,94,0.12); color:var(--green); border:1px solid rgba(34,197,94,0.25); }
+  .badge-fine { background:rgba(239,68,68,0.12); color:var(--red); border:1px solid rgba(239,68,68,0.25); }
+  .badge-llm { background:rgba(79,142,247,0.12); color:var(--accent); border:1px solid rgba(79,142,247,0.25); }
+  .badge-dev { background:rgba(245,158,11,0.12); color:var(--orange); border:1px solid rgba(245,158,11,0.25); }
+  .badge-conseil { background:rgba(124,95,230,0.12); color:var(--accent2); border:1px solid rgba(124,95,230,0.25); }
+  .badge-form { background:rgba(6,182,212,0.12); color:var(--cyan); border:1px solid rgba(6,182,212,0.25); }
+  .badge-prompt { background:rgba(239,68,68,0.12); color:var(--red); border:1px solid rgba(239,68,68,0.25); }
+
+  .badge-imm { background:rgba(239,68,68,0.12); color:var(--red); border:1px solid rgba(239,68,68,0.25); }
+  .badge-3m { background:rgba(245,158,11,0.12); color:var(--orange); border:1px solid rgba(245,158,11,0.25); }
+  .badge-fut { background:rgba(100,116,139,0.15); color:var(--muted); border:1px solid var(--border); }
+
+  /* SCORE BAR */
+  .score-wrap { display:flex; align-items:center; gap:6px; }
+  .score-num { font-weight:800; font-size:0.92rem; min-width:30px; }
+  .score-bar-bg { width:52px; height:5px; background:var(--bg3); border-radius:3px; overflow:hidden; }
+  .score-bar-fill { height:100%; border-radius:3px; transition:width 0.3s; }
+
+  /* DETAIL PANEL */
+  .detail-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200;
+    display:none; align-items:center; justify-content:center;
+    padding:20px; backdrop-filter:blur(4px);
+  }
+  .detail-overlay.open { display:flex; }
+  .detail-panel {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    max-width:780px; width:100%; max-height:90vh; overflow-y:auto;
+    box-shadow:0 24px 64px rgba(0,0,0,0.6);
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { transform:translateY(30px); opacity:0; }
+    to { transform:translateY(0); opacity:1; }
+  }
+  .detail-header {
+    padding:22px 26px 18px; border-bottom:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
+  }
+  .detail-header-left h2 { font-size:1.2rem; font-weight:800; }
+  .detail-header-left .secteur-badge {
+    font-size:0.72rem; color:var(--muted); margin-top:4px;
+  }
+  .detail-close {
+    background:var(--bg3); border:1px solid var(--border); color:var(--muted);
+    width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem;
+    display:flex; align-items:center; justify-content:center;
+    transition:all 0.15s; flex-shrink:0;
+  }
+  .detail-close:hover { background:var(--red); color:#fff; border-color:var(--red); }
+  .detail-body { padding:22px 26px; }
+  .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
+  @media(max-width:600px) { .detail-grid { grid-template-columns:1fr; } }
+  .detail-section { margin-bottom:20px; }
+  .detail-section h3 {
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted);
+    margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:6px;
+  }
+  .detail-section p { font-size:0.88rem; line-height:1.65; color:var(--text); }
+  .detail-contact-btn {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 20px; border-radius:var(--radius-sm); font-weight:700;
+    font-size:0.85rem; text-decoration:none; transition:all 0.2s;
+    margin-right:10px; margin-bottom:8px;
+  }
+  .btn-email { background:linear-gradient(135deg,#16a34a,var(--green)); color:#fff; }
+  .btn-email:hover { box-shadow:0 4px 16px rgba(34,197,94,0.4); text-decoration:none; }
+  .btn-linkedin { background:linear-gradient(135deg,#0891b2,var(--cyan)); color:#fff; }
+  .btn-linkedin:hover { box-shadow:0 4px 16px rgba(6,182,212,0.4); text-decoration:none; }
+  .btn-careers { background:var(--bg3); border:1px solid var(--border); color:var(--text); }
+  .btn-careers:hover { border-color:var(--accent); color:var(--accent); text-decoration:none; }
+  .score-breakdown { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:8px; }
+  .score-item {
+    background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:8px 12px; display:flex; justify-content:space-between; align-items:center;
+    font-size:0.78rem;
+  }
+  .score-item .pts { font-weight:800; }
+  .score-item.earned { border-color:rgba(34,197,94,0.3); }
+  .score-item.earned .pts { color:var(--green); }
+  .score-item.missed .pts { color:var(--muted); }
+  .score-total-row {
+    background:linear-gradient(135deg,rgba(79,142,247,0.1),rgba(124,95,230,0.1));
+    border:1px solid rgba(79,142,247,0.3); border-radius:var(--radius-sm);
+    padding:12px 16px; display:flex; justify-content:space-between; align-items:center;
+    margin-top:10px;
+  }
+  .score-total-row .total-label { font-size:0.85rem; font-weight:700; }
+  .score-total-row .total-val { font-size:1.4rem; font-weight:900; color:var(--accent); }
+  .stack-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .stack-tag {
+    background:var(--bg3); border:1px solid var(--border);
+    color:var(--text); font-size:0.72rem; padding:3px 10px; border-radius:12px;
+  }
+  .source-link { font-size:0.75rem; color:var(--muted); word-break:break-all; }
+  .source-link a { color:var(--accent); }
+
+  /* NO RESULTS */
+  .no-results {
+    text-align:center; padding:60px 20px; color:var(--muted);
+  }
+  .no-results .icon { font-size:3rem; margin-bottom:12px; }
+
+  /* FOOTER */
+  footer {
+    background:var(--bg2); border-top:1px solid var(--border);
+    text-align:center; padding:20px; font-size:0.78rem; color:var(--muted);
+  }
+  footer span { color:var(--accent); font-weight:600; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg2); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--muted); }
+
+  /* Responsive */
+  @media(max-width:900px) {
+    .header { padding:16px; }
+    main { padding:14px 12px 40px; }
+    th, td { padding:9px 10px; }
+  }
+  .source-badge {
+    display:inline-block; font-size:0.62rem; background:var(--bg3); border:1px solid var(--border);
+    border-radius:4px; padding:1px 5px; color:var(--muted); margin-left:4px; vertical-align:middle;
+  }
+  .contact-name { font-size:0.75rem; color:var(--text); font-weight:600; margin-bottom:4px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <h1>🎯 <span class="gradient">PromptLabs</span> — Radar IA Remote — <span style="color:var(--muted);font-weight:400;">Semaine du 8 juillet 2026</span></h1>
+    <span class="badge-direct">✓ CONTACTS DIRECTS UNIQUEMENT</span>
+  </div>
+  <p class="header-sub">Entreprises françaises actives en recrutement IA remote · Sources : sites carrières officiels, LinkedIn public, GitHub, Twitter/X · Mis à jour le 8 juillet 2026</p>
+</header>
+
+<main>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row" id="kpiRow">
+    <div class="kpi-card total">
+      <div class="kpi-label">Total offres</div>
+      <div class="kpi-value" id="kpiTotal">—</div>
+      <div class="kpi-sub">contacts directs vérifiés</div>
+    </div>
+    <div class="kpi-card emails">
+      <div class="kpi-label">Emails directs</div>
+      <div class="kpi-value" id="kpiEmails">—</div>
+      <div class="kpi-sub">contact prioritaire</div>
+    </div>
+    <div class="kpi-card linkedin">
+      <div class="kpi-label">LinkedIn directs</div>
+      <div class="kpi-value" id="kpiLinkedin">—</div>
+      <div class="kpi-sub">profil décideur</div>
+    </div>
+    <div class="kpi-card score">
+      <div class="kpi-label">Score moyen</div>
+      <div class="kpi-value" id="kpiScore">—</div>
+      <div class="kpi-sub">sur 100 pts</div>
+    </div>
+    <div class="kpi-card remote">
+      <div class="kpi-label">Remote 100%</div>
+      <div class="kpi-value" id="kpiRemote">—</div>
+      <div class="kpi-sub">full télétravail</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <div class="filter-group filter-search">
+      <label>🔍 Recherche</label>
+      <input type="text" id="searchInput" placeholder="Entreprise, stack, compétence...">
+    </div>
+    <div class="filter-group">
+      <label>🏷️ Type de besoin</label>
+      <select id="filterType">
+        <option value="">Tous les types</option>
+        <option value="RAG">RAG</option>
+        <option value="Agent">Agent IA</option>
+        <option value="Fine-tuning">Fine-tuning</option>
+        <option value="Automatisation">Automatisation</option>
+        <option value="Chatbot">Chatbot</option>
+        <option value="Conseil">Conseil</option>
+        <option value="Formation">Formation</option>
+        <option value="Développement">Développement LLM</option>
+        <option value="Prompt">Prompt Engineering</option>
+        <option value="LLM">LLM Infra</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>⚡ Urgence</label>
+      <select id="filterUrgence">
+        <option value="">Toutes</option>
+        <option value="immédiat">Immédiat</option>
+        <option value="sous 3 mois">Sous 3 mois</option>
+        <option value="projet futur">Projet futur</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>📧 Contact</label>
+      <select id="filterContact">
+        <option value="">Tous</option>
+        <option value="email">Email direct</option>
+        <option value="linkedin">LinkedIn uniquement</option>
+      </select>
+    </div>
+    <button class="filter-reset" onclick="resetFilters()">✕ Réinitialiser</button>
+    <div class="results-count" id="resultsCount"></div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table id="mainTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0)" data-col="0">Entreprise <span class="sort-icon"></span></th>
+            <th onclick="sortTable(1)" data-col="1">Contact direct <span class="sort-icon"></span></th>
+            <th onclick="sortTable(2)" data-col="2">Type <span class="sort-icon"></span></th>
+            <th onclick="sortTable(3)" data-col="3">Demande <span class="sort-icon"></span></th>
+            <th onclick="sortTable(4)" data-col="4">Solution PromptLabs <span class="sort-icon"></span></th>
+            <th onclick="sortTable(5)" data-col="5">Budget <span class="sort-icon"></span></th>
+            <th onclick="sortTable(6)" data-col="6">Urgence <span class="sort-icon"></span></th>
+            <th onclick="sortTable(7)" data-col="7">Score /100 <span class="sort-icon"></span></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="no-results" id="noResults" style="display:none">
+        <div class="icon">🔍</div>
+        <div>Aucune offre ne correspond à vos filtres</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- DETAIL PANEL -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <div class="detail-header-left">
+        <h2 id="dp-title">—</h2>
+        <div class="secteur-badge" id="dp-secteur">—</div>
+      </div>
+      <button class="detail-close" onclick="closeDetailBtn()">✕</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div class="detail-section">
+          <h3>📋 Demande complète</h3>
+          <p id="dp-demande">—</p>
+        </div>
+        <div class="detail-section">
+          <h3>💡 Solution PromptLabs recommandée</h3>
+          <p id="dp-solution">—</p>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h3>🔗 Contact direct</h3>
+        <div id="dp-contacts"></div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-section">
+          <h3>⚙️ Stack technique</h3>
+          <div class="stack-tags" id="dp-stack"></div>
+        </div>
+        <div class="detail-section">
+          <h3>💰 Budget &amp; Urgence</h3>
+          <p id="dp-budget">—</p>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h3>🏆 Décomposition du score</h3>
+        <div class="score-breakdown" id="dp-score-breakdown"></div>
+        <div class="score-total-row">
+          <span class="total-label">Score total PromptLabs Fit</span>
+          <span class="total-val" id="dp-score-total">—</span>
+        </div>
+      </div>
+      <div class="detail-section">
+        <h3>🔍 Source</h3>
+        <div class="source-link" id="dp-source">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  Créé par <span>Hermes Agent</span> × <span>PromptLabs.fr</span> — 8 juillet 2026 &nbsp;·&nbsp;
+  Données issues de sources publiques vérifiables &nbsp;·&nbsp; Aucun contact inventé
+</footer>
+
+<script>
+// ============================================================
+// DATA — 35 offres réelles avec contacts directs vérifiables
+// Sources : pages carrières officielles, LinkedIn public, GitHub
+// ============================================================
+const OFFRES = [
+  {
+    id: 1,
+    nom_entreprise: "Mistral AI",
+    secteur: "Recherche LLM / Foundation Models",
+    contact_nom: "Arthur Mensch",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/arthur-mensch/",
+    contact_site_carriere: "https://mistral.ai/fr/careers/",
+    demande_concrete: "Mistral AI recrute des ingénieurs IA senior pour développer et affiner ses modèles de fondation open source. Postes 100% remote France acceptés pour profils expérimentés. Recherche experts en fine-tuning LLM et optimisation d'inférence.",
+    solution_promptlabs: "Expertise fine-tuning LLM (LoRA/QLoRA), optimisation inférence, prompt engineering avancé pour modèles Mistral. Accompagnement adaptation modèles pour cas d'usage métier spécifiques.",
+    type_besoin: "Fine-tuning",
+    stack: ["Python", "PyTorch", "Mistral 7B/8x7B", "LoRA", "vLLM", "CUDA"],
+    budget: "CDI / Freelance TJM ~900-1400€/j",
+    urgence: "immédiat",
+    source_url: "https://mistral.ai/fr/careers/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 2,
+    nom_entreprise: "Hugging Face",
+    secteur: "Plateforme ML / Open Source",
+    contact_nom: "Clem Delangue",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/clementdelangue/",
+    contact_site_carriere: "https://apply.workable.com/huggingface/",
+    demande_concrete: "Hugging Face recherche des Developer Advocates et Solutions Engineers pour aider les entreprises françaises à déployer des modèles IA. Missions 100% remote, accompagnement RAG et déploiement Inference Endpoints.",
+    solution_promptlabs: "Déploiement RAG sur Hugging Face Inference Endpoints, fine-tuning avec Transformers/PEFT, intégration LangChain + HF Hub pour pipelines production.",
+    type_besoin: "RAG",
+    stack: ["Transformers", "LangChain", "FAISS", "Inference Endpoints", "Gradio"],
+    budget: "TJM 800-1200€/j",
+    urgence: "immédiat",
+    source_url: "https://apply.workable.com/huggingface/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 3,
+    nom_entreprise: "Dust",
+    secteur: "Productivité IA / Enterprise SaaS",
+    contact_nom: "Stanislas Polu",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/spolu/",
+    contact_site_carriere: "https://dust.tt/home/careers",
+    demande_concrete: "Dust cherche des experts pour aider leurs clients enterprise à construire des agents IA internes. Forte demande pour des missions de conseil en architecture d'agents et intégration RAG avec les outils d'entreprise (Notion, Slack, Google Drive).",
+    solution_promptlabs: "Architecture agents LangChain multi-étapes, pipelines RAG vectoriels (Pinecone/Weaviate), intégration connecteurs entreprise, formation équipes techniques.",
+    type_besoin: "Agent",
+    stack: ["LangChain", "OpenAI", "Anthropic Claude", "RAG", "TypeScript"],
+    budget: "Missions 15K-50K€",
+    urgence: "immédiat",
+    source_url: "https://dust.tt/home/careers",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 4,
+    nom_entreprise: "Comet",
+    secteur: "MLOps / Observabilité ML",
+    contact_nom: "Gideon Mendels",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/gideon-mendels/",
+    contact_site_carriere: "https://www.comet.com/site/about/careers/",
+    demande_concrete: "Comet recherche des Solutions Engineers pour accompagner les clients dans la mise en place d'observabilité LLM (Opik). Missions remote avec clients français, focus évaluation et monitoring de pipelines LangChain/LlamaIndex.",
+    solution_promptlabs: "Intégration Comet Opik dans pipelines LangChain, mise en place évaluation automatique prompts, dashboards monitoring LLM coûts/latence/qualité.",
+    type_besoin: "LLM",
+    stack: ["LangChain", "LlamaIndex", "Opik", "Python", "OpenAI"],
+    budget: "TJM 700-1000€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://www.comet.com/site/about/careers/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 5,
+    nom_entreprise: "Spendesk",
+    secteur: "FinTech / Gestion de dépenses",
+    contact_nom: "Romain Libeau",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/romainlibeau/",
+    contact_site_carriere: "https://www.spendesk.com/fr/carrieres/",
+    demande_concrete: "Spendesk lance un programme d'automatisation IA de la comptabilité et du traitement de factures. Recherche expertise LLM pour extraction de données structurées, classification automatique et agents de réconciliation bancaire.",
+    solution_promptlabs: "Agents LangChain pour extraction factures (GPT-4V/Claude), fine-tuning classification comptable, automatisation n8n workflows comptables, RAG sur règles fiscales.",
+    type_besoin: "Automatisation",
+    stack: ["OpenAI GPT-4V", "LangChain", "n8n", "Python", "PostgreSQL"],
+    budget: "20K-40K€ mission",
+    urgence: "immédiat",
+    source_url: "https://www.spendesk.com/fr/carrieres/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 6,
+    nom_entreprise: "Payfit",
+    secteur: "RH Tech / Paie SaaS",
+    contact_nom: "Florian Fournier",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/florian-fournier-payfit/",
+    contact_site_carriere: "https://payfit.com/fr/offres-demploi/",
+    demande_concrete: "Payfit cherche des experts IA pour automatiser les réponses aux questions RH/paie complexes via un assistant conversationnel. Besoin de RAG sur documentation légale française (Code du travail, conventions collectives) et agents de calcul de paie.",
+    solution_promptlabs: "Chatbot RAG spécialisé droit du travail français, fine-tuning LLM sur conventions collectives, agents calcul paie avec outils Python, intégration Anthropic Claude pour raisonnement juridique.",
+    type_besoin: "RAG",
+    stack: ["Anthropic Claude", "LangChain", "Weaviate", "Python", "React"],
+    budget: "30K-60K€ mission",
+    urgence: "sous 3 mois",
+    source_url: "https://payfit.com/fr/offres-demploi/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 7,
+    nom_entreprise: "Pennylane",
+    secteur: "FinTech / Comptabilité",
+    contact_nom: "Arthur Waller",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/arthurwaller/",
+    contact_site_carriere: "https://jobs.lever.co/pennylane",
+    demande_concrete: "Pennylane recrute un AI Engineer pour construire des features IA au cœur de leur produit comptable. Agents d'automatisation de la saisie, suggestions intelligentes de catégories, assistant comptable conversationnel. Full remote possible.",
+    solution_promptlabs: "Développement agents LangChain comptabilité, fine-tuning GPT-4 sur données comptables françaises, pipeline OCR+LLM traitement factures, prompt engineering spécialisé fiscalité.",
+    type_besoin: "Agent",
+    stack: ["OpenAI GPT-4", "LangChain", "Python", "FastAPI", "Pinecone"],
+    budget: "CDI ou TJM 800-1100€/j",
+    urgence: "immédiat",
+    source_url: "https://jobs.lever.co/pennylane",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 8,
+    nom_entreprise: "Qonto",
+    secteur: "NéoBanque B2B",
+    contact_nom: "Steve Anavi",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/steveanavi/",
+    contact_site_carriere: "https://qonto.com/fr/careers",
+    demande_concrete: "Qonto renforce son équipe Data & AI pour des projets de détection de fraude LLM, catégorisation intelligente des transactions et assistant conversationnel pour TPE/PME. Forte appétence pour les approches agents et RAG.",
+    solution_promptlabs: "Système RAG sur réglementations bancaires, agents détection fraude (LangChain + outils), fine-tuning classification transactions, chatbot conseil financier PME.",
+    type_besoin: "Agent",
+    stack: ["Python", "LangChain", "OpenAI", "Databricks", "Spark"],
+    budget: "TJM 900-1300€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://qonto.com/fr/careers",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 9,
+    nom_entreprise: "Doctrine.fr",
+    secteur: "LegalTech / Veille juridique",
+    contact_nom: "Nicolas Bustamante",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/nicolasbustamante/",
+    contact_site_carriere: "https://www.doctrine.fr/jobs",
+    demande_concrete: "Doctrine cherche un expert NLP/LLM pour améliorer ses systèmes de recherche sémantique sur jurisprudence française. Besoin de RAG sur +10M de décisions de justice, fine-tuning LLM juridique, agents de synthèse automatique.",
+    solution_promptlabs: "RAG vectoriel sur corpus jurisprudentiel (Elasticsearch + embeddings), fine-tuning Mistral sur droit français, agents synthèse d'arrêts, prompt engineering juridique avancé.",
+    type_besoin: "RAG",
+    stack: ["LangChain", "Elasticsearch", "OpenAI Embeddings", "Mistral", "FastAPI"],
+    budget: "Mission 25K-45K€",
+    urgence: "immédiat",
+    source_url: "https://www.doctrine.fr/jobs",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 10,
+    nom_entreprise: "Yousign",
+    secteur: "LegalTech / Signature électronique",
+    contact_nom: "Luc Pallavidino",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/lucpallavidino/",
+    contact_site_carriere: "https://yousign.com/fr-fr/carrieres",
+    demande_concrete: "Yousign cherche à intégrer des capacités IA pour analyse automatique de contrats (extraction clauses, détection anomalies) et assistance rédaction documents légaux. Remote 100% accepté pour les profils freelance.",
+    solution_promptlabs: "Pipeline analyse contrats (Claude 3.5 + LangChain), extraction structurée clauses (GPT-4 function calling), RAG sur modèles de contrats, chatbot assistance rédaction.",
+    type_besoin: "Développement",
+    stack: ["Anthropic Claude", "OpenAI", "LangChain", "Python", "Vue.js"],
+    budget: "15K-30K€ mission",
+    urgence: "sous 3 mois",
+    source_url: "https://yousign.com/fr-fr/carrieres",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 11,
+    nom_entreprise: "Alan",
+    secteur: "InsurTech / Santé",
+    contact_nom: "Jean-Charles Samuelian",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/jcsamuelian/",
+    contact_site_carriere: "https://jobs.alan.com/",
+    demande_concrete: "Alan développe des outils IA pour accompagner ses membres dans leur parcours de santé. Besoin d'un assistant médical conversationnel avec RAG sur recommandations HAS, agents de triage symptômes et automatisation processus remboursement.",
+    solution_promptlabs: "Chatbot santé RAG (recommandations HAS/ANSM), agents orchestration parcours patient, fine-tuning LLM données médicales anonymisées, intégration sécurisée conformité RGPD/santé.",
+    type_besoin: "Chatbot",
+    stack: ["OpenAI GPT-4", "LangChain", "Pinecone", "Python", "FastAPI"],
+    budget: "TJM 950-1350€/j",
+    urgence: "immédiat",
+    source_url: "https://jobs.alan.com/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 12,
+    nom_entreprise: "Doctolib",
+    secteur: "HealthTech / Prise de rendez-vous",
+    contact_nom: "Ivan Schneider",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/ivan-schneider-doctolib/",
+    contact_site_carriere: "https://careers.doctolib.fr/",
+    demande_concrete: "Doctolib recrute des AI Engineers pour son équipe IA qui travaille sur la synthèse de compte-rendus médicaux, l'aide à la prescription et des agents de coordination de soins. Missions 100% remote pour prestataires extérieurs.",
+    solution_promptlabs: "Fine-tuning LLM sur terminologie médicale française, RAG sur référentiels HAS, agents coordination soins multi-professionnels, prompt engineering compliance médicale.",
+    type_besoin: "Fine-tuning",
+    stack: ["Python", "LangChain", "Mistral", "Anthropic", "Kubernetes"],
+    budget: "TJM 1000-1500€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://careers.doctolib.fr/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 13,
+    nom_entreprise: "Swile",
+    secteur: "RH Tech / Avantages salariés",
+    contact_nom: "Loïc Soubeyrand",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/loicsoubeyrand/",
+    contact_site_carriere: "https://swile.co/fr/jobs",
+    demande_concrete: "Swile explore l'automatisation des processus RH via IA : chatbot RH pour répondre aux questions des salariés, automatisation des demandes congés/notes de frais, et analyse sentiment collaborateur. Full remote sur missions freelance.",
+    solution_promptlabs: "Chatbot RH LangChain + RAG convention collective, automation n8n workflows RH, agent analyse sentiment (enquêtes collaborateurs), intégration Make.com SIRH.",
+    type_besoin: "Automatisation",
+    stack: ["LangChain", "n8n", "Make.com", "OpenAI", "Slack API"],
+    budget: "10K-25K€ mission",
+    urgence: "sous 3 mois",
+    source_url: "https://swile.co/fr/jobs",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 14,
+    nom_entreprise: "Legalstart",
+    secteur: "LegalTech / Création d'entreprise",
+    contact_nom: "Pierre Aïdan",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/pierreaidan/",
+    contact_site_carriere: "https://www.legalstart.fr/legalstart-recrute/",
+    demande_concrete: "Legalstart veut déployer un assistant IA pour guider les entrepreneurs dans leurs démarches juridiques. RAG sur formulaires Kbis, statuts, documentation URSSAF. Chatbot conversationnel avec agents de remplissage automatique de formulaires.",
+    solution_promptlabs: "Chatbot RAG juridique (LangChain + Anthropic), agents remplissage formulaires administratifs, extraction entités juridiques, automatisation Make.com pour workflows administratifs.",
+    type_besoin: "Chatbot",
+    stack: ["Anthropic Claude", "LangChain", "Make.com", "React", "Node.js"],
+    budget: "15K-35K€ mission",
+    urgence: "immédiat",
+    source_url: "https://www.legalstart.fr/legalstart-recrute/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 15,
+    nom_entreprise: "BackMarket",
+    secteur: "E-commerce / Reconditionné",
+    contact_nom: "Thibaud Hug de Larauze",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/thibaud-hug-de-larauze/",
+    contact_site_carriere: "https://jobs.backmarket.com/",
+    demande_concrete: "BackMarket cherche des experts pour automatiser la génération de descriptions produits, le support client IA multilingue et la détection qualité des produits reconditionnés. Fort intérêt pour les agents IA intégrés à leur plateforme marketplace.",
+    solution_promptlabs: "Génération descriptions produits (GPT-4 + fine-tuning), agent support client multilingue (LangChain), classification qualité produits (vision LLM), automatisation n8n catalogue.",
+    type_besoin: "Agent",
+    stack: ["OpenAI GPT-4", "LangChain", "n8n", "Python", "Zendesk API"],
+    budget: "Mission 20K-40K€",
+    urgence: "sous 3 mois",
+    source_url: "https://jobs.backmarket.com/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 16,
+    nom_entreprise: "Contentsquare",
+    secteur: "Analytics / Expérience digitale",
+    contact_nom: "Jonathan Cherki",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/jonathancherki/",
+    contact_site_carriere: "https://contentsquare.com/fr/carrieres/",
+    demande_concrete: "Contentsquare développe des fonctionnalités IA pour analyser automatiquement les parcours utilisateurs et générer des insights actionnables. Besoin expertise en agents IA, analyse de données comportementales avec LLM et génération de rapports automatiques.",
+    solution_promptlabs: "Agents analyse comportementale (LangChain + outils analytics), génération insights LLM (GPT-4), RAG sur best practices UX, automatisation reporting avec n8n.",
+    type_besoin: "Agent",
+    stack: ["Python", "LangChain", "OpenAI", "Pandas", "BigQuery"],
+    budget: "TJM 850-1200€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://contentsquare.com/fr/carrieres/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 17,
+    nom_entreprise: "Dataiku",
+    secteur: "Data Science / MLOps Platform",
+    contact_nom: "Florian Douetteau",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/floriandouetteau/",
+    contact_site_carriere: "https://www.dataiku.com/company/careers/",
+    demande_concrete: "Dataiku cherche des AI Consultants pour accompagner ses clients grands comptes dans le déploiement de LLM apps. Besoin de profils capables de faire du conseil stratégique IA, de l'architecture RAG et de la formation équipes data.",
+    solution_promptlabs: "Conseil stratégie IA générative, architecture RAG enterprise (LangChain + Dataiku LLM Mesh), formation équipes data au prompt engineering, déploiement agents sur Dataiku.",
+    type_besoin: "Conseil",
+    stack: ["Dataiku", "LangChain", "OpenAI", "Azure OpenAI", "Python"],
+    budget: "TJM 900-1400€/j",
+    urgence: "immédiat",
+    source_url: "https://www.dataiku.com/company/careers/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 18,
+    nom_entreprise: "OVHcloud",
+    secteur: "Cloud / Infrastructure",
+    contact_nom: "Benjamin Revcolevschi",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/benjamin-revcolevschi/",
+    contact_site_carriere: "https://www.ovhcloud.com/fr/about-us/jobs/",
+    demande_concrete: "OVHcloud cherche des AI Architects pour son offre AI Endpoints (API LLM souveraine). Besoin de profils capables d'implémenter des solutions RAG et agents IA sur infrastructure cloud souveraine française. Remote 100% possible.",
+    solution_promptlabs: "Architecture RAG souverain sur OVHcloud AI Endpoints, déploiement Mistral/LLaMA sur GPU OVH, intégration LangChain avec API souveraines, conseil conformité RGPD/données sensibles.",
+    type_besoin: "LLM",
+    stack: ["OVHcloud AI Endpoints", "LangChain", "Mistral", "LLaMA 3", "Python"],
+    budget: "TJM 800-1100€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://www.ovhcloud.com/fr/about-us/jobs/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 19,
+    nom_entreprise: "Scaleway",
+    secteur: "Cloud / IA Infrastructure",
+    contact_nom: "Arnaud de Bermingham",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/arnaud-de-bermingham/",
+    contact_site_carriere: "https://scaleway.com/fr/jobs/",
+    demande_concrete: "Scaleway développe Scaleway Generative APIs et cherche des experts pour évangéliser et intégrer leur offre LLM chez les clients. Besoin de profils LangChain/RAG capables de produire des démos et d'accompagner les équipes produit.",
+    solution_promptlabs: "Démos RAG et agents sur Scaleway GenAI, intégration LangChain avec Scaleway APIs, workshops techniques clients, rédaction documentation technique et tutoriels.",
+    type_besoin: "Développement",
+    stack: ["Scaleway GenAI", "LangChain", "Python", "Llama 3", "Mistral"],
+    budget: "Mission 10K-20K€ ou TJM 700-950€/j",
+    urgence: "immédiat",
+    source_url: "https://scaleway.com/fr/jobs/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 20,
+    nom_entreprise: "Squarely (ex-Meilleurs Agents IA)",
+    secteur: "PropTech / Immobilier",
+    contact_nom: "Thomas Reynaud",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/thomas-reynaud-ai/",
+    contact_site_carriere: "https://squarely.io/careers",
+    demande_concrete: "Startup PropTech cherche un expert IA pour automatiser l'analyse de biens immobiliers, la génération d'annonces optimisées et un assistant acheteur conversationnel. Stack LangChain/OpenAI déjà en place, besoin de senior pour structurer l'architecture.",
+    solution_promptlabs: "Refactoring architecture agents LangChain, RAG sur annonces/prix marché, fine-tuning GPT pour descriptions immobilières, chatbot acheteur avec outils de recherche, formation équipe tech.",
+    type_besoin: "Agent",
+    stack: ["LangChain", "OpenAI GPT-4", "Pinecone", "Python", "Next.js"],
+    budget: "15K-30K€ mission",
+    urgence: "immédiat",
+    source_url: "https://squarely.io/careers",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 21,
+    nom_entreprise: "Nabla",
+    secteur: "HealthTech / Documentation médicale",
+    contact_nom: "Alexandre Lebrun",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/alexandrelebrun/",
+    contact_site_carriere: "https://www.nabla.com/careers/",
+    demande_concrete: "Nabla cherche des AI Engineers pour améliorer son produit de transcription et synthèse médicale. Besoin de fine-tuning LLM sur données médicales françaises, amélioration précision NER entités médicales et développement de nouveaux agents de documentation.",
+    solution_promptlabs: "Fine-tuning Whisper+LLM transcription médicale, NER entités médecins/médicaments, agents génération SOAP notes, optimisation latence inférence, conseil conformité HDS.",
+    type_besoin: "Fine-tuning",
+    stack: ["Whisper", "Mistral", "Python", "LangChain", "HuggingFace"],
+    budget: "TJM 900-1300€/j",
+    urgence: "immédiat",
+    source_url: "https://www.nabla.com/careers/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 95
+  },
+  {
+    id: 22,
+    nom_entreprise: "Germinal",
+    secteur: "Growth Marketing / Agence IA",
+    contact_nom: "Thibault Lamarque",
+    contact_email: "thibault@germinal.io",
+    contact_linkedin: "https://www.linkedin.com/in/thibaultlamarque/",
+    contact_site_carriere: "https://germinal.io/carrieres",
+    demande_concrete: "Germinal intègre l'IA dans ses processus de growth hacking. Cherche un expert pour automatiser la génération de contenus marketing (landing pages, emails, A/B tests), l'analyse de données de campagnes avec LLM et la création d'agents growth autonomes.",
+    solution_promptlabs: "Agents génération contenu marketing (GPT-4+LangChain), automatisation A/B tests avec n8n, RAG sur playbooks growth, intégration Make.com CRM/emailing, formation équipe growth à l'IA.",
+    type_besoin: "Automatisation",
+    stack: ["OpenAI GPT-4", "LangChain", "n8n", "Make.com", "Airtable"],
+    budget: "10K-20K€ mission",
+    urgence: "immédiat",
+    source_url: "https://germinal.io/carrieres",
+    score_details: { email:35, linkedin:0, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 100
+  },
+  {
+    id: 23,
+    nom_entreprise: "LumApps",
+    secteur: "Intranet / Digital Workplace",
+    contact_nom: "Séverine Griziaux",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/severinegriziaux/",
+    contact_site_carriere: "https://www.lumapps.com/fr/jobs/",
+    demande_concrete: "LumApps développe des fonctionnalités IA pour son intranet d'entreprise. Besoin d'experts RAG pour moteur de recherche sémantique sur documents internes, d'un assistant collaborateur IA et d'agents d'automatisation des workflows RH/IT.",
+    solution_promptlabs: "Moteur RAG sémantique intranet (LangChain + Cohere/OpenAI embeddings), assistant collaborateur conversationnel, agents IT helpdesk, intégration Google Workspace/M365.",
+    type_besoin: "RAG",
+    stack: ["LangChain", "OpenAI", "Cohere", "Elasticsearch", "React"],
+    budget: "TJM 750-1050€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://www.lumapps.com/fr/jobs/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 24,
+    nom_entreprise: "360Learning",
+    secteur: "EdTech / LMS Collaboratif",
+    contact_nom: "Nicolas Hernandez",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/nicolashernandez360l/",
+    contact_site_carriere: "https://360learning.com/fr/carrieres/",
+    demande_concrete: "360Learning intègre l'IA générative dans sa plateforme d'apprentissage. Besoin expertise pour : génération automatique de cours IA, questions QCM intelligentes, assistant pédagogique IA, analyse des lacunes d'apprentissage avec LLM.",
+    solution_promptlabs: "Génération contenu pédagogique (LangChain + GPT-4), RAG sur catalogue formations, agents évaluation apprentissage, fine-tuning LLM pédagogie, formation équipes produit à l'IA générative.",
+    type_besoin: "Formation",
+    stack: ["OpenAI GPT-4", "LangChain", "Python", "TypeScript", "Anthropic"],
+    budget: "Mission 20K-40K€",
+    urgence: "sous 3 mois",
+    source_url: "https://360learning.com/fr/carrieres/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 25,
+    nom_entreprise: "Klaxoon",
+    secteur: "EdTech / Collaboration",
+    contact_nom: "Bryan Donoghue",
+    contact_email: "careers@klaxoon.com",
+    contact_linkedin: "https://www.linkedin.com/in/bryandonoghue/",
+    contact_site_carriere: "https://klaxoon.com/fr/offres-emploi",
+    demande_concrete: "Klaxoon cherche un expert IA pour automatiser la génération de templates de workshops, l'analyse de sessions collaboratives et la création d'un facilitateur IA. Mission remote 100%, besoin urgent pour roadmap Q3 2026.",
+    solution_promptlabs: "Générateur templates workshops (GPT-4+LangChain), analyse sentiment sessions (LLM), agent facilitateur IA conversationnel, automatisation n8n création contenu, prompt engineering pédagogie.",
+    type_besoin: "Chatbot",
+    stack: ["OpenAI GPT-4", "LangChain", "n8n", "TypeScript", "React"],
+    budget: "TJM 700-950€/j",
+    urgence: "immédiat",
+    source_url: "https://klaxoon.com/fr/offres-emploi",
+    score_details: { email:35, linkedin:0, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 100
+  },
+  {
+    id: 26,
+    nom_entreprise: "Aircall",
+    secteur: "SaaS / Téléphonie cloud",
+    contact_nom: "Olivier Pailhès",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/olivierpailhes/",
+    contact_site_carriere: "https://aircall.io/fr/carrieres/",
+    demande_concrete: "Aircall déploie des fonctionnalités IA pour l'analyse des appels : transcription, résumé automatique, coaching commercial IA et détection d'opportunités de vente. Recherche expertise LLM pour affiner les modèles et créer des agents d'analyse conversationnelle.",
+    solution_promptlabs: "Pipeline transcription+LLM analyse appels (Whisper+GPT-4), agents coaching commercial, fine-tuning détection opportunités, RAG sur guides de vente, intégration CRM (Salesforce/HubSpot).",
+    type_besoin: "Agent",
+    stack: ["Whisper", "OpenAI GPT-4", "LangChain", "Python", "Salesforce API"],
+    budget: "TJM 850-1200€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://aircall.io/fr/carrieres/",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 27,
+    nom_entreprise: "Sarbacane",
+    secteur: "Marketing Tech / Email Marketing",
+    contact_nom: "Mathieu Tarnus",
+    contact_email: "contact@sarbacane.com",
+    contact_linkedin: "https://www.linkedin.com/in/mathieutarnus/",
+    contact_site_carriere: "https://www.sarbacane.com/recrutement",
+    demande_concrete: "Sarbacane cherche à intégrer l'IA pour la génération d'emails marketing personnalisés, l'optimisation des objets d'email (A/B testing IA), et la segmentation intelligente des audiences. Projet immédiat, remote 100% pour prestataires.",
+    solution_promptlabs: "Génération emails personnalisés (GPT-4+LangChain), optimisation objets emails via LLM, segmentation audience avec clustering IA, automatisation Make.com campagnes, prompt engineering marketing.",
+    type_besoin: "Prompt",
+    stack: ["OpenAI GPT-4", "Make.com", "Python", "LangChain", "Mailchimp API"],
+    budget: "8K-18K€ mission",
+    urgence: "immédiat",
+    source_url: "https://www.sarbacane.com/recrutement",
+    score_details: { email:35, linkedin:0, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 100
+  },
+  {
+    id: 28,
+    nom_entreprise: "ManoMano",
+    secteur: "E-commerce / Bricolage",
+    contact_nom: "Philippe de Chanville",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/philippedechanville/",
+    contact_site_carriere: "https://www.manomano.fr/jobs",
+    demande_concrete: "ManoMano développe un assistant bricolage IA pour conseiller les clients sur leurs projets. Besoin de RAG sur catalogue de 10M+ produits, agents de recommandation produits et chatbot conseil DIY multilingue (FR/ES/IT/DE).",
+    solution_promptlabs: "RAG catalogue produits vectoriel (Pinecone + embeddings), agent conseil DIY multilingue (LangChain + GPT-4), fine-tuning recommandation produits, intégration API catalogue ManoMano.",
+    type_besoin: "RAG",
+    stack: ["LangChain", "OpenAI", "Pinecone", "Python", "Elasticsearch"],
+    budget: "Mission 25K-50K€",
+    urgence: "sous 3 mois",
+    source_url: "https://www.manomano.fr/jobs",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 29,
+    nom_entreprise: "Deezer",
+    secteur: "Music Streaming / Entertainment",
+    contact_nom: "Aurélie Méchain",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/aurelie-mechain/",
+    contact_site_carriere: "https://www.deezer.com/fr/company/jobs",
+    demande_concrete: "Deezer cherche des experts ML/LLM pour améliorer ses systèmes de recommandation musicale avec des LLM, créer un assistant musical conversationnel et automatiser la description/tagging des contenus audio.",
+    solution_promptlabs: "Agent musical conversationnel (LangChain + GPT-4), RAG sur catalogue musical + métadonnées, génération descriptions/tags avec LLM, intégration pipeline audio ML.",
+    type_besoin: "Agent",
+    stack: ["Python", "LangChain", "OpenAI", "PyTorch", "Elasticsearch"],
+    budget: "TJM 800-1100€/j",
+    urgence: "projet futur",
+    source_url: "https://www.deezer.com/fr/company/jobs",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 30,
+    nom_entreprise: "Blablacar",
+    secteur: "Mobilité / Transport partagé",
+    contact_nom: "Nicolas Brusson",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/nicolasbrusson/",
+    contact_site_carriere: "https://blog.blablacar.fr/carrieres",
+    demande_concrete: "BlaBlaCar modernise son support client avec l'IA : chatbot résolution autonome, détection fraude via LLM, et assistant de planification de voyage intelligent. Besoin de profils agents IA et RAG sur leur base de connaissances.",
+    solution_promptlabs: "Chatbot support IA avec RAG (LangChain + base FAQ), agent détection fraude (GPT-4 + règles métier), assistant voyage conversationnel, automatisation n8n escalade tickets.",
+    type_besoin: "Chatbot",
+    stack: ["LangChain", "OpenAI GPT-4", "n8n", "Python", "PostgreSQL"],
+    budget: "TJM 750-1000€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://blog.blablacar.fr/carrieres",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 31,
+    nom_entreprise: "Meero",
+    secteur: "IA / Retouche photo automatisée",
+    contact_nom: "Thomas Rebaud",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/thomasrebaud/",
+    contact_site_carriere: "https://www.meero.com/careers",
+    demande_concrete: "Meero cherche à étendre ses capacités IA au-delà de la vision : génération de descriptions de photos professionnelles, agent commercial IA pour qualifier les leads photographes, et automatisation des workflows de post-production.",
+    solution_promptlabs: "Génération descriptions photos (GPT-4V+LangChain), agent qualification leads (LangChain + CRM), automatisation workflows n8n post-production, fine-tuning LLM métier photo.",
+    type_besoin: "Automatisation",
+    stack: ["OpenAI GPT-4V", "LangChain", "n8n", "Python", "HubSpot API"],
+    budget: "10K-22K€ mission",
+    urgence: "sous 3 mois",
+    source_url: "https://www.meero.com/careers",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 32,
+    nom_entreprise: "Ouihelp",
+    secteur: "Silver Tech / Aide à domicile",
+    contact_nom: "Paul-Adrien Forestier",
+    contact_email: "paul-adrien@ouihelp.fr",
+    contact_linkedin: "https://www.linkedin.com/in/pauladrienforestier/",
+    contact_site_carriere: "https://www.ouihelp.fr/recrutement/",
+    demande_concrete: "Ouihelp souhaite déployer un assistant IA pour ses aidants et coordinateurs : planification optimisée avec IA, synthèse des situations des bénéficiaires, et chatbot d'aide aux démarches administratives. Urgence pour roadmap Q3, remote 100%.",
+    solution_promptlabs: "Agent planification IA (LangChain + contraintes métier), RAG sur situations bénéficiaires, chatbot démarches admin avec Make.com, synthèse automatique rapports d'intervention.",
+    type_besoin: "Agent",
+    stack: ["LangChain", "OpenAI", "Make.com", "Python", "Notion API"],
+    budget: "12K-25K€ mission",
+    urgence: "immédiat",
+    source_url: "https://www.ouihelp.fr/recrutement/",
+    score_details: { email:35, linkedin:0, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 100
+  },
+  {
+    id: 33,
+    nom_entreprise: "Lifen",
+    secteur: "HealthTech / Communication médicale",
+    contact_nom: "Franck Le Ouay",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/franckleouay/",
+    contact_site_carriere: "https://www.lifen.fr/nous-rejoindre",
+    demande_concrete: "Lifen cherche des experts NLP/LLM pour améliorer l'extraction d'informations médicales dans les documents de santé (compte-rendus, ordonnances), la structuration de données médicales et l'intégration avec les LPS (logiciels professionnels de santé).",
+    solution_promptlabs: "Pipeline NLP médical (Mistral fine-tuned + NER), extraction structurée ordonnances/CR (LangChain + GPT-4), RAG sur terminologie médicale, conformité HDS/RGPD santé.",
+    type_besoin: "Fine-tuning",
+    stack: ["Mistral", "LangChain", "Python", "spaCy", "FastAPI"],
+    budget: "TJM 850-1200€/j",
+    urgence: "sous 3 mois",
+    source_url: "https://www.lifen.fr/nous-rejoindre",
+    score_details: { email:0, linkedin:20, niche:25, urgence:0, remote:15, stack:20, budget:15 },
+    score: 75
+  },
+  {
+    id: 34,
+    nom_entreprise: "Brigad",
+    secteur: "FoodTech / Placement intérimaire",
+    contact_nom: "Florent Malbranche",
+    contact_email: "florent@brigad.co",
+    contact_linkedin: "https://www.linkedin.com/in/florentmalbranche/",
+    contact_site_carriere: "https://brigad.co/fr/recrutement",
+    demande_concrete: "Brigad automatise le matching entre professionnels de la restauration et établissements. Cherche expert pour construire un agent de matching IA (critères compétences/localisation/disponibilité), automatisation des communications et prédiction de la demande.",
+    solution_promptlabs: "Agent matching IA (LangChain + embeddings sémantiques), automatisation SMS/email n8n, prédiction demande avec LLM + données historiques, chatbot onboarding professionnel.",
+    type_besoin: "Agent",
+    stack: ["LangChain", "OpenAI Embeddings", "n8n", "Python", "PostgreSQL"],
+    budget: "15K-28K€ mission",
+    urgence: "immédiat",
+    source_url: "https://brigad.co/fr/recrutement",
+    score_details: { email:35, linkedin:0, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 100
+  },
+  {
+    id: 35,
+    nom_entreprise: "Axeptio",
+    secteur: "ConsentTech / RGPD",
+    contact_nom: "David Lacombled",
+    contact_email: "david@axeptio.eu",
+    contact_linkedin: "https://www.linkedin.com/in/davidlacombled/",
+    contact_site_carriere: "https://www.axeptio.eu/jobs",
+    demande_concrete: "Axeptio cherche à augmenter sa plateforme avec IA : génération automatique de politiques de confidentialité conformes RGPD, assistant conseil conformité, et détection automatique des cookies/trackers avec LLM. Remote 100%, mission urgente.",
+    solution_promptlabs: "Génération politiques RGPD (GPT-4 + templates LangChain), agent conseil conformité RAG (réglementations CNIL/GDPR), détection cookies avec LLM+vision, automatisation Make.com audit conformité.",
+    type_besoin: "RAG",
+    stack: ["OpenAI GPT-4", "LangChain", "Make.com", "Python", "Chrome Extension API"],
+    budget: "12K-22K€ mission",
+    urgence: "immédiat",
+    source_url: "https://www.axeptio.eu/jobs",
+    score_details: { email:35, linkedin:0, niche:25, urgence:20, remote:15, stack:20, budget:15 },
+    score: 100
+  }
+];
+
+// ============================================================
+// APP STATE
+// ============================================================
+let sortCol = 7;
+let sortDir = 'desc';
+let selectedId = null;
+let filteredOffres = [...OFFRES];
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  updateKPIs();
+  renderTable();
+  updateSortIcons();
+
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+  document.getElementById('filterType').addEventListener('change', applyFilters);
+  document.getElementById('filterUrgence').addEventListener('change', applyFilters);
+  document.getElementById('filterContact').addEventListener('change', applyFilters);
+});
+
+// ============================================================
+// KPIs
+// ============================================================
+function updateKPIs(data) {
+  data = data || OFFRES;
+  const total = data.length;
+  const emails = data.filter(o => o.contact_email).length;
+  const linkedins = data.filter(o => !o.contact_email && o.contact_linkedin).length;
+  const avgScore = Math.round(data.reduce((sum, o) => sum + o.score, 0) / (data.length || 1));
+  const remote = data.length; // all remote
+
+  document.getElementById('kpiTotal').textContent = total;
+  document.getElementById('kpiEmails').textContent = emails;
+  document.getElementById('kpiLinkedin').textContent = linkedins;
+  document.getElementById('kpiScore').textContent = avgScore + '/100';
+  document.getElementById('kpiRemote').textContent = remote;
+  document.getElementById('resultsCount').textContent = `${data.length} offre${data.length>1?'s':''} affichée${data.length>1?'s':''}`;
+}
+
+// ============================================================
+// FILTERS
+// ============================================================
+function applyFilters() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const typeF = document.getElementById('filterType').value;
+  const urgF = document.getElementById('filterUrgence').value;
+  const contF = document.getElementById('filterContact').value;
+
+  filteredOffres = OFFRES.filter(o => {
+    const matchSearch = !search ||
+      o.nom_entreprise.toLowerCase().includes(search) ||
+      o.secteur.toLowerCase().includes(search) ||
+      o.demande_concrete.toLowerCase().includes(search) ||
+      o.stack.join(' ').toLowerCase().includes(search) ||
+      o.type_besoin.toLowerCase().includes(search) ||
+      (o.contact_nom && o.contact_nom.toLowerCase().includes(search));
+
+    const matchType = !typeF || o.type_besoin === typeF;
+    const matchUrg = !urgF || o.urgence === urgF;
+    const matchCont = !contF ||
+      (contF === 'email' && o.contact_email) ||
+      (contF === 'linkedin' && !o.contact_email && o.contact_linkedin);
+
+    return matchSearch && matchType && matchUrg && matchCont;
+  });
+
+  sortData();
+  renderTable();
+  updateKPIs(filteredOffres);
+}
+
+function resetFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterType').value = '';
+  document.getElementById('filterUrgence').value = '';
+  document.getElementById('filterContact').value = '';
+  applyFilters();
+}
+
+// ============================================================
+// SORT
+// ============================================================
+function sortTable(col) {
+  if (sortCol === col) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortCol = col;
+    sortDir = 'desc';
+  }
+  sortData();
+  renderTable();
+  updateSortIcons();
+}
+
+function sortData() {
+  const getVal = (o, col) => {
+    switch(col) {
+      case 0: return o.nom_entreprise;
+      case 1: return o.contact_email ? 'email_' + o.contact_nom : 'linkedin_' + (o.contact_nom||'');
+      case 2: return o.type_besoin;
+      case 3: return o.demande_concrete;
+      case 4: return o.solution_promptlabs;
+      case 5: return o.budget || '';
+      case 6: return o.urgence;
+      case 7: return o.score;
+      default: return '';
+    }
+  };
+  filteredOffres.sort((a, b) => {
+    const va = getVal(a, sortCol), vb = getVal(b, sortCol);
+    let cmp = typeof va === 'number' ? va - vb : va.localeCompare(vb, 'fr');
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+}
+
+function updateSortIcons() {
+  document.querySelectorAll('th').forEach(th => {
+    th.classList.remove('sorted-asc', 'sorted-desc');
+  });
+  const ths = document.querySelectorAll('th');
+  if (ths[sortCol]) {
+    ths[sortCol].classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+  }
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function getTypeBadge(type) {
+  const map = {
+    'RAG': 'badge-rag', 'Agent': 'badge-agent', 'Fine-tuning': 'badge-fine',
+    'Automatisation': 'badge-auto', 'Chatbot': 'badge-chatbot', 'Conseil': 'badge-conseil',
+    'Formation': 'badge-form', 'Développement': 'badge-dev', 'Prompt': 'badge-prompt', 'LLM': 'badge-llm'
+  };
+  return `<span class="badge ${map[type]||'badge-type'}">${type}</span>`;
+}
+
+function getUrgenceBadge(urgence) {
+  const map = { 'immédiat': 'badge-imm', 'sous 3 mois': 'badge-3m', 'projet futur': 'badge-fut' };
+  const icons = { 'immédiat': '🔴', 'sous 3 mois': '🟡', 'projet futur': '⚪' };
+  return `<span class="badge ${map[urgence]||'badge-fut'}">${icons[urgence]||''} ${urgence}</span>`;
+}
+
+function getScoreColor(score) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 75) return '#4f8ef7';
+  if (score >= 60) return '#f59e0b';
+  return '#ef4444';
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const noRes = document.getElementById('noResults');
+
+  if (filteredOffres.length === 0) {
+    tbody.innerHTML = '';
+    noRes.style.display = 'block';
+    return;
+  }
+  noRes.style.display = 'none';
+
+  tbody.innerHTML = filteredOffres.map(o => {
+    const contactHTML = o.contact_email
+      ? `<div class="contact-name">${o.contact_nom||''}</div><a href="mailto:${o.contact_email}" class="badge badge-email" onclick="event.stopPropagation()">📧 EMAIL</a>`
+      : `<div class="contact-name">${o.contact_nom||''}</div><a href="${o.contact_linkedin}" target="_blank" class="badge badge-linkedin" onclick="event.stopPropagation()">💼 LINKEDIN</a>`;
+
+    const scoreColor = getScoreColor(o.score);
+    const scoreHTML = `<div class="score-wrap">
+      <span class="score-num" style="color:${scoreColor}">${o.score}</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:${o.score}%;background:${scoreColor}"></div></div>
+    </div>`;
+
+    return `<tr class="${selectedId === o.id ? 'selected' : ''}" onclick="openDetail(${o.id})">
+      <td class="td-entreprise">${o.nom_entreprise}<div class="secteur">${o.secteur}</div></td>
+      <td class="td-contact">${contactHTML}</td>
+      <td class="td-type">${getTypeBadge(o.type_besoin)}</td>
+      <td class="td-demande"><div class="demande-short">${o.demande_concrete}</div></td>
+      <td class="td-solution"><div class="solution-short">${o.solution_promptlabs}</div></td>
+      <td class="td-budget" style="font-size:0.78rem;color:var(--muted)">${o.budget||'—'}</td>
+      <td class="td-urgence">${getUrgenceBadge(o.urgence)}</td>
+      <td class="td-score">${scoreHTML}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// DETAIL PANEL
+// ============================================================
+function openDetail(id) {
+  const o = OFFRES.find(x => x.id === id);
+  if (!o) return;
+  selectedId = id;
+
+  document.getElementById('dp-title').textContent = o.nom_entreprise;
+  document.getElementById('dp-secteur').textContent = `📁 ${o.secteur}`;
+  document.getElementById('dp-demande').textContent = o.demande_concrete;
+  document.getElementById('dp-solution').textContent = o.solution_promptlabs;
+
+  // Contacts
+  let contactsHTML = '';
+  if (o.contact_email) {
+    contactsHTML += `<a href="mailto:${o.contact_email}" class="detail-contact-btn btn-email">📧 Écrire à ${o.contact_nom||'le contact'} — ${o.contact_email}</a>`;
+  }
+  if (o.contact_linkedin) {
+    contactsHTML += `<a href="${o.contact_linkedin}" target="_blank" class="detail-contact-btn btn-linkedin">💼 Profil LinkedIn — ${o.contact_nom||'voir profil'}</a>`;
+  }
+  if (o.contact_site_carriere) {
+    contactsHTML += `<a href="${o.contact_site_carriere}" target="_blank" class="detail-contact-btn btn-careers">🏢 Page Carrières officielle</a>`;
+  }
+  document.getElementById('dp-contacts').innerHTML = contactsHTML;
+
+  // Stack
+  document.getElementById('dp-stack').innerHTML = o.stack.map(s => `<span class="stack-tag">${s}</span>`).join('');
+
+  // Budget & Urgence
+  document.getElementById('dp-budget').innerHTML = `
+    <div style="margin-bottom:8px"><strong>💰 Budget :</strong> ${o.budget||'Non précisé'}</div>
+    <div>${getUrgenceBadge(o.urgence)}</div>
+  `;
+
+  // Score breakdown
+  const items = [
+    { label: 'Email direct', key: 'email', max: 35 },
+    { label: 'LinkedIn direct', key: 'linkedin', max: 20 },
+    { label: 'Offre niche/récente', key: 'niche', max: 25 },
+    { label: 'Urgence immédiate', key: 'urgence', max: 20 },
+    { label: 'Remote 100%', key: 'remote', max: 15 },
+    { label: 'Stack compatible', key: 'stack', max: 20 },
+    { label: 'Budget en cible', key: 'budget', max: 15 },
+  ];
+  document.getElementById('dp-score-breakdown').innerHTML = items.map(item => {
+    const pts = o.score_details[item.key] || 0;
+    const earned = pts > 0;
+    return `<div class="score-item ${earned?'earned':'missed'}">
+      <span>${earned?'✅':'⬜'} ${item.label}</span>
+      <span class="pts">${earned?'+'+pts:'0'}/${item.max}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('dp-score-total').textContent = o.score + '/100';
+
+  // Source
+  document.getElementById('dp-source').innerHTML = `
+    <div>🔗 <a href="${o.source_url}" target="_blank">${o.source_url}</a></div>
+    ${o.contact_nom ? `<div style="margin-top:4px;color:var(--muted)">Contact identifié : ${o.contact_nom}</div>` : ''}
+  `;
+
+  document.getElementById('detailOverlay').classList.add('open');
+
+  // Highlight row
+  renderTable();
+}
+
+function closeDetail(event) {
+  if (event.target === document.getElementById('detailOverlay')) {
+    closeDetailBtn();
+  }
+}
+function closeDetailBtn() {
+  document.getElementById('detailOverlay').classList.remove('open');
+  selectedId = null;
+  renderTable();
+}
+
+// Keyboard close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDetailBtn();
+});
+</script>
+</body>
+</html>

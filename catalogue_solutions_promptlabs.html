@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🎯 PromptLabs — Catalogue Solutions par Segment</title>
+<style>
+:root{--bg:#08080f;--bg2:#0e0e18;--bg3:#151525;--accent:#00d4ff;--a2:#7b5cff;--green:#22c55e;--orange:#f59e0b;--red:#ef4444;--text:#c8c8d4;--muted:#8888a0;--bdr:#222238;--card:#111122;--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;min-height:100vh}
+.header{background:linear-gradient(135deg,#08080f,#0e0e18,#151525);border-bottom:1px solid var(--bdr);padding:22px 28px 16px;position:sticky;top:0;z-index:100}
+.header h1{font-size:1.2rem;font-weight:700}
+.header .g{background:linear-gradient(90deg,var(--accent),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:.7rem;color:var(--muted);margin-top:3px}
+main{max-width:1300px;margin:0 auto;padding:16px 24px 60px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px}
+.kpi-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:10px 12px}
+.kpi-l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.kpi-v{font-size:1.4rem;font-weight:800;color:var(--accent)}
+h2{font-size:.95rem;margin:20px 0 10px;color:var(--text)}
+.table-wrap{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+table{width:100%;border-collapse:collapse}
+th{background:var(--bg2);padding:7px 10px;text-align:left;font-size:.6rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--bdr)}
+td{padding:10px;font-size:.75rem;border-bottom:1px solid var(--bdr);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+tr.prio{background:rgba(34,197,94,.03)}
+tr.prio td:first-child{border-left:3px solid var(--green)}
+.tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.63rem;font-weight:600;margin:1px 2px}
+.t-cpta{background:#06b6d418;color:#06b6d4}.t-avoc{background:#ec489918;color:#ec4899}.t-recrut{background:#f59e0b18;color:#f59e0b}
+.t-simple{background:#22c55e18;color:var(--green)}.t-robuste{background:#f59e0b18;color:var(--orange)}.t-pack{background:#7b5cff18;color:var(--a2)}
+.price{font-weight:700;color:var(--accent);white-space:nowrap}
+.roi{font-weight:600;color:var(--green);font-size:.7rem}
+.section-intro{background:linear-gradient(135deg,#7b5cff0a,#00d4ff0a);border:1px solid #7b5cff33;border-radius:var(--r);padding:12px 16px;margin-bottom:16px;font-size:.75rem;color:var(--muted);line-height:1.5}
+footer{text-align:center;padding:14px;color:var(--muted);font-size:.68rem;border-top:1px solid var(--bdr);margin-top:16px}
+</style>
+</head>
+<body>
+
+<header class="header">
+<h1>🎯 <span class="g">PromptLabs</span> — Catalogue Solutions IA par Segment</h1>
+<div class="sub">Ce que PromptLabs peut VRAIMENT vendre aux experts-comptables, avocats et agences de recrutement — 28 juillet 2026</div>
+</header>
+
+<main>
+
+<div class="kpi">
+<div class="kpi-card"><div class="kpi-l">🧮 Experts-comptables</div><div class="kpi-v">7 solutions</div></div>
+<div class="kpi-card"><div class="kpi-l">⚖️ Cabinets d'avocats</div><div class="kpi-v">7 solutions</div></div>
+<div class="kpi-card"><div class="kpi-l">💼 Agences recrutement</div><div class="kpi-v">6 solutions</div></div>
+</div>
+
+<div class="section-intro">
+<strong>🎯 Stratégie commerciale :</strong> pour chaque prospect, commencer par le <strong>Pack Starter</strong> (porte d'entrée à 1 500€). Une fois la confiance établie, up-sell vers les solutions d'automatisation. <strong>Argument clé :</strong> « Je vous propose un premier pas concret, sans engagement. Si ça vous plaît, on continue. »
+</div>
+
+<!-- ===== EXPERTS-COMPTABLES ===== -->
+<h2>🧮 Experts-Comptables & Cabinets Comptables</h2>
+<div class="table-wrap"><table>
+<thead><tr><th style="width:220px">Solution</th><th>Description</th><th>Complexité</th><th>Prix</th><th>ROI estimé</th></tr></thead>
+<tbody>
+
+<tr class="prio">
+<td><strong>Pack Starter Comptable</strong><br><span class="tag t-cpta">compta</span><span class="tag t-pack">pack</span></td>
+<td>Site vitrine pro + Google My Business + fiche contact + Claude (1/2 journée). Idéal pour les cabinets sans présence web.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">1 500€</td>
+<td class="roi">3-5 nouveaux clients/mois</td>
+</tr>
+
+<tr class="prio">
+<td><strong>RAG Fiscal</strong><br><span class="tag t-cpta">compta</span><span class="tag t-robuste">Robuste</span></td>
+<td>Base de connaissances IA sur votre documentation fiscale (CGI, BOFiP, jurisprudence). Les collaborateurs posent leurs questions en langage naturel. L'IA répond avec la source exacte. Plus besoin d'être le « spécialiste » du cabinet.</td>
+<td><span class="tag t-robuste">Robuste</span></td>
+<td class="price">5 000-9 000€</td>
+<td class="roi">2-5h/semaine économisées par collaborateur</td>
+</tr>
+
+<tr>
+<td><strong>Automatisation Saisie Comptable</strong><br><span class="tag t-cpta">compta</span><span class="tag t-robuste">Robuste</span></td>
+<td>OCR + LLM pour extraction automatique des données de factures, notes de frais, relevés bancaires. Classification intelligente. Pré-remplissage des écritures. Intégration avec votre ERP comptable.</td>
+<td><span class="tag t-robuste">Robuste</span></td>
+<td class="price">8 000-15 000€</td>
+<td class="roi">15-25h/semaine économisées</td>
+</tr>
+
+<tr>
+<td><strong>Automatisation Paie</strong><br><span class="tag t-cpta">compta</span><span class="tag t-robuste">Robuste</span></td>
+<td>Extraction automatique des variables de paie. Contrôle de cohérence IA (anomalies, incohérences). Génération et envoi automatique des bulletins. Dashboard de suivi.</td>
+<td><span class="tag t-robuste">Robuste</span></td>
+<td class="price">12 000-18 000€</td>
+<td class="roi">60% temps gagné sur traitement paie</td>
+</tr>
+
+<tr>
+<td><strong>Chatbot Client Comptable</strong><br><span class="tag t-cpta">compta</span><span class="tag t-simple">Simple</span></td>
+<td>Chatbot sur votre site/portail client. Répond aux questions fiscales basiques 24/7. Orientation automatique vers le bon collaborateur si question complexe. Disponible WhatsApp en option.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">3 000-6 000€</td>
+<td class="roi">Réduction 40% appels/questions simples</td>
+</tr>
+
+<tr>
+<td><strong>Automatisation Relances & Recouvrement</strong><br><span class="tag t-cpta">compta</span><span class="tag t-simple">Simple</span></td>
+<td>Workflows n8n/Make.com : relances automatiques personnalisées, scoring clients (risque impayé), escalade automatique. Tableau de bord trésorerie prédictif.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">2 500-5 000€</td>
+<td class="roi">Réduction 30% des impayés</td>
+</tr>
+
+<tr>
+<td><strong>Formation IA Équipe Comptable</strong><br><span class="tag t-cpta">compta</span><span class="tag t-pack">pack</span></td>
+<td>2 jours intensifs : IA génératives appliquées à la compta, prompt engineering, automatisation sans code. Formation OPCO. Suivi 90 jours.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">2 000-5 000€</td>
+<td class="roi">Gain productivité immédiat</td>
+</tr>
+
+</tbody></table></div>
+
+<!-- ===== AVOCATS ===== -->
+<h2>⚖️ Cabinets d'Avocats</h2>
+<div class="table-wrap"><table>
+<thead><tr><th style="width:220px">Solution</th><th>Description</th><th>Complexité</th><th>Prix</th><th>ROI estimé</th></tr></thead>
+<tbody>
+
+<tr class="prio">
+<td><strong>Pack Starter Avocat</strong><br><span class="tag t-avoc">avocat</span><span class="tag t-pack">pack</span></td>
+<td>Site vitrine pro + Google My Business + fiche contact + formation ChatGPT (1/2 journée). <strong>Cible prioritaire : les 216 avocats sans site web du Barreau.</strong></td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">1 500€</td>
+<td class="roi">5-10 nouveaux dossiers/mois</td>
+</tr>
+
+<tr class="prio">
+<td><strong>RAG Juridique</strong><br><span class="tag t-avoc">avocat</span><span class="tag t-robuste">Robuste</span></td>
+<td>Base de connaissances IA : jurisprudence, codes, doctrine, revues juridiques. Recherche en langage naturel. Sources et extraits exacts. Modules : civil, pénal, commercial, social, famille. <strong>Argument : un assistant qui trouve en 3 secondes ce qui prenait 30 minutes.</strong></td>
+<td><span class="tag t-robuste">Robuste</span></td>
+<td class="price">6 000-12 000€</td>
+<td class="roi">5-10h/semaine économisées</td>
+</tr>
+
+<tr>
+<td><strong>Assistant Rédaction d'Actes</strong><br><span class="tag t-avoc">avocat</span><span class="tag t-robuste">Robuste</span></td>
+<td>IA générative entraînée sur vos modèles d'actes. Génération de premiers jets : conclusions, assignations, contrats, statuts. L'avocat relit et finalise. Gain de temps sur la partie répétitive de la rédaction.</td>
+<td><span class="tag t-robuste">Robuste</span></td>
+<td class="price">8 000-18 000€</td>
+<td class="roi">50% temps rédaction gagné</td>
+</tr>
+
+<tr>
+<td><strong>Chatbot Client Avocat</strong><br><span class="tag t-avoc">avocat</span><span class="tag t-simple">Simple</span></td>
+<td>Chatbot sur votre site : prise de RDV automatique, questions fréquentes (honoraires, délais, procédures), orientation vers le bon avocat. Disponible WhatsApp. Intégration agenda (Google, Outlook).</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">3 000-6 000€</td>
+<td class="roi">+30% de prise de RDV</td>
+</tr>
+
+<tr>
+<td><strong>Transcription Audio → CR</strong><br><span class="tag t-avoc">avocat</span><span class="tag t-simple">Simple</span></td>
+<td>Transcription automatique des consultations et audiences. Génération de comptes-rendus structurés. Gain de temps massif sur la paperasse post-audience.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">2 000-4 000€</td>
+<td class="roi">5-8h/semaine économisées</td>
+</tr>
+
+<tr>
+<td><strong>Automatisation Administrative</strong><br><span class="tag t-avoc">avocat</span><span class="tag t-simple">Simple</span></td>
+<td>Workflows n8n : classement automatique des emails, génération de factures, relances honoraires, archivage dossier. Tout le back-office qui fait perdre du temps aux avocats.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">2 500-5 000€</td>
+<td class="roi">3-5h/semaine économisées</td>
+</tr>
+
+<tr>
+<td><strong>Formation IA Équipe Juridique</strong><br><span class="tag t-avoc">avocat</span><span class="tag t-pack">pack</span></td>
+<td>1-2 jours : IA générative pour les avocats — recherche juridique assistée, rédaction d'actes, analyse de contrats. Prompt engineering juridique.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">2 000-4 000€</td>
+<td class="roi">Gain compétence immédiat</td>
+</tr>
+
+</tbody></table></div>
+
+<!-- ===== RECRUTEMENT ===== -->
+<h2>💼 Agences de Recrutement & Intérim</h2>
+<div class="table-wrap"><table>
+<thead><tr><th style="width:220px">Solution</th><th>Description</th><th>Complexité</th><th>Prix</th><th>ROI estimé</th></tr></thead>
+<tbody>
+
+<tr class="prio">
+<td><strong>Pack Starter Recrutement</strong><br><span class="tag t-recrut">recrut</span><span class="tag t-pack">pack</span></td>
+<td>Site vitrine pro + Google My Business + formulaire candidature + formation ChatGPT (1/2 journée). Visibilité immédiate.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">1 500€</td>
+<td class="roi">+20% candidatures entrantes</td>
+</tr>
+
+<tr class="prio">
+<td><strong>Matching CV-Offre IA</strong><br><span class="tag t-recrut">recrut</span><span class="tag t-robuste">Robuste</span></td>
+<td>IA (LLM + embeddings) qui analyse les CV et les compare automatiquement aux offres. Scoring de compatibilité. Le recruteur gagne un temps fou sur le tri. Intégration avec votre ATS.</td>
+<td><span class="tag t-robuste">Robuste</span></td>
+<td class="price">8 000-15 000€</td>
+<td class="roi">70% temps de tri divisé par 3</td>
+</tr>
+
+<tr>
+<td><strong>RAG CVthèque</strong><br><span class="tag t-recrut">recrut</span><span class="tag t-simple">Simple</span></td>
+<td>Base de connaissances IA sur votre CVthèque. « Trouve-moi un candidat avec 5 ans d'expérience en compta et qui parle anglais ». L'IA cherche en langage naturel dans tous vos CV.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">4 000-8 000€</td>
+<td class="roi">Recherche CV 10x plus rapide</td>
+</tr>
+
+<tr>
+<td><strong>Automatisation Publication Offres</strong><br><span class="tag t-recrut">recrut</span><span class="tag t-simple">Simple</span></td>
+<td>Workflow n8n : une offre rédigée → publiée automatiquement sur LinkedIn, Indeed, APEC, France Travail et votre site. Plus besoin de copier-coller sur 5 plateformes.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">2 500-5 000€</td>
+<td class="roi">2-3h/semaine économisées</td>
+</tr>
+
+<tr>
+<td><strong>Chatbot Candidats 24/7</strong><br><span class="tag t-recrut">recrut</span><span class="tag t-simple">Simple</span></td>
+<td>Chatbot sur votre site : réponses automatiques aux questions fréquentes, pré-qualification des candidats, prise de RDV. Disponible WhatsApp. Les candidats sont répondus immédiatement, même le dimanche soir.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">3 000-6 000€</td>
+<td class="roi">-50% appels/questions simples</td>
+</tr>
+
+<tr>
+<td><strong>Automatisation Relances</strong><br><span class="tag t-recrut">recrut</span><span class="tag t-simple">Simple</span></td>
+<td>Workflows : relances automatiques candidats et clients, suivi des processus de recrutement, alertes si un candidat est sans nouvelle depuis X jours.</td>
+<td><span class="tag t-simple">Simple</span></td>
+<td class="price">2 000-4 000€</td>
+<td class="roi">Zéro candidat perdu</td>
+</tr>
+
+</tbody></table></div>
+
+</main>
+
+<footer>Créé par <strong>Hermes Agent × PromptLabs.fr</strong> — 28 juillet 2026 · <strong>PromptLabs : Conseil & Développement IA — Martinique 🇲🇶</strong></footer>
+</body>
+</html>

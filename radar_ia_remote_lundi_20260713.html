@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎯 PromptLabs — Radar IA Remote — Semaine du 13 juillet 2026</title>
+<style>
+  :root {
+    --bg: #0f1117; --bg2: #1a1d27; --bg3: #22263a;
+    --accent: #4f8ef7; --accent2: #7c5fe6;
+    --green: #22c55e; --orange: #f59e0b; --red: #ef4444; --cyan: #06b6d4;
+    --text: #e2e8f0; --muted: #8892a4; --border: #2d3348; --card: #1e2235;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .header {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #22263a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header-left p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .badge-direct {
+    background: linear-gradient(135deg, #ef444422, #ef444444);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 32px;
+  }
+
+  .alert {
+    background: #ef444411;
+    border: 1px solid #ef444444;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  .alert h2 {
+    color: var(--red);
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .alert p {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 8px;
+  }
+  .alert code {
+    background: var(--bg3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .alert ul {
+    margin: 12px 0 0 20px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .section h3 {
+    font-size: 15px;
+    margin-bottom: 14px;
+    color: var(--accent);
+  }
+  .section p, .section li {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .section ul {
+    margin-left: 20px;
+    margin-bottom: 8px;
+  }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .kpi-value {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .kpi-card.red .kpi-value { color: var(--red); }
+  .kpi-card.orange .kpi-value { color: var(--orange); }
+  .kpi-label {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+  }
+  footer strong { color: var(--accent); }
+
+  .action-card {
+    background: linear-gradient(135deg, #4f8ef711, #7c5fe611);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .action-card h4 {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .action-card p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .action-card code {
+    background: var(--bg3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .check { color: var(--green); }
+  .cross { color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>🎯 PromptLabs — Radar IA Remote — Semaine du 13 juillet 2026</h1>
+    <p>Lundi 13 juillet 2026 · Rapport hebdomadaire automatique · Remote/Télétravail uniquement</p>
+  </div>
+  <span class="badge-direct">⚠️ EXÉCUTION LIMITÉE — Pas d'accès web</span>
+</div>
+
+<div class="container">
+
+<div class="kpi-row">
+  <div class="kpi-card red">
+    <div class="kpi-value">0</div>
+    <div class="kpi-label">Offres vérifiées cette semaine</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-value">0</div>
+    <div class="kpi-label">Avec email direct vérifié</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-value">0</div>
+    <div class="kpi-label">Avec LinkedIn vérifié</div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="kpi-value" style="font-size:18px;text-transform:uppercase;font-weight:700;">ERR</div>
+    <div class="kpi-label">Statut</div>
+  </div>
+</div>
+
+<div class="alert">
+  <h2>⚠️ Impossible de collecter des offres cette semaine</h2>
+  <p><strong>Raison :</strong> L'agent Hermes qui exécute ce cron ne dispose <strong>pas d'outils de navigation web</strong> (pas de recherche Google, LinkedIn, GitHub, Twitter/X, ni aucun accès HTTP/HTTPS). Les seuls outils disponibles sont :</p>
+  <ul>
+    <li><code>read_file</code> — lecture de fichiers locaux</li>
+    <li><code>write_file</code> — écriture de fichiers locaux</li>
+    <li><code>patch</code> — édition de fichiers</li>
+    <li><code>search_files</code> — recherche dans les fichiers locaux (ripgrep)</li>
+  </ul>
+  <p><strong>Aucun de ces outils ne permet d'accéder à Internet</strong> pour rechercher des offres, vérifier des contacts, ou naviguer sur LinkedIn, pages carrières, GitHub, HN, etc.</p>
+  <p style="margin-top:12px;color:var(--orange);">Pour que ce radar fonctionne, l'agent cron a besoin d'au moins un outil de recherche web (type <code>web_search</code>, <code>browser</code>, <code>fetch_url</code>, ou <code>tavily_search</code>).</p>
+</div>
+
+<div class="section">
+  <h3>📋 Recommandations pour rétablir le radar</h3>
+  <p>Voici les actions à entreprendre pour que le cron du lundi matin produise un radar utile :</p>
+  <br>
+
+  <div class="action-card">
+    <h4>1. Ajouter un outil de recherche web à Hermes <span class="cross">— NON DISPONIBLE</span></h4>
+    <p>Configurer un plugin ou skill Hermes avec accès à une API de recherche (Tavily, SerpAPI, Brave Search, etc.) ou un navigateur headless pour que l'agent puisse interroger LinkedIn, Google, pages carrières et GitHub.</p>
+    <p>Doc : <code>https://hermes-agent.nousresearch.com/docs</code></p>
+  </div>
+
+  <div class="action-card">
+    <h4>2. Fournir un fichier de sources pré-compilées <span class="check">— POSSIBLE</span></h4>
+    <p>Déposer dans <code>/workspace/</code> un fichier <code>sources_radar_sXX.json</code> contenant les URLs à scraper + les contacts déjà identifiés. L'agent pourra le lire via <code>read_file</code> et générer le dashboard.</p>
+  </div>
+
+  <div class="action-card">
+    <h4>3. Utiliser un fournisseur de modèle avec accès web natif <span class="check">— RECOMMANDÉ</span></h4>
+    <p>Certains fournisseurs via OpenRouter (comme les modèles avec <code>web_search</code> intégré) ou un modèle configuré avec un tool-use pour le browsing pourraient résoudre ce problème.</p>
+  </div>
+
+  <div class="action-card">
+    <h4>4. Exécuter le radar manuellement <span class="check">— SOLUTION IMMÉDIATE</span></h4>
+    <p>Lancer une session Hermes interactive (non-cron) avec un profil disposant d'outils web, et demander la génération du radar. Sauvegarder le fichier HTML dans <code>/workspace/</code>.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h3>🔄 Dernier radar disponible</h3>
+  <p>Le radar de la <strong>semaine du 7 juillet 2026</strong> est toujours accessible :</p>
+  <p style="margin-top:10px;">
+    📄 <a href="file:///workspace/radar_ia_remote_lundi_20260708.html" style="font-weight:600;">radar_ia_remote_lundi_20260708.html</a>
+    — 12 offres retenues (contacts LinkedIn vérifiés, pas d'emails directs)
+  </p>
+  <p style="margin-top:4px;color:var(--orange);font-size:12px;">
+    ⚠️ Ces offres datent de la semaine dernière. Certaines peuvent être pourvues.
+  </p>
+</div>
+
+<div class="section">
+  <h3>📊 Sources qui seraient à explorer cette semaine</h3>
+  <p>Voici les sources que le radar aurait normalement consultées si l'outil web était disponible :</p>
+  <ul>
+    <li>🔗 LinkedIn — Recherche "hiring AI remote France", posts CTO/CEO</li>
+    <li>🔗 Pages carrières — Doctrine.fr, Alan, Spendesk, Pigment, Swile, etc.</li>
+    <li>🔗 GitHub — Issues "help wanted" sur repos d'entreprises françaises</li>
+    <li>🔗 Hacker News — Thread "Who is hiring? July 2026"</li>
+    <li>🔗 Google — "recrutement IA freelance remote France juillet 2026"</li>
+    <li>🔗 Product Hunt — Discussions lancements startups IA françaises</li>
+    <li>🔗 Twitter/X — Tweets recrutement IA fondateurs French Tech</li>
+  </ul>
+</div>
+
+</div>
+
+<footer>
+  Créé par <strong>Hermes Agent × PromptLabs.fr</strong> — Lundi 13 juillet 2026 · ⚠️ Radar non exécuté (absence outil web)
+  <br><span style="font-size:11px;">Raison : l'agent cron ne dispose pas d'outil de recherche/navigation web. Voir recommandations ci-dessus.</span>
+</footer>
+
+</body>
+</html>

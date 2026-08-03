@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Séquence Prospection — PromptLabs × Experts Comptables Martinique</title>
+  <style>
+    :root {
+      --bg: #0f1117; --bg2: #1a1d27; --bg3: #22263a;
+      --accent: #4f8ef7; --accent2: #7c5fe6;
+      --green: #22c55e; --orange: #f59e0b; --red: #ef4444; --cyan: #06b6d4;
+      --text: #e2e8f0; --muted: #8892a4; --border: #2d3348; --card: #1e2235;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+    header {
+      background: linear-gradient(135deg, #1a1d27, #22263a);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 40px;
+    }
+    header h1 { font-size: 1.7rem; font-weight: 800; background: linear-gradient(90deg,#4f8ef7,#7c5fe6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    header p { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 36px 40px; }
+
+    /* STRATEGY OVERVIEW */
+    .strategy-box {
+      background: linear-gradient(135deg, rgba(79,142,247,.08), rgba(124,95,230,.08));
+      border: 1px solid rgba(79,142,247,.2);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 36px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+      gap: 20px;
+    }
+    .strat-item { text-align: center; }
+    .strat-val { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+    .strat-lbl { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+
+    /* TIMELINE */
+    .timeline { position: relative; margin-bottom: 48px; }
+    .timeline::before {
+      content:''; position:absolute; left:30px; top:0; bottom:0;
+      width:2px; background: linear-gradient(180deg, var(--accent), var(--accent2), var(--green));
+      border-radius: 2px;
+    }
+    .tl-item { position: relative; padding-left: 72px; margin-bottom: 12px; }
+    .tl-dot {
+      position:absolute; left:20px; top:22px;
+      width:22px; height:22px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:.75rem; font-weight:800; z-index:1;
+      box-shadow: 0 0 0 3px var(--bg);
+    }
+
+    /* EMAIL CARD */
+    .email-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .email-card:hover { border-color: var(--accent); }
+
+    .email-header {
+      padding: 16px 22px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+      cursor: pointer; user-select: none;
+    }
+    .email-header-left { display: flex; align-items: center; gap: 14px; }
+    .email-num { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem; flex-shrink:0; }
+    .email-title { font-weight: 700; font-size: 1rem; }
+    .email-subtitle { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+    .email-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .tag { display:inline-block; border-radius:5px; padding:3px 10px; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+    .tag-day    { background:rgba(79,142,247,.15); color:var(--accent); }
+    .tag-goal   { background:rgba(124,95,230,.15); color:var(--accent2); }
+    .tag-open   { background:rgba(34,197,94,.15);  color:var(--green); }
+    .tag-warm   { background:rgba(245,158,11,.15); color:var(--orange); }
+    .tag-close  { background:rgba(6,182,212,.15);  color:var(--cyan); }
+    .tag-break  { background:rgba(239,68,68,.15);  color:var(--red); }
+    .chevron { color:var(--muted); transition: transform .3s; font-size: 1.1rem; }
+    .chevron.open { transform: rotate(180deg); }
+
+    .email-body { display:none; padding: 0 22px 22px; border-top: 1px solid var(--border); }
+    .email-body.visible { display:block; }
+
+    /* OBJET */
+    .objet-box {
+      background: var(--bg3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .objet-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; white-space: nowrap; margin-top: 2px; }
+    .objet-text { font-weight: 700; color: var(--text); font-size: .95rem; }
+
+    /* EMAIL CONTENT */
+    .email-content {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      font-size: .92rem;
+      line-height: 1.8;
+      color: #cdd6e8;
+      position: relative;
+    }
+    .email-content .var {
+      display: inline-block;
+      background: rgba(245,158,11,.15);
+      color: #fbbf24;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: .82rem;
+      font-weight: 600;
+      font-family: monospace;
+    }
+    .email-content .highlight {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .email-content p { margin-bottom: 14px; }
+    .email-content p:last-child { margin-bottom: 0; }
+    .signature { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; font-size: .85rem; color: var(--muted); }
+    .signature strong { color: var(--text); }
+
+    /* COPY BTN */
+    .copy-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 6px; padding: 5px 12px;
+      color: var(--muted); font-size: .75rem; cursor: pointer;
+      transition: all .2s;
+    }
+    .copy-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* TIPS */
+    .tips-box {
+      background: rgba(34,197,94,.07);
+      border: 1px solid rgba(34,197,94,.2);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .tips-box strong { color: var(--green); }
+    .tips-box ul { margin-top: 6px; padding-left: 18px; }
+    .tips-box li { margin-bottom: 4px; }
+
+    /* SEGMENT SECTION */
+    .segment-section { margin-bottom: 48px; }
+    .segment-title {
+      font-size: 1.15rem; font-weight: 800; color: var(--text);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .segment-badge { font-size: .75rem; font-weight: 700; border-radius: 6px; padding: 3px 10px; }
+
+    /* VARIABLES TABLE */
+    .vars-section { margin-bottom: 40px; }
+    .vars-section h3 { font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 16px; }
+    table.vars-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+    table.vars-table th { background: var(--bg3); padding: 11px 14px; text-align: left; font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1px solid var(--border); }
+    table.vars-table td { padding: 10px 14px; font-size: .85rem; border-bottom: 1px solid var(--border); }
+    table.vars-table tr:last-child td { border-bottom: none; }
+    table.vars-table code { background: rgba(245,158,11,.15); color: #fbbf24; padding: 2px 7px; border-radius: 4px; font-size: .82rem; }
+
+    /* AUTOMATION */
+    .automation-box {
+      background: linear-gradient(135deg, rgba(124,95,230,.1), rgba(6,182,212,.08));
+      border: 1px solid rgba(124,95,230,.25);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 36px;
+    }
+    .automation-box h3 { font-size: 1rem; font-weight: 700; color: var(--accent2); margin-bottom: 16px; }
+    .auto-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px; }
+    .auto-step { background: var(--bg3); border-radius: 8px; padding: 14px; text-align: center; }
+    .auto-step .step-icon { font-size: 1.5rem; margin-bottom: 6px; }
+    .auto-step .step-name { font-size: .8rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .auto-step .step-desc { font-size: .72rem; color: var(--muted); }
+    .arrow-sep { display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:var(--muted); }
+
+    footer { text-align:center; padding:28px; color:var(--muted); font-size:.8rem; border-top:1px solid var(--border); margin-top:40px; }
+
+    @media(max-width:700px){ main{padding:20px 16px;} header{padding:20px 16px;} .email-content{padding:16px;} }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📧 Séquence de Prospection — Experts Comptables Martinique</h1>
+  <p>PromptLabs.fr · 5 emails · 22 prospects · Stratégie en 3 segments · Taux d'ouverture cible : 45%+</p>
+</header>
+
+<main>
+
+  <!-- STRATEGY OVERVIEW -->
+  <div class="strategy-box">
+    <div class="strat-item"><div class="strat-val">5</div><div class="strat-lbl">Emails / séquence</div></div>
+    <div class="strat-item"><div class="strat-val">21j</div><div class="strat-lbl">Durée totale</div></div>
+    <div class="strat-item"><div class="strat-val">22</div><div class="strat-lbl">Prospects ciblés</div></div>
+    <div class="strat-item"><div class="strat-val">3</div><div class="strat-lbl">Segments d'offre</div></div>
+    <div class="strat-item"><div class="strat-val">45%+</div><div class="strat-lbl">Taux ouverture cible</div></div>
+    <div class="strat-item"><div class="strat-val">15%+</div><div class="strat-lbl">Taux réponse cible</div></div>
+  </div>
+
+  <!-- VARIABLES TABLE -->
+  <div class="vars-section">
+    <h3>🔧 Variables de personnalisation — À compléter pour chaque cabinet</h3>
+    <table class="vars-table">
+      <thead><tr><th>Variable</th><th>Description</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td><code>{{PRENOM_NOM}}</code></td><td>Prénom + nom du responsable (si connu)</td><td>Jean-Marc Séverin</td></tr>
+        <tr><td><code>{{CABINET}}</code></td><td>Nom du cabinet</td><td>Cabinet Séverin & Associés</td></tr>
+        <tr><td><code>{{VILLE}}</code></td><td>Ville du cabinet</td><td>Le Lamentin</td></tr>
+        <tr><td><code>{{SPECIALITE}}</code></td><td>Secteur principal du cabinet</td><td>PME, BTP, secteur public</td></tr>
+        <tr><td><code>{{OFFRE}}</code></td><td>Offre recommandée (Visibilité / Acquisition / IA)</td><td>Offre Acquisition Automatisée</td></tr>
+        <tr><td><code>{{STAT_LOCALE}}</code></td><td>Stat choc locale à insérer</td><td>91% des cabinets locaux martiniquais</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- AUTOMATION -->
+  <div class="automation-box">
+    <h3>⚡ Automatisation recommandée avec n8n</h3>
+    <div class="auto-steps">
+      <div class="auto-step"><div class="step-icon">📋</div><div class="step-name">Google Sheet</div><div class="step-desc">Liste des 22 prospects + variables</div></div>
+      <div class="auto-step"><div class="step-icon">⚙️</div><div class="step-name">n8n Trigger</div><div class="step-desc">Webhook ou Schedule quotidien</div></div>
+      <div class="auto-step"><div class="step-icon">📝</div><div class="step-name">Personnalisation</div><div class="step-desc">Injection des variables par cabinet</div></div>
+      <div class="auto-step"><div class="step-icon">📧</div><div class="step-name">Gmail / SMTP</div><div class="step-desc">Envoi depuis ton adresse pro</div></div>
+      <div class="auto-step"><div class="step-icon">⏰</div><div class="step-name">Wait Node</div><div class="step-desc">Délai J+3, J+7, J+14, J+21</div></div>
+      <div class="auto-step"><div class="step-icon">✅</div><div class="step-name">CRM Update</div><div class="step-desc">Marquage réponse / RDV / abandon</div></div>
+    </div>
+  </div>
+
+  <!-- ===== EMAIL 1 ===== -->
+  <div class="segment-section">
+    <div class="segment-title">
+      📬 La Séquence Complète
+      <span class="segment-badge tag-open">Stratégie : Curiosité → Valeur → Urgence → Relance → Dernière chance</span>
+    </div>
+
+    <!-- EMAIL 1 -->
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#4f8ef7;color:#fff">1</div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <div class="email-header-left">
+              <div class="email-num" style="background:rgba(79,142,247,.15);color:#4f8ef7">E1</div>
+              <div>
+                <div class="email-title">Le Constat — "Votre cabinet est invisible"</div>
+                <div class="email-subtitle">Accroche choc · Pas de pitch · Juste la réalité</div>
+              </div>
+            </div>
+            <div class="email-meta">
+              <span class="tag tag-day">Jour 0</span>
+              <span class="tag tag-open">Ouverture</span>
+              <div class="chevron">▼</div>
+            </div>
+          </div>
+          <div class="email-body visible">
+            <div class="objet-box">
+              <span class="objet-label">Objet ✉️</span>
+              <span class="objet-text">J'ai cherché <span class="var">{{CABINET}}</span> sur Google… je n'ai rien trouvé</span>
+            </div>
+            <div class="email-content" id="email1-content">
+              <button class="copy-btn" onclick="copyEmail('email1-content')">📋 Copier</button>
+              <p>Bonjour <span class="var">{{PRENOM_NOM}}</span>,</p>
+              <p>Je m'appelle Laurent Youri, je suis consultant en automatisation digitale basé en Martinique.</p>
+              <p>Cette semaine, j'ai réalisé un audit complet de la présence web des cabinets d'expertise comptable de l'île. Le résultat m'a surpris : <span class="highlight">91% des cabinets locaux n'ont aucun site fonctionnel en 2025.</span></p>
+              <p><span class="var">{{CABINET}}</span> fait partie de cette liste.</p>
+              <p>Ce n'est pas un reproche — c'est une réalité que beaucoup de cabinets solides partagent. Vous avez construit votre clientèle sur la confiance et le bouche-à-oreille. Ça fonctionne… jusqu'au moment où un concurrent avec un bon référencement Google capte les nouveaux prospects que vous ne voyez même pas.</p>
+              <p>Je ne vous vends rien aujourd'hui. Je voulais simplement vous partager ce constat, parce que je pense qu'un cabinet comme le vôtre, spécialisé en <span class="var">{{SPECIALITE}}</span>, mérite d'être visible.</p>
+              <p>Si la question vous intéresse, je serais heureux d'en discuter 15 minutes cette semaine.</p>
+              <div class="signature">
+                Cordialement,<br>
+                <strong>Laurent Youri</strong><br>
+                Consultant IA & Automatisation — <strong>PromptLabs.fr</strong><br>
+                📱 <strong>[Votre numéro]</strong> · 📍 Martinique
+              </div>
+            </div>
+            <div class="tips-box">
+              <strong>💡 Pourquoi ça marche :</strong>
+              <ul>
+                <li>L'objet crée une curiosité immédiate — tout le monde veut savoir comment il apparaît sur Google</li>
+                <li>Pas de pitch produit. Juste un constat factuel avec une stat réelle (91%)</li>
+                <li>La dernière phrase ouvre la porte sans forcer</li>
+                <li>Courrier personnel, pas commercial — ton de consultant, pas de vendeur</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMAIL 2 -->
+      <div class="tl-item" style="margin-top:20px">
+        <div class="tl-dot" style="background:#7c5fe6;color:#fff">2</div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <div class="email-header-left">
+              <div class="email-num" style="background:rgba(124,95,230,.15);color:#7c5fe6">E2</div>
+              <div>
+                <div class="email-title">La Valeur — "Ce que ça vous coûte concrètement"</div>
+                <div class="email-subtitle">Chiffre l'impact · Donne un avant-goût concret</div>
+              </div>
+            </div>
+            <div class="email-meta">
+              <span class="tag tag-day">Jour 3</span>
+              <span class="tag tag-warm">Valeur</span>
+              <div class="chevron">▼</div>
+            </div>
+          </div>
+          <div class="email-body">
+            <div class="objet-box">
+              <span class="objet-label">Objet ✉️</span>
+              <span class="objet-text">Combien vous coûte l'absence de site ? (j'ai fait le calcul)</span>
+            </div>
+            <div class="email-content" id="email2-content">
+              <button class="copy-btn" onclick="copyEmail('email2-content')">📋 Copier</button>
+              <p>Bonjour <span class="var">{{PRENOM_NOM}}</span>,</p>
+              <p>Suite à mon message de l'autre jour — je voulais vous partager un calcul simple.</p>
+              <p>En Martinique, environ <span class="highlight">3 200 nouvelles TPE/PME sont créées chaque année</span>. Ces dirigeants cherchent leur expert-comptable… sur Google. Pas dans l'annuaire, pas par affiches : sur Google.</p>
+              <p>Un cabinet avec un bon référencement local capte en moyenne <span class="highlight">4 à 8 nouveaux clients par an via son site</span>. À 800 € de mission annuelle moyenne, c'est entre <span class="highlight">3 200 € et 6 400 € de CA supplémentaire</span> — sans aucun effort de prospection.</p>
+              <p>Ce que <span class="var">{{CABINET}}</span> laisse passer chaque année en étant invisible.</p>
+              <p>J'ai construit un système simple qui permet à un cabinet comme le vôtre d'apparaître en premier sur Google Martinique pour les recherches "expert comptable <span class="var">{{VILLE}}</span>" — et de capturer automatiquement chaque prospect qui visite le site, même à 22h.</p>
+              <p>Je peux vous montrer exactement comment ça fonctionne en 20 minutes, sans engagement. Vous avez un créneau cette semaine ou la semaine prochaine ?</p>
+              <div class="signature">
+                Cordialement,<br>
+                <strong>Laurent Youri</strong><br>
+                Consultant IA & Automatisation — <strong>PromptLabs.fr</strong><br>
+                📱 <strong>[Votre numéro]</strong> · 📍 Martinique<br>
+                🔗 <strong>promptlabs.fr</strong>
+              </div>
+            </div>
+            <div class="tips-box">
+              <strong>💡 Pourquoi ça marche :</strong>
+              <ul>
+                <li>Tu chiffres le manque à gagner — les experts-comptables pensent en chiffres, c'est leur langage</li>
+                <li>Tu cites des données locales crédibles (créations d'entreprises en Martinique)</li>
+                <li>Tu parles d'automatisation sans jargon technique</li>
+                <li>La demande de RDV est concrète et peu engageante ("20 minutes")</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMAIL 3 -->
+      <div class="tl-item" style="margin-top:20px">
+        <div class="tl-dot" style="background:#22c55e;color:#fff">3</div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <div class="email-header-left">
+              <div class="email-num" style="background:rgba(34,197,94,.15);color:#22c55e">E3</div>
+              <div>
+                <div class="email-title">La Preuve — "Voici ce que ça donne en pratique"</div>
+                <div class="email-subtitle">Cas concret · Démo visuelle · CTA fort</div>
+              </div>
+            </div>
+            <div class="email-meta">
+              <span class="tag tag-day">Jour 7</span>
+              <span class="tag tag-open">Preuve sociale</span>
+              <div class="chevron">▼</div>
+            </div>
+          </div>
+          <div class="email-body">
+            <div class="objet-box">
+              <span class="objet-label">Objet ✉️</span>
+              <span class="objet-text">J'ai créé une démo pour <span class="var">{{CABINET}}</span> — vous pouvez la voir ici</span>
+            </div>
+            <div class="email-content" id="email3-content">
+              <button class="copy-btn" onclick="copyEmail('email3-content')">📋 Copier</button>
+              <p>Bonjour <span class="var">{{PRENOM_NOM}}</span>,</p>
+              <p>Je me permets un troisième contact, parce que cette fois j'ai quelque chose de concret à vous montrer.</p>
+              <p>J'ai réalisé une <span class="highlight">maquette de site vitrine pour un cabinet fictif basé à <span class="var">{{VILLE}}</span></span>, spécialisé en <span class="var">{{SPECIALITE}}</span> — exactement le profil de <span class="var">{{CABINET}}</span>.</p>
+              <p>Ce que cette maquette inclut :</p>
+              <p>
+                ✅ Page d'accueil optimisée SEO "expert comptable <span class="var">{{VILLE}}</span>"<br>
+                ✅ Formulaire de prise de contact qui envoie une réponse automatique en 30 secondes<br>
+                ✅ Section "Nos spécialités" adaptée à votre secteur<br>
+                ✅ Fiche Google My Business intégrée<br>
+                ✅ Design professionnel, mobile, rapide
+              </p>
+              <p>Je ne vous demande rien de plus qu'un regard. Si ça vous parle, on en discute. Si ça ne vous convient pas, pas de problème — vous aurez au moins une idée de ce qui est possible.</p>
+              <p><span class="highlight">Répondez simplement "je veux voir" et je vous envoie le lien de la démo.</span></p>
+              <div class="signature">
+                Cordialement,<br>
+                <strong>Laurent Youri</strong><br>
+                Consultant IA & Automatisation — <strong>PromptLabs.fr</strong><br>
+                📱 <strong>[Votre numéro]</strong> · 📍 Martinique
+              </div>
+            </div>
+            <div class="tips-box">
+              <strong>💡 Pourquoi ça marche :</strong>
+              <ul>
+                <li>Tu offres quelque chose de tangible : une démo personnalisée — effort perçu très élevé de ta part</li>
+                <li>Le CTA "répondez simplement je veux voir" est ultra-simple, friction quasi nulle</li>
+                <li>Tu es honnête ("si ça ne vous convient pas, pas de problème") — ça désarme la méfiance</li>
+                <li>✅ Bullet points = ça se lit en 15 secondes, même sur mobile</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMAIL 4 -->
+      <div class="tl-item" style="margin-top:20px">
+        <div class="tl-dot" style="background:#f59e0b;color:#fff">4</div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <div class="email-header-left">
+              <div class="email-num" style="background:rgba(245,158,11,.15);color:#f59e0b">E4</div>
+              <div>
+                <div class="email-title">L'Urgence — "Un confrère vient de me répondre"</div>
+                <div class="email-subtitle">Effet rareté · Concurrence locale · Décision maintenant</div>
+              </div>
+            </div>
+            <div class="email-meta">
+              <span class="tag tag-day">Jour 14</span>
+              <span class="tag tag-warm">Urgence</span>
+              <div class="chevron">▼</div>
+            </div>
+          </div>
+          <div class="email-body">
+            <div class="objet-box">
+              <span class="objet-label">Objet ✉️</span>
+              <span class="objet-text">Un cabinet comptable de <span class="var">{{VILLE}}</span> vient de me confier sa transformation digitale</span>
+            </div>
+            <div class="email-content" id="email4-content">
+              <button class="copy-btn" onclick="copyEmail('email4-content')">📋 Copier</button>
+              <p>Bonjour <span class="var">{{PRENOM_NOM}}</span>,</p>
+              <p>Petite nouvelle rapide : un cabinet comptable martiniquais a accepté de travailler avec moi la semaine dernière. Il sera en ligne et référencé sur Google d'ici <span class="highlight">3 semaines</span>.</p>
+              <p>Je vous partage ça parce que <span class="highlight">le référencement SEO local fonctionne par territoire</span>. Plus un cabinet d'une même zone est visible en premier, plus il capte les prospects de cette zone. C'est mathématique.</p>
+              <p>Je travaille avec <span class="highlight">un seul cabinet par secteur géographique</span> pour éviter la concurrence directe entre mes clients. Pour la zone de <span class="var">{{VILLE}}</span>, la place est encore disponible.</p>
+              <p>Pas de pression — je vous informe simplement parce que je pense que <span class="var">{{CABINET}}</span> mérite d'être ce cabinet-là.</p>
+              <p>Un appel de 20 minutes cette semaine ?</p>
+              <div class="signature">
+                Cordialement,<br>
+                <strong>Laurent Youri</strong><br>
+                Consultant IA & Automatisation — <strong>PromptLabs.fr</strong><br>
+                📱 <strong>[Votre numéro]</strong> · 📍 Martinique
+              </div>
+            </div>
+            <div class="tips-box">
+              <strong>💡 Pourquoi ça marche :</strong>
+              <ul>
+                <li>La rareté "1 cabinet par zone" est vraie et légitime — tu protèges tes clients de la concurrence interne</li>
+                <li>Le "un confrère vient de signer" crée une preuve sociale locale sans nommer personne</li>
+                <li>Le ton reste informatif, jamais vendeur — tu les informes, tu ne les presses pas</li>
+                <li>⚠️ N'utilise cet email que quand tu as réellement signé un premier client, ou adapte la formulation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMAIL 5 -->
+      <div class="tl-item" style="margin-top:20px">
+        <div class="tl-dot" style="background:#ef4444;color:#fff">5</div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <div class="email-header-left">
+              <div class="email-num" style="background:rgba(239,68,68,.15);color:#ef4444">E5</div>
+              <div>
+                <div class="email-title">Le Breakup — "Je ferme votre dossier"</div>
+                <div class="email-subtitle">Email de rupture · Taux de réponse souvent le plus élevé</div>
+              </div>
+            </div>
+            <div class="email-meta">
+              <span class="tag tag-day">Jour 21</span>
+              <span class="tag tag-break">Breakup</span>
+              <div class="chevron">▼</div>
+            </div>
+          </div>
+          <div class="email-body">
+            <div class="objet-box">
+              <span class="objet-label">Objet ✉️</span>
+              <span class="objet-text">Je ferme le dossier <span class="var">{{CABINET}}</span> — dernier message</span>
+            </div>
+            <div class="email-content" id="email5-content">
+              <button class="copy-btn" onclick="copyEmail('email5-content')">📋 Copier</button>
+              <p>Bonjour <span class="var">{{PRENOM_NOM}}</span>,</p>
+              <p>C'est mon dernier message, je vous le promets.</p>
+              <p>Je vous ai contacté à plusieurs reprises ces dernières semaines au sujet de la visibilité digitale de <span class="var">{{CABINET}}</span>. Pas de réponse — c'est tout à fait normal, vous êtes occupé et ce n'est peut-être tout simplement pas une priorité pour vous en ce moment.</p>
+              <p>Je ferme votre dossier de mon côté. <span class="highlight">Si un jour la question devient d'actualité</span> — nouveau concurrent qui s'installe, baisse de nouveaux clients, envie de croître autrement — vous savez où me trouver.</p>
+              <p>Je vous souhaite une belle continuation pour <span class="var">{{CABINET}}</span>.</p>
+              <p>PS : Si vous ne souhaitez plus recevoir de messages de ma part, une simple réponse suffit — je supprimerai immédiatement vos coordonnées.</p>
+              <div class="signature">
+                Cordialement,<br>
+                <strong>Laurent Youri</strong><br>
+                PromptLabs.fr · Martinique<br>
+                📱 <strong>[Votre numéro]</strong>
+              </div>
+            </div>
+            <div class="tips-box">
+              <strong>💡 Pourquoi c'est l'email le plus puissant :</strong>
+              <ul>
+                <li>L'email "breakup" génère souvent <strong>le taux de réponse le plus élevé</strong> de toute la séquence — la peur de perdre quelque chose déclenche l'action</li>
+                <li>Tu restes professionnel et humain — pas de frustration, pas de reproche</li>
+                <li>Le PS RGPD te protège légalement et rassure le prospect</li>
+                <li>Tu laisses une porte ouverte pour plus tard — certains rappellent 6 mois après</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BONUS: EMAIL RÉPONSE POSITIVE -->
+  <div class="segment-section">
+    <div class="segment-title">
+      🎯 Bonus — Email de réponse quand il dit "oui, ça m'intéresse"
+      <span class="segment-badge" style="background:rgba(34,197,94,.15);color:#22c55e">Hors séquence</span>
+    </div>
+    <div class="email-card">
+      <div class="email-header" onclick="toggleEmail(this)">
+        <div class="email-header-left">
+          <div class="email-num" style="background:rgba(34,197,94,.15);color:#22c55e">✅</div>
+          <div>
+            <div class="email-title">La Confirmation de RDV — Professionnelle et rassurante</div>
+            <div class="email-subtitle">À envoyer dans les 2h après sa réponse positive</div>
+          </div>
+        </div>
+        <div class="email-meta">
+          <span class="tag tag-open">Réponse positive</span>
+          <div class="chevron">▼</div>
+        </div>
+      </div>
+      <div class="email-body">
+        <div class="objet-box">
+          <span class="objet-label">Objet ✉️</span>
+          <span class="objet-text">Notre échange — Lien de réservation + ce qu'on va voir ensemble</span>
+        </div>
+        <div class="email-content" id="emailbonus-content">
+          <button class="copy-btn" onclick="copyEmail('emailbonus-content')">📋 Copier</button>
+          <p>Bonjour <span class="var">{{PRENOM_NOM}}</span>,</p>
+          <p>Merci pour votre retour, je suis ravi de pouvoir échanger avec vous !</p>
+          <p>Voici le lien pour choisir le créneau qui vous convient le mieux :<br>
+          👉 <span class="highlight">[Lien Calendly — promptlabs.fr/rdv]</span></p>
+          <p>En 20-25 minutes, voici ce que nous allons couvrir :</p>
+          <p>
+            1️⃣ <strong>Audit rapide</strong> de votre situation actuelle (je vous montre ce qu'un prospect voit quand il cherche votre cabinet)<br>
+            2️⃣ <strong>Démonstration</strong> d'un système d'acquisition automatisé adapté à un cabinet comme le vôtre<br>
+            3️⃣ <strong>Recommandation personnalisée</strong> selon votre taille, votre budget et vos objectifs
+          </p>
+          <p>Pas de présentation commerciale interminable, pas de pression. Si ce que je vous montre ne vous parle pas, vous aurez au moins appris quelque chose d'utile sur votre visibilité en ligne.</p>
+          <p>À très bientôt,</p>
+          <div class="signature">
+            <strong>Laurent Youri</strong><br>
+            Consultant IA & Automatisation — <strong>PromptLabs.fr</strong><br>
+            📱 <strong>[Votre numéro]</strong> · 📍 Martinique<br>
+            🔗 <strong>promptlabs.fr</strong>
+          </div>
+        </div>
+        <div class="tips-box">
+          <strong>💡 Points clés :</strong>
+          <ul>
+            <li>Lien Calendly direct — zéro friction pour réserver</li>
+            <li>Tu décris exactement ce qui va se passer — ça réduit l'anxiété du prospect</li>
+            <li>La phrase "pas de pression" répétée renforce ta posture de consultant, pas de vendeur</li>
+            <li>Réponds dans les 2h maximum — la réactivité est elle-même une preuve de professionnalisme</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RÉCAP TACTIQUE -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:36px;">
+    <h3 style="font-size:1rem;color:var(--text);font-weight:700;margin-bottom:18px;">📋 Récapitulatif tactique de la séquence</h3>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:.86rem;">
+        <thead>
+          <tr style="background:var(--bg3)">
+            <th style="padding:10px 14px;text-align:left;color:var(--muted);font-size:.76rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Email</th>
+            <th style="padding:10px 14px;text-align:left;color:var(--muted);font-size:.76rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Timing</th>
+            <th style="padding:10px 14px;text-align:left;color:var(--muted);font-size:.76rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Angle</th>
+            <th style="padding:10px 14px;text-align:left;color:var(--muted);font-size:.76rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Objectif</th>
+            <th style="padding:10px 14px;text-align:left;color:var(--muted);font-size:.76rem;text-transform:uppercase;border-bottom:1px solid var(--border)">KPI cible</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:600">E1 — Le Constat</td>
+            <td style="padding:10px 14px"><span class="tag tag-day">J0</span></td>
+            <td style="padding:10px 14px;color:var(--muted)">Curiosité · Pas de pitch</td>
+            <td style="padding:10px 14px">Ouverture + réponse "dites-m'en plus"</td>
+            <td style="padding:10px 14px;color:var(--green)">45% ouverture</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:600">E2 — La Valeur</td>
+            <td style="padding:10px 14px"><span class="tag tag-day">J+3</span></td>
+            <td style="padding:10px 14px;color:var(--muted)">Chiffres · Manque à gagner</td>
+            <td style="padding:10px 14px">Réponse RDV ou question</td>
+            <td style="padding:10px 14px;color:var(--green)">25% ouverture</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:600">E3 — La Preuve</td>
+            <td style="padding:10px 14px"><span class="tag tag-day">J+7</span></td>
+            <td style="padding:10px 14px;color:var(--muted)">Démo · Tangible · Facile</td>
+            <td style="padding:10px 14px">Réponse "je veux voir"</td>
+            <td style="padding:10px 14px;color:var(--green)">20% ouverture</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:600">E4 — L'Urgence</td>
+            <td style="padding:10px 14px"><span class="tag tag-day">J+14</span></td>
+            <td style="padding:10px 14px;color:var(--muted)">Rareté · Concurrence locale</td>
+            <td style="padding:10px 14px">Décision de prise de RDV</td>
+            <td style="padding:10px 14px;color:var(--orange)">15% ouverture</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;font-weight:600">E5 — Le Breakup</td>
+            <td style="padding:10px 14px"><span class="tag tag-day">J+21</span></td>
+            <td style="padding:10px 14px;color:var(--muted)">Rupture · Porte ouverte</td>
+            <td style="padding:10px 14px">Réponse tardive ou opt-out propre</td>
+            <td style="padding:10px 14px;color:var(--red)">30%+ réponse</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Séquence créée par <strong>Hermes Agent × PromptLabs.fr</strong> · Usage interne · Laurent Youri · Martinique 2025
+</footer>
+
+<script>
+function toggleEmail(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  if (body.classList.contains('visible')) {
+    body.classList.remove('visible');
+    chevron.classList.remove('open');
+  } else {
+    body.classList.add('visible');
+    chevron.classList.add('open');
+  }
+}
+
+function copyEmail(id) {
+  const el = document.getElementById(id);
+  // Extract text content cleanly
+  let text = '';
+  el.querySelectorAll('p').forEach(p => {
+    text += p.innerText + '\n\n';
+  });
+  navigator.clipboard.writeText(text.trim()).then(() => {
+    const btn = el.querySelector('.copy-btn');
+    btn.textContent = '✅ Copié !';
+    btn.style.background = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.textContent = '📋 Copier';
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>

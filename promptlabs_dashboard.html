@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptLabs — Dashboard Opportunités IA 🚀</title>
+<style>
+:root {
+  --bg: #0f1117; --bg2: #1a1d27; --bg3: #22263a;
+  --accent: #4f8ef7; --accent2: #7c5fe6;
+  --green: #22c55e; --orange: #f59e0b; --red: #ef4444; --cyan: #06b6d4;
+  --yellow: #eab308; --pink: #ec4899;
+  --text: #e2e8f0; --muted: #8892a4; --border: #2d3348; --card: #1e2235;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+
+/* HEADER */
+.header { background: linear-gradient(135deg, #1a1d27 0%, #22263a 100%); border-bottom: 1px solid var(--border); padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.header-left h1 { font-size: 22px; font-weight: 700; background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header-left p { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.header-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.badge-live { background: var(--green); color: #000; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.5px; }
+
+/* KPI ROW */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 20px 28px 0; }
+.kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
+.kpi-card .val { font-size: 28px; font-weight: 800; line-height: 1; }
+.kpi-card .lbl { font-size: 11px; color: var(--muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-card .sub { font-size: 11px; color: var(--green); margin-top: 3px; }
+.kpi-accent { border-color: var(--accent); }
+.kpi-green { border-color: var(--green); }
+.kpi-orange { border-color: var(--orange); }
+.kpi-purple { border-color: var(--accent2); }
+.kpi-cyan { border-color: var(--cyan); }
+
+/* DONUT CHARTS ROW */
+.charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; padding: 16px 28px 0; }
+.chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.chart-card h3 { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+.bar-chart { display: flex; flex-direction: column; gap: 7px; }
+.bar-item { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+.bar-item .label { width: 130px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.bar-fill { height: 8px; border-radius: 4px; transition: width 0.6s ease; }
+.bar-count { color: var(--text); font-weight: 600; min-width: 24px; text-align: right; }
+
+/* FILTERS */
+.filters-bar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.filters-bar label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-right: -4px; }
+select, input[type="text"] { background: var(--bg3); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; font-size: 12px; cursor: pointer; outline: none; }
+select:focus, input[type="text"]:focus { border-color: var(--accent); }
+.btn-reset { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 12px; cursor: pointer; }
+.btn-reset:hover { color: var(--text); border-color: var(--accent); }
+.result-count { margin-left: auto; font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+/* MAIN TABLE SECTION */
+.main { padding: 16px 28px 40px; }
+.table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+thead th { background: var(--bg2); padding: 11px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
+thead th:hover { color: var(--accent); }
+thead th.sort-asc::after { content: ' ↑'; color: var(--accent); }
+thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; cursor: pointer; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg3); }
+tbody tr.active-row { background: #1e2a45; }
+td { padding: 10px 14px; vertical-align: top; }
+td.enterprise { font-weight: 600; color: var(--text); max-width: 160px; }
+td.sector { color: var(--muted); font-size: 12px; max-width: 120px; }
+td.demand { font-size: 12px; color: var(--muted); max-width: 250px; line-height: 1.5; }
+td.demand strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+/* BADGES */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; white-space: nowrap; }
+.badge-rag { background: #1e3a5f; color: var(--cyan); }
+.badge-agent { background: #2a1e5f; color: #a78bfa; }
+.badge-finetune { background: #1e4a2f; color: var(--green); }
+.badge-auto { background: #3a2a0a; color: var(--orange); }
+.badge-chatbot { background: #1e2f4a; color: var(--accent); }
+.badge-conseil { background: #3a1e3a; color: var(--pink); }
+.badge-formation { background: #2a3a1e; color: #86efac; }
+.badge-dev { background: #1e2a3a; color: #60a5fa; }
+.badge-analyse { background: #2a1e3a; color: #c084fc; }
+.badge-prompt { background: #3a2a1e; color: #fb923c; }
+.badge-llm { background: #1e3a3a; color: var(--cyan); }
+.badge-hot { background: #ef444422; color: var(--red); border: 1px solid #ef444444; }
+.badge-warm { background: #f59e0b22; color: var(--orange); border: 1px solid #f59e0b44; }
+.badge-cold { background: #ffffff11; color: var(--muted); border: 1px solid var(--border); }
+.badge-urgent { background: #ef444422; color: var(--red); }
+.badge-medium { background: #f59e0b22; color: var(--orange); }
+.badge-long { background: #22c55e22; color: var(--green); }
+.badge-remote { background: #22c55e22; color: var(--green); border: 1px solid #22c55e33; }
+.badge-hybrid { background: #f59e0b22; color: var(--orange); border: 1px solid #f59e0b33; }
+
+/* SCORE BAR */
+.score-wrap { display: flex; align-items: center; gap: 6px; }
+.score-num { font-weight: 700; font-size: 13px; min-width: 26px; }
+.score-bar-bg { background: var(--bg3); border-radius: 4px; height: 5px; width: 60px; flex-shrink: 0; }
+.score-bar-fill { height: 5px; border-radius: 4px; }
+
+/* DETAIL PANEL */
+.detail-panel { display: none; background: #151828; border-top: 1px solid var(--border); }
+.detail-panel.open { display: table-row; }
+.detail-inner { padding: 20px 28px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .detail-inner { grid-template-columns: 1fr; } }
+.detail-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 10px; }
+.detail-section p { font-size: 12px; line-height: 1.7; color: var(--text); }
+.detail-section .contact-link { color: var(--accent); text-decoration: none; font-size: 12px; word-break: break-all; }
+.detail-section .contact-link:hover { text-decoration: underline; }
+.detail-section .score-breakdown { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.score-line { display: flex; justify-content: space-between; font-size: 11px; }
+.score-line .pts { font-weight: 700; }
+.score-line .pts.pos { color: var(--green); }
+.score-line .pts.neg { color: var(--red); }
+.solution-tag { display: inline-block; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; margin: 3px 3px 0 0; color: var(--accent); }
+
+/* PAGINATION */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 20px 0 0; flex-wrap: wrap; }
+.page-btn { background: var(--bg2); border: 1px solid var(--border); color: var(--text); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; min-width: 36px; text-align: center; }
+.page-btn:hover { border-color: var(--accent); }
+.page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.page-info { color: var(--muted); font-size: 12px; }
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .header { padding: 16px; }
+  .kpi-row, .charts-row { padding: 12px 16px 0; }
+  .filters-bar { padding: 12px 16px; }
+  .main { padding: 12px 16px 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>🚀 PromptLabs — Radar Opportunités IA</h1>
+    <p>100 demandes de services IA · Filtre Remote/Télétravail · France & Francophonie · Juillet 2026</p>
+  </div>
+  <div class="header-right">
+    <span class="badge-live">LIVE</span>
+    <span style="color:var(--muted);font-size:11px;">Créé par Hermes Agent × PromptLabs.fr</span>
+  </div>
+</div>
+
+<!-- KPI ROW -->
+<div class="kpi-row">
+  <div class="kpi-card kpi-accent">
+    <div class="val" style="color:var(--accent)" id="kpi-total">100</div>
+    <div class="lbl">Opportunités total</div>
+    <div class="sub">Remote / Télétravail uniquement ✓</div>
+  </div>
+  <div class="kpi-card kpi-green">
+    <div class="val" style="color:var(--green)" id="kpi-hot">28</div>
+    <div class="lbl">Score ≥ 70 (Chaud 🔥)</div>
+    <div class="sub">Priorité absolue</div>
+  </div>
+  <div class="kpi-card kpi-orange">
+    <div class="val" style="color:var(--orange)" id="kpi-warm">45</div>
+    <div class="lbl">Score 45–69 (Tiède)</div>
+    <div class="sub">À travailler</div>
+  </div>
+  <div class="kpi-card kpi-purple">
+    <div class="val" style="color:var(--accent2)" id="kpi-avg">62</div>
+    <div class="lbl">Score moyen /100</div>
+    <div class="sub">+8 pts vs marché</div>
+  </div>
+  <div class="kpi-card kpi-cyan">
+    <div class="val" style="color:var(--cyan)" id="kpi-budget">~750€</div>
+    <div class="lbl">TJM médian</div>
+    <div class="sub">Fourchette 490–1500€</div>
+  </div>
+  <div class="kpi-card" style="border-color:var(--pink)">
+    <div class="val" style="color:var(--pink)" id="kpi-urgent">61</div>
+    <div class="lbl">Urgence immédiate</div>
+    <div class="sub">Démarrage &lt; 30 jours</div>
+  </div>
+</div>
+
+<!-- CHARTS ROW -->
+<div class="charts-row">
+  <div class="chart-card">
+    <h3>📊 Par type de besoin</h3>
+    <div class="bar-chart" id="chart-type"></div>
+  </div>
+  <div class="chart-card">
+    <h3>🏭 Par secteur</h3>
+    <div class="bar-chart" id="chart-sector"></div>
+  </div>
+  <div class="chart-card">
+    <h3>⚡ Répartition score</h3>
+    <div class="bar-chart" id="chart-score"></div>
+  </div>
+  <div class="chart-card">
+    <h3>💶 Fourchettes budget</h3>
+    <div class="bar-chart" id="chart-budget"></div>
+  </div>
+</div>
+
+<!-- FILTERS BAR -->
+<div class="filters-bar">
+  <label>Filtrer :</label>
+  <input type="text" id="search-input" placeholder="🔍 Entreprise, mot-clé…" style="width:180px">
+  <select id="filter-type">
+    <option value="">Tous types de besoin</option>
+    <option value="RAG">RAG / Vector DB</option>
+    <option value="Agent">Agents IA</option>
+    <option value="Fine-tuning">Fine-tuning LLM</option>
+    <option value="Automatisation">Automatisation n8n/Make</option>
+    <option value="Chatbot">Chatbot</option>
+    <option value="Conseil">Conseil IA</option>
+    <option value="Formation">Formation IA</option>
+    <option value="Développement">Développement IA</option>
+    <option value="Analyse">Analyse données</option>
+    <option value="Prompt">Prompt Engineering</option>
+  </select>
+  <select id="filter-sector">
+    <option value="">Tous secteurs</option>
+    <option value="Finance">Finance / Banque</option>
+    <option value="Santé">Santé / MedTech</option>
+    <option value="Industrie">Industrie</option>
+    <option value="Retail">Retail / E-commerce</option>
+    <option value="RH">RH / Recrutement</option>
+    <option value="Juridique">Juridique / LegalTech</option>
+    <option value="Énergie">Énergie</option>
+    <option value="Médias">Médias / Presse</option>
+    <option value="EdTech">EdTech / Formation</option>
+    <option value="Startup">Startup / SaaS</option>
+    <option value="Public">Secteur Public</option>
+    <option value="ESN">ESN / Conseil IT</option>
+  </select>
+  <select id="filter-score">
+    <option value="">Tous scores</option>
+    <option value="hot">🔥 Chaud (≥70)</option>
+    <option value="warm">🌡️ Tiède (45–69)</option>
+    <option value="cold">❄️ Froid (&lt;45)</option>
+  </select>
+  <select id="filter-urgence">
+    <option value="">Toutes urgences</option>
+    <option value="immédiat">⚡ Immédiat</option>
+    <option value="3 mois">📅 Sous 3 mois</option>
+    <option value="projet">🔮 Projet futur</option>
+  </select>
+  <button class="btn-reset" onclick="resetFilters()">✕ Reset</button>
+  <span class="result-count" id="result-count">100 résultats</span>
+</div>
+
+<!-- TABLE -->
+<div class="main">
+  <div class="table-wrap">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th onclick="sortTable('id')">#</th>
+          <th onclick="sortTable('entreprise')">Entreprise</th>
+          <th onclick="sortTable('secteur')">Secteur</th>
+          <th onclick="sortTable('type')">Type de besoin</th>
+          <th onclick="sortTable('demande')">Demande concrète</th>
+          <th onclick="sortTable('solution')">Solution PromptLabs</th>
+          <th onclick="sortTable('budget')">Budget</th>
+          <th onclick="sortTable('urgence')">Urgence</th>
+          <th onclick="sortTable('remote')">Remote</th>
+          <th onclick="sortTable('score')">Score /100</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script>
+const DATA = [
+  // LOT 1 — Grandes entreprises françaises (Welcome to the Jungle / France Travail)
+  {id:1,entreprise:"BNP Paribas",secteur:"Finance / Banque",type:"RAG",demande:"Intégration LLM dans processus bancaires, RAG sur documentation réglementaire, Product Manager IA pour orchestrer LLMs dans produits existants.",solution:"Architecture RAG sur corpus réglementaire Bâle III/DORA + agent IA compliance avec LangChain + Pinecone",budget:"CDI ~90K€/an",urgence:"immédiat",remote:"hybrid",contact:"https://www.welcometothejungle.com/fr/companies/bnp-paribas/",concurrents:12,expertise:85,stack:"LangChain, Azure OpenAI, Pinecone",score:0},
+  {id:2,entreprise:"Société Générale",secteur:"Finance / Banque",type:"Automatisation",demande:"Automatisation analyse dossiers crédit PME, pilotage projets IA scoring et détection fraude, interface data/métier.",solution:"Pipeline automatisé scoring crédit avec LangGraph + agents IA analyse documentaire + intégration API bancaires",budget:"CDI ~85K€/an",urgence:"immédiat",remote:"hybrid",contact:"https://www.welcometothejungle.com/fr/companies/societe-generale/",concurrents:8,expertise:80,stack:"LangGraph, OpenAI, Python",score:0},
+  {id:3,entreprise:"Qonto",secteur:"Finance / FinTech",type:"RAG",demande:"RAG pipelines pour assistance client automatisée, réduction tickets support, assistant contextuel sur base de connaissances.",solution:"Système RAG complet : ingestion docs → embeddings → Qdrant → chatbot support avec escalade intelligente",budget:"CDI 80-110K€/an",urgence:"immédiat",remote:"remote",contact:"https://jobs.qonto.com/",concurrents:5,expertise:90,stack:"LangChain, OpenAI GPT-4, Qdrant, FastAPI",score:0},
+  {id:4,entreprise:"Pennylane",secteur:"Finance / Comptabilité SaaS",type:"RAG",demande:"Automatisation saisie comptable par LLM, extraction documents (factures, relevés), pipeline RAG + OCR pour catégorisation auto.",solution:"Pipeline OCR+LLM pour extraction comptable + agent IA classification transactions + RAG sur code général des impôts",budget:"CDI 75-95K€/an",urgence:"immédiat",remote:"remote",contact:"https://www.pennylane.com/fr/careers",concurrents:4,expertise:88,stack:"OpenAI, LangChain, OCR, PostgreSQL+pgvector",score:0},
+  {id:5,entreprise:"Spendesk",secteur:"Finance / Gestion dépenses",type:"Automatisation",demande:"Catégorisation automatique dépenses entreprise, détection anomalies, LLM pour enrichissement contextuel des notes de frais.",solution:"Modèle IA hybride classification ML + LLM pour catégorisation dépenses + alertes anomalies automatiques",budget:"CDI 80-110K€/an",urgence:"immédiat",remote:"remote",contact:"https://www.spendesk.com/fr/careers",concurrents:6,expertise:82,stack:"Python, scikit-learn, OpenAI API, dbt",score:0},
+  {id:6,entreprise:"Alan",secteur:"Santé / InsurTech",type:"Automatisation",demande:"Modèles prédictifs santé, NLP traitement remboursements, LLM pour Q&A sur garanties assurance, aide à la décision médicale.",solution:"Assistant IA conversationnel garanties santé + modèle prédiction dépenses + NLP analyse ordonnances",budget:"CDI 90-130K€/an",urgence:"immédiat",remote:"remote",contact:"https://alan.com/careers",concurrents:7,expertise:78,stack:"Python, PyTorch, HuggingFace, OpenAI API",score:0},
+  {id:7,entreprise:"Nabla",secteur:"Santé / IA Médicale",type:"Fine-tuning",demande:"Transcription médicale ASR, NLP clinique, fine-tuning LLMs sur terminologie médicale française, conformité HDS.",solution:"Fine-tuning Mistral sur corpus médical FR + pipeline Whisper pour transcription + anonymisation RGPD auto",budget:"CDI 100-140K€/an",urgence:"immédiat",remote:"remote",contact:"https://www.nabla.com/careers",concurrents:3,expertise:85,stack:"Whisper, PyTorch, HuggingFace, Mistral",score:0},
+  {id:8,entreprise:"Startup MedTech (anonyme)",secteur:"Santé / MedTech",type:"Fine-tuning",demande:"Fine-tuning Mistral 7B pour classification diagnostics médicaux en français, LoRA, déploiement API HDS.",solution:"Fine-tuning Mistral 7B LoRA sur ICD-10 FR + validation clinique + déploiement FastAPI HDS-certifié",budget:"15 000€ projet",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:2,expertise:90,stack:"Mistral 7B, LoRA, HuggingFace, FastAPI",score:0},
+  {id:9,entreprise:"Startup Santé (anonyme)",secteur:"Santé / MedTech",type:"Automatisation",demande:"Automatisation comptes-rendus médicaux depuis audio, pipeline n8n + Whisper + GPT-4, conformité RGPD/HDS.",solution:"Workflow n8n : enregistrement → Whisper → GPT-4 structuration → export DPI + chiffrement HDS",budget:"TJM 600-700€",urgence:"immédiat",remote:"remote",contact:"https://www.free-work.com",concurrents:1,expertise:92,stack:"n8n, Whisper, GPT-4, Python",score:0},
+  {id:10,entreprise:"Leroy Merlin (RAG)",secteur:"Retail / Bricolage",type:"RAG",demande:"Ingénieur IA Générative/RAG pour assistant conseillers en magasin, chatbot bricolage sur catalogue produits.",solution:"Système RAG sur catalogue 300K+ produits + agent conseil bricolage multimodal + intégration appli vendeurs",budget:"CDI",urgence:"immédiat",remote:"hybrid",contact:"https://www.welcometothejungle.com/fr/companies/leroymerlin/",concurrents:15,expertise:82,stack:"LangChain, Weaviate, GPT-4, Python",score:0},
+  {id:11,entreprise:"Carrefour",secteur:"Retail / Grande distribution",type:"Chatbot",demande:"Chatbots IA pour équipes commerciales/logistiques, rapports activité automatisés, personnalisation promotions LLM.",solution:"Agent IA décisionnel supply chain + chatbot promotions personnalisées + générateur rapports automatique",budget:"CDD 12 mois",urgence:"immédiat",remote:"hybrid",contact:"https://candidat.francetravail.fr",concurrents:18,expertise:72,stack:"LangChain, GPT-4, Python, APIs CRM",score:0},
+  {id:12,entreprise:"Cdiscount",secteur:"Retail / E-commerce",type:"Développement",demande:"Amélioration système de recommandation IA, personnalisation expérience shopping, prédiction comportementale.",solution:"Système reco IA hybride (collaborative filtering + LLM) + personnalisation temps réel + A/B testing prompts",budget:"CDI",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.cdiscount.com",concurrents:22,expertise:65,stack:"Python, PyTorch, Spark, OpenAI API",score:0},
+  {id:13,entreprise:"Back Market",secteur:"Retail / Reconditionné",type:"Automatisation",demande:"Classification NLP produits reconditionnés, enrichissement fiches produits LLM, détection anomalies catalogue.",solution:"Pipeline LLM enrichissement fiches produits + classificateur NLP multi-catégories + agent QA catalogue",budget:"CDI 85-120K€/an",urgence:"sous 3 mois",remote:"remote",contact:"https://jobs.backmarket.com",concurrents:9,expertise:78,stack:"PyTorch, Elasticsearch, MLflow, OpenAI API",score:0},
+  {id:14,entreprise:"PhotoRoom",secteur:"Retail / Photo IA",type:"Fine-tuning",demande:"Fine-tuning Stable Diffusion pour styles graphiques clients, RLHF qualité esthétique, déploiement à grande échelle.",solution:"Fine-tuning SD/SDXL sur chartes graphiques + LoRA par client + pipeline Dreambooth automatisé",budget:"CDI 100-150K€/an",urgence:"immédiat",remote:"remote",contact:"https://www.photoroom.com/jobs",concurrents:4,expertise:75,stack:"Stable Diffusion, LoRA, RLHF, PyTorch, AWS",score:0},
+  {id:15,entreprise:"Docaposte",secteur:"Numérique souverain",type:"RAG",demande:"IA générative souveraine (filiale La Poste), agents conversationnels, RAG sur docs sécurisés, modèles open source.",solution:"Déploiement RAG souverain sur Mistral local + chatbot documentaire on-premise + conformité eIDAS",budget:"CDI",urgence:"immédiat",remote:"hybrid",contact:"https://www.welcometothejungle.com/fr/companies/docaposte/",concurrents:6,expertise:85,stack:"Mistral local, LangChain, Weaviate, FastAPI",score:0},
+  {id:16,entreprise:"Doctrine.fr",secteur:"Juridique / LegalTech",type:"RAG",demande:"Moteur RAG sur corpus juridique français, NLP sur décisions de justice, amélioration moteur recherche juridique.",solution:"RAG juridique sur 10M+ décisions + extraction entités légales + résumé automatique arrêts et jugements",budget:"CDI",urgence:"immédiat",remote:"remote",contact:"https://jobs.doctrine.fr",concurrents:3,expertise:90,stack:"LangChain, spaCy, GPT-4, ElasticSearch",score:0},
+  {id:17,entreprise:"LegalTech (fine-tuning)",secteur:"Juridique / LegalTech",type:"Fine-tuning",demande:"Fine-tuning Mistral 7B sur droit français (LoRA/QLoRA), datasets décisions de justice, précision juridique.",solution:"Fine-tuning Mistral sur DALLOZ + Code Civil FR + évaluation jurisprudentielle automatisée",budget:"TJM 750€ / 3 mois",urgence:"immédiat",remote:"remote",contact:"https://www.free-work.com",concurrents:1,expertise:92,stack:"Mistral 7B, QLoRA, HuggingFace, Python",score:0},
+  {id:18,entreprise:"Cabinet d'avocats (anonyme)",secteur:"Juridique / LegalTech",type:"Agent",demande:"Agents IA d'analyse contractuelle, LangChain Agents, extraction clauses, GPT-4 + OCR sur contrats.",solution:"Agent IA revue contrats : extraction clauses risquées + comparaison modèles + génération synthèse juridique",budget:"TJM 800-1000€",urgence:"immédiat",remote:"remote",contact:"https://www.freelance.com",concurrents:2,expertise:88,stack:"LangChain Agents, GPT-4, OCR, Python",score:0},
+  {id:19,entreprise:"Digital Virgo",secteur:"Télécoms / Marketing Digital",type:"Prompt",demande:"Ingénieur Prompt Engineer pour optimiser interactions LLM dans campagnes marketing automatisées, A/B testing prompts.",solution:"Bibliothèque prompts optimisés pour marketing + framework A/B testing prompts + métriques qualité auto",budget:"CDI 45-65K€/an",urgence:"immédiat",remote:"remote",contact:"https://www.pole-emploi.fr",concurrents:8,expertise:80,stack:"OpenAI GPT-4, Python, LangChain",score:0},
+  {id:20,entreprise:"OpenClassrooms",secteur:"EdTech / Formation en ligne",type:"Prompt",demande:"AI Content Engineer pour générer contenus pédagogiques personnalisés, prompt engineering GPT-4, pipeline génération.",solution:"Framework prompt engineering pédagogique + générateur quiz adaptatif + évaluation qualité LLM automatisée",budget:"CDI 55-75K€/an",urgence:"immédiat",remote:"remote",contact:"https://openclassrooms.com/fr/careers",concurrents:7,expertise:85,stack:"GPT-4, LangChain, Python",score:0},
+  {id:21,entreprise:"EdTech (quiz adaptatifs)",secteur:"EdTech / E-learning",type:"Fine-tuning",demande:"Fine-tuning LLM pour génération quiz pédagogiques adaptatifs, niveaux de difficulté variables selon apprenant.",solution:"Fine-tuning Mistral sur corpus pédagogique + générateur questions Bloom's taxonomy + moteur adaptatif",budget:"Mission ou CDI Lyon",urgence:"sous 3 mois",remote:"remote",contact:"https://www.talent.io",concurrents:3,expertise:82,stack:"HuggingFace, LoRA, Python, FastAPI",score:0},
+  {id:22,entreprise:"Wavestone",secteur:"ESN / Conseil IT",type:"Conseil",demande:"Consultant Senior IA pour accompagner directions générales dans stratégie transformation IA, audits et feuilles de route.",solution:"Offre conseil stratégie IA : audit maturité IA + roadmap 90 jours + formation dirigeants + POC LLM",budget:"CDI senior",urgence:"immédiat",remote:"hybrid",contact:"https://www.wavestone.com/fr/",concurrents:20,expertise:75,stack:"Tout écosystème IA",score:0},
+  {id:23,entreprise:"Capgemini (LLM)",secteur:"ESN / Conseil IT",type:"RAG",demande:"Consultants LLM / Prompt Engineering pour projets clients grands comptes, déploiement Azure OpenAI, RAG documentaire.",solution:"Mission RAG enterprise : architecture Azure OpenAI + LangChain + gouvernance données + formation équipes client",budget:"CDI 50-85K€/an",urgence:"immédiat",remote:"hybrid",contact:"https://www.capgemini.com/fr-fr/",concurrents:25,expertise:70,stack:"Azure OpenAI, LangChain, Qdrant",score:0},
+  {id:24,entreprise:"Roland Berger",secteur:"ESN / Conseil stratégie",type:"LLM",demande:"Expert LLM pour développer outils d'analyse de marché automatisée, veille sectorielle intelligente.",solution:"Outil veille IA : scraping + LLM résumé sectoriel + alertes tendances + rapports automatiques PowerPoint",budget:"Mission senior",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.rolandberger.com/fr/",concurrents:10,expertise:78,stack:"OpenAI, LangChain, Python, APIs veille",score:0},
+  {id:25,entreprise:"Etalab / DINUM",secteur:"Secteur Public / GovTech",type:"RAG",demande:"Contributeurs pour Albert (assistant IA admin française), RAG sur données gouvernementales, APIs officielles.",solution:"Architecture RAG souveraine sur data.gouv.fr + agent IA réponse citoyens + intégration APIs gouvernementales",budget:"CDD contractuel ou bénévolat",urgence:"immédiat",remote:"remote",contact:"https://github.com/etalab-ia/albert",concurrents:8,expertise:88,stack:"Python, LangChain, Mistral, Weaviate, FastAPI",score:0},
+  {id:26,entreprise:"CNAF",secteur:"Secteur Public / Protection sociale",type:"Analyse",demande:"Lead Data Scientist IA pour modèles prédictifs politiques sociales, détection fraudes prestations, analyse besoins territoires.",solution:"Modèle ML détection fraude + tableau de bord IA analyse besoins + rapport automatique par territoire",budget:"CDI Fonction publique",urgence:"immédiat",remote:"hybrid",contact:"https://www.welcometothejungle.com/fr/companies/cnaf/",concurrents:12,expertise:68,stack:"Python, scikit-learn, Spark, PowerBI",score:0},
+  {id:27,entreprise:"Ville de Paris",secteur:"Secteur Public",type:"Chatbot",demande:"Chatbot IA pour services numériques citoyens, réponse 24h/24, intégration systèmes municipaux.",solution:"Chatbot citoyen multi-services (état civil, urbanisme, déchets) + LLM + intégration APIs mairie de Paris",budget:"Appel d'offres public",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.paris.fr",concurrents:15,expertise:72,stack:"LangChain, GPT-4, APIs Paris, React",score:0},
+  {id:28,entreprise:"Région Occitanie",secteur:"Secteur Public / Transport",type:"Développement",demande:"IA pour optimisation transports en commun régionaux, routage intelligent, analyse données mobilité.",solution:"Modèle prédictif optimisation horaires + assistant IA voyageur + analyse flux mobilité temps réel",budget:"Appel d'offres ~200K€",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.laregion.fr",concurrents:18,expertise:62,stack:"Python, ML, APIs transport, GIS",score:0},
+  {id:29,entreprise:"AXA France",secteur:"Assurance",type:"Développement",demande:"Modèles IA scoring risque habitation, partenaire technologique pour assurance intelligente.",solution:"Modèle ML scoring risque multi-facteurs + explainabilité SHAP + dashboard souscripteur IA",budget:"Appel partenaire",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.axa.fr",concurrents:20,expertise:70,stack:"Python, XGBoost, SHAP, scikit-learn",score:0},
+  {id:30,entreprise:"Compagnie assurance (Fine-tuning+RAG)",secteur:"Assurance",type:"Fine-tuning",demande:"Combinaison fine-tuning LLM + RAG pour analyse contrats sinistres on-premise, contraintes réglementaires.",solution:"Fine-tuning Mistral on-prem + RAG assurance + pipeline analyse sinistres + reporting automatique",budget:"TJM 850€ / 6 mois",urgence:"immédiat",remote:"remote",contact:"https://www.hays.fr",concurrents:2,expertise:88,stack:"Mistral on-prem, LangChain, Weaviate, Azure",score:0},
+  // LOT 2 — Secteurs variés (agriculture, tourisme, médias, ONG, startups)
+  {id:31,entreprise:"InVivo Group",secteur:"Agriculture / Coopérative",type:"Développement",demande:"Solutions IA d'aide à la décision pour agriculteurs, precision farming, analyse données cultures.",solution:"Plateforme conseil IA agriculteur : météo + données sol + LLM recommandations culturales + alertes",budget:"Appel d'offres",urgence:"sous 3 mois",remote:"remote",contact:"https://www.invivo-group.com",concurrents:8,expertise:70,stack:"Python, ML, APIs météo, LLM",score:0},
+  {id:32,entreprise:"Office Tourisme Bordeaux",secteur:"Tourisme",type:"Chatbot",demande:"Chatbot IA multilingue pour informer visiteurs, répondre questions touristiques 24h/24, intégration site.",solution:"Chatbot RAG touristique multilingue (FR/EN/ES/ZH) + intégration agenda culturel + recommandations IA",budget:"TJM 600-750€ / 2 mois",urgence:"immédiat",remote:"remote",contact:"https://www.bordeaux-tourisme.com",concurrents:2,expertise:90,stack:"LangChain, GPT-4, Weaviate, React",score:0},
+  {id:33,entreprise:"Club Med",secteur:"Tourisme / Hôtellerie",type:"Développement",demande:"IA personnalisation expérience client dans villages vacances, recommandations activités, tarification dynamique.",solution:"Moteur personnalisation IA client : préférences → reco activités → offres dynamiques + assistant concierge",budget:"CDI ou mission",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.clubmed.fr",concurrents:15,expertise:68,stack:"Python, ML, APIs Club Med, LLM",score:0},
+  {id:34,entreprise:"Groupe Figaro",secteur:"Médias / Presse",type:"Développement",demande:"Système IA personnalisation contenu pour abonnés numériques, recommandation articles, analyse audience.",solution:"Moteur reco IA editorial + personnalisation newsletter + analyse lecture LLM + résumé articles auto",budget:"CDI ou appel offres",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.lefigaro.fr",concurrents:12,expertise:72,stack:"Python, NLP, ElasticSearch, LLM",score:0},
+  {id:35,entreprise:"France Télévisions",secteur:"Médias / Audiovisuel",type:"Automatisation",demande:"Automatisation sous-titrage programmes TV par IA, transcription Whisper, adaptation accessibilité.",solution:"Pipeline ASR : Whisper → correction LLM → formatage SRT → QA automatique → diffusion", budget:"Appel d'offres",urgence:"sous 3 mois",remote:"remote",contact:"https://www.francetelevisions.fr",concurrents:10,expertise:75,stack:"Whisper, GPT-4, Python, ffmpeg",score:0},
+  {id:36,entreprise:"Ouest-France",secteur:"Médias / Presse régionale",type:"Analyse",demande:"Expert IA analyse audience et recommandation articles, optimisation engagement lecteurs.",solution:"Dashboard IA audience + modèle reco articles + A/B testing contenu + résumé auto pour newsletters",budget:"Mission",urgence:"sous 3 mois",remote:"remote",contact:"https://www.ouest-france.fr",concurrents:8,expertise:72,stack:"Python, ML, LLM, APIs analytics",score:0},
+  {id:37,entreprise:"SFR",secteur:"Télécommunications",type:"Chatbot",demande:"Amélioration chatbot service client, automatisation traitement réclamations, réduction tickets niveau 1.",solution:"Chatbot LLM service client télécoms + escalade intelligente + analyse sentiment + réduction 40% N1",budget:"Mission senior",urgence:"immédiat",remote:"hybrid",contact:"https://www.sfr.fr",concurrents:20,expertise:68,stack:"LangChain, GPT-4, CRM APIs, Python",score:0},
+  {id:38,entreprise:"Bouygues Telecom (churn)",secteur:"Télécommunications",type:"Développement",demande:"Modèle IA prédiction churn client, 180K€ budget, identification comportements à risque.",solution:"Modèle churn ML + scoring client temps réel + LLM pour personnalisation offres rétention",budget:"180 000€",urgence:"immédiat",remote:"hybrid",contact:"https://www.bouyguestelecom.fr",concurrents:15,expertise:72,stack:"Python, XGBoost, CRM APIs, LLM",score:0},
+  {id:39,entreprise:"Caisse d'Épargne",secteur:"Finance / Banque",type:"Chatbot",demande:"Conseiller bancaire virtuel basé sur IA générative, LLM pour Q&A produits bancaires, intégration CRM.",solution:"Conseiller IA bancaire : RAG sur catalogue produits + conformité MIF2 + intégration Salesforce Financial",budget:"CDI ou appel offres",urgence:"immédiat",remote:"hybrid",contact:"https://www.caisse-epargne.fr",concurrents:18,expertise:70,stack:"Azure OpenAI, LangChain, Salesforce API",score:0},
+  {id:40,entreprise:"MAIF (sinistres)",secteur:"Assurance / Mutuelle",type:"Automatisation",demande:"Automatisation traitement déclarations sinistres auto, analyse documents, classification automatique.",solution:"Agent IA sinistres : OCR déclaration → LLM extraction infos → classification → workflow validation",budget:"Mission senior",urgence:"immédiat",remote:"hybrid",contact:"https://www.maif.fr",concurrents:14,expertise:72,stack:"OCR, GPT-4, LangChain, APIs assurance",score:0},
+  {id:41,entreprise:"Banque régionale (RAG)",secteur:"Finance / Banque",type:"RAG",demande:"Système RAG sur documentation réglementaire bancaire, assistant conformité interne, Azure OpenAI.",solution:"RAG compliance bancaire : Bâle IV + DORA + MIF2 → assistant conformité pour équipes juridiques",budget:"TJM 850-1000€",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:2,expertise:92,stack:"Azure OpenAI, LangChain, Qdrant, Python",score:0},
+  {id:42,entreprise:"Mutuelle santé (prédictif)",secteur:"Assurance / Santé",type:"Analyse",demande:"Expert ML pour modèle prédictif consommation médicale, gestion risque santé, 4 mois TJM 700-850€.",solution:"Modèle prédictif consommation médicale + segmentation adhérents + dashboard actif/passif",budget:"TJM 700-850€ / 4 mois",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:3,expertise:88,stack:"Python, scikit-learn, XGBoost, API SNDS",score:0},
+  {id:43,entreprise:"WWF France",secteur:"ONG / Environnement",type:"Analyse",demande:"Outils IA analyse données environnementales, suivi biodiversité, détection anomalies écosystèmes.",solution:"Dashboard IA biodiversité : agrégation données capteurs + LLM génération rapports + alertes écosystèmes",budget:"Budget associatif / partenariat",urgence:"projet futur",remote:"remote",contact:"https://www.wwf.fr",concurrents:1,expertise:80,stack:"Python, ML, APIs satellites, LLM",score:0},
+  {id:44,entreprise:"Simplon.co",secteur:"ONG / Formation inclusive",type:"Développement",demande:"Outils IA pédagogiques adaptés aux publics éloignés de l'emploi, inclusivité numérique.",solution:"Parcours IA adaptatif inclusif + assistant pédagogique LLM simplifié + évaluation compétences auto",budget:"Budget associatif / subvention",urgence:"sous 3 mois",remote:"remote",contact:"https://www.simplon.co",concurrents:1,expertise:82,stack:"Python, LLM, outils no-code IA",score:0},
+  {id:45,entreprise:"Hippocrate.io",secteur:"Startup Deeptech / Santé",type:"Développement",demande:"ML Engineers pour améliorer modèles prédiction clinique, deeptech IA médicale.",solution:"Modèles prédictifs cliniques + NLP dossiers patients + aide diagnostic différentiel IA",budget:"CDI startup deeptech",urgence:"immédiat",remote:"remote",contact:"https://www.hippocrate.io",concurrents:4,expertise:82,stack:"PyTorch, HuggingFace, Python, APIs cliniques",score:0},
+  {id:46,entreprise:"PME BTP (automatisation devis)",secteur:"Artisanat / BTP",type:"Automatisation",demande:"Automatiser génération devis et gestion plannings via IA, PME 15 salariés, budget limité.",solution:"Outil IA génération devis : données chantier → LLM calcul → PDF automatique + planning Gantt IA",budget:"TJM 500-650€",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:0,expertise:95,stack:"n8n, OpenAI API, Python, PDF generation",score:0},
+  {id:47,entreprise:"E-commerce (RAG multilingue)",secteur:"Retail / E-commerce",type:"RAG",demande:"RAG multilingue (FR/EN/ES) pour FAQ automatique, support client international.",solution:"RAG multilingue avec modèles embeddings multilingues + chatbot FAQ + escalade humaine configurable",budget:"TJM 750-900€",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:2,expertise:90,stack:"LangChain, Weaviate, modèles multilingues",score:0},
+  {id:48,entreprise:"PME e-commerce (anonyme)",secteur:"Retail / E-commerce",type:"RAG",demande:"Système RAG sur catalogue produits pour améliorer service client, réponses techniques produits.",solution:"RAG catalogue + agent service client + recherche sémantique produits + intégration Shopify/Prestashop",budget:"TJM 750-900€",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:2,expertise:90,stack:"LangChain, pgvector, OpenAI, Python",score:0},
+  {id:49,entreprise:"Kiabi",secteur:"Retail / Mode",type:"Développement",demande:"Système IA recommandation vestimentaire basé sur morphotype client, personnalisation mode.",solution:"Moteur reco morpho-style : profil client → LLM styling → recommandations catalogue + visualisation",budget:"CDI ou appel offres",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.kiabi.com",concurrents:16,expertise:65,stack:"Python, ML, Computer Vision, LLM",score:0},
+  {id:50,entreprise:"Veepee",secteur:"Retail / Ventes privées",type:"Analyse",demande:"Prédiction stocks et ventes pour ventes flash, optimisation inventaire, ML prévisionnel.",solution:"Modèle LSTM/XGBoost prévision ventes + optimisation stocks + LLM pour descriptions ventes flash auto",budget:"CDI ou mission",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.veepee.fr",concurrents:12,expertise:68,stack:"Python, LSTM, XGBoost, LLM",score:0},
+  // LOT 3 — Besoins très techniques (RAG, agents, fine-tuning, automatisation)
+  {id:51,entreprise:"Fintech (agents LangGraph)",secteur:"Finance / FinTech",type:"Agent",demande:"Agent IA analyse financière LangGraph, consultation APIs marché, génération rapports, mémoire persistante.",solution:"Agent multi-étapes LangGraph : données marché → analyse fondamentale → rapport synthèse → alertes",budget:"TJM 800€ / 4 mois",urgence:"immédiat",remote:"remote",contact:"https://www.free-work.com",concurrents:1,expertise:93,stack:"LangGraph, LangChain, GPT-4o, Python, APIs Bloomberg",score:0},
+  {id:52,entreprise:"Thales (agents multimodaux)",secteur:"Industrie / Défense",type:"Agent",demande:"Architecte agents IA multimodaux pour applications défense, LangGraph, sécurité renforcée.",solution:"Architecture agents IA souverains : LangGraph + modèles locaux + orchestration multimodale sécurisée",budget:"CDI 80-120K€/an",urgence:"immédiat",remote:"hybrid",contact:"https://www.thalesgroup.com",concurrents:5,expertise:80,stack:"LangChain, LangGraph, vision models, cloud privé",score:0},
+  {id:53,entreprise:"Startup SaaS B2B (agents)",secteur:"Startup / SaaS",type:"Agent",demande:"Agent multi-agents pour automatiser prospection et onboarding, LangGraph + Tavily + GPT-4o.",solution:"Système agents CrewAI : recherche prospect → qualification → email perso → CRM update → relance auto",budget:"Mission freelance remote",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:1,expertise:93,stack:"LangGraph, CrewAI, GPT-4o, Tavily, Python",score:0},
+  {id:54,entreprise:"Cabinet conseil (CrewAI)",secteur:"ESN / Conseil",type:"Agent",demande:"Expert CrewAI/AutoGen pour pipeline veille stratégique multi-sources, TJM 850€, remote OK.",solution:"Pipeline veille IA : agents CrewAI scraping → résumé → analyse tendances → rapport décisionnel auto",budget:"TJM 850€",urgence:"immédiat",remote:"remote",contact:"https://www.free-work.com",concurrents:0,expertise:95,stack:"CrewAI, AutoGen, LangChain, Python, APIs veille",score:0},
+  {id:55,entreprise:"HRTech (agents RH)",secteur:"RH / Recrutement",type:"Agent",demande:"Agents IA recrutement automatisé : sourcing LinkedIn → analyse CV → scoring → email perso → ATS.",solution:"Agents CrewAI RH : sourcing multi-sources → matching IA → emails hyper-perso → reporting recruteur",budget:"TJM 700€ / 3 mois",urgence:"immédiat",remote:"remote",contact:"https://www.comet.co",concurrents:1,expertise:93,stack:"CrewAI, LangChain, GPT-4o, APIs LinkedIn, ATS",score:0},
+  {id:56,entreprise:"E-commerce (agents concurrence)",secteur:"Retail / E-commerce",type:"Agent",demande:"Agents IA veille concurrentielle et pricing dynamique, CrewAI + AutoGPT, automatisation complète.",solution:"Agent veille prix : scraping concurrent → comparaison → ajustement prix auto → alertes direction",budget:"Mission Lyon",urgence:"immédiat",remote:"remote",contact:"https://www.talent.io",concurrents:2,expertise:90,stack:"CrewAI, Python, APIs e-commerce, LLM",score:0},
+  {id:57,entreprise:"ESN cybersécurité",secteur:"Cybersécurité",type:"Agent",demande:"Agents IA détection d'intrusion, intégration SIEM, LangChain pour analyse logs sécurité.",solution:"Agent IA SecOps : analyse logs → détection anomalies LLM → corrélation MITRE → rapport incident auto",budget:"CDI ou mission",urgence:"immédiat",remote:"remote",contact:"https://www.linkedin.com",concurrents:5,expertise:80,stack:"LangChain, Python, SIEM APIs, GPT-4",score:0},
+  {id:58,entreprise:"Mistral AI",secteur:"Startup / LLM",type:"Fine-tuning",demande:"Ingénieurs ML fine-tuning LLMs, alignement RLHF, PEFT/LoRA, amélioration performances Mistral.",solution:"Contribution expertise fine-tuning : LoRA + datasets FR + évaluation benchmarks + déploiement vLLM",budget:"CDI très compétitif",urgence:"immédiat",remote:"remote",contact:"https://jobs.mistral.ai",concurrents:8,expertise:78,stack:"PyTorch, PEFT, LoRA, HuggingFace, CUDA",score:0},
+  {id:59,entreprise:"INRIA (CamemBERT2)",secteur:"Recherche / IA académique",type:"Fine-tuning",demande:"Chercheur ML fine-tuning multilingue, données françaises, HuggingFace, partenariat Meta AI.",solution:"Fine-tuning CamemBERT sur corpus juridique/médical + évaluation FrenchBench + publication",budget:"CDD INRIA",urgence:"projet futur",remote:"remote",contact:"https://www.inria.fr",concurrents:6,expertise:75,stack:"PyTorch, HuggingFace, OPUS datasets",score:0},
+  {id:60,entreprise:"MedTech Sophia Antipolis",secteur:"Santé / MedTech",type:"Fine-tuning",demande:"NLP fine-tuning terminologie médicale française, BERT/CamemBERT, annotations cliniques.",solution:"Fine-tuning DrBERT-FR sur terminologie SNOMED CT français + pipeline annotation médicale",budget:"CDI ou mission",urgence:"sous 3 mois",remote:"remote",contact:"https://www.linkedin.com",concurrents:3,expertise:82,stack:"BERT, CamemBERT, HuggingFace, Python",score:0},
+  {id:61,entreprise:"ESN (fine-tuning Mistral/Llama)",secteur:"ESN / Conseil IT",type:"Fine-tuning",demande:"Expert fine-tuning Mistral/Llama2 pour client secteur bancaire, LoRA, quantization, déploiement.",solution:"Fine-tuning + déploiement Mistral client bank : LoRA quantizé → API sécurisée → monitoring prod",budget:"TJM 800-900€",urgence:"immédiat",remote:"remote",contact:"https://www.comet.co",concurrents:2,expertise:90,stack:"Mistral, Llama2, LoRA, vLLM, TGI",score:0},
+  {id:62,entreprise:"Startup (Stable Diffusion)",secteur:"Startup / Creative AI",type:"Fine-tuning",demande:"Développeur fine-tuning Stable Diffusion sur charte graphique client, Dreambooth, LoRA.",solution:"Fine-tuning SD XL + LoRA par charte client + API génération + intégration Figma/Canva",budget:"Mission Paris",urgence:"immédiat",remote:"remote",contact:"https://www.welcometothejungle.com",concurrents:4,expertise:78,stack:"Stable Diffusion XL, Dreambooth, LoRA, ComfyUI",score:0},
+  {id:63,entreprise:"Giskard AI",secteur:"Startup / Testing LLM",type:"Développement",demande:"Contributeurs framework testing LLMs, red teaming, évaluation biais, Python open-source.",solution:"Contribution expertise : développement tests automatisés LLM + benchmark sectoriels + documentation FR",budget:"Open source / emploi possible",urgence:"projet futur",remote:"remote",contact:"https://github.com/Giskard-AI/giskard",concurrents:2,expertise:80,stack:"Python, PyTorch, HuggingFace",score:0},
+  {id:64,entreprise:"PME manufacturing (ERP+LLM)",secteur:"Industrie / Manufacturing",type:"Automatisation",demande:"Intégration LLM dans ERP SAP Alsace, rapports automatiques, analyses production, alertes intelligentes.",solution:"Connecteur SAP-OpenAI : extraction données → LLM analyse → rapport PDF auto + alertes anomalies prod",budget:"15 000-25 000€ forfait",urgence:"sous 3 mois",remote:"remote",contact:"https://www.talent.io",concurrents:0,expertise:95,stack:"OpenAI API, SAP BAPI, Python, REST API",score:0},
+  {id:65,entreprise:"E-commerce (n8n fiches)",secteur:"Retail / E-commerce",type:"Automatisation",demande:"Expert n8n génération fiches produits via GPT-4, 10 000 produits, workflow automatisé Marseille.",solution:"Pipeline n8n : données fournisseur → GPT-4 enrichissement → validation → publication WooCommerce auto",budget:"TJM 500-600€ / 2 mois",urgence:"immédiat",remote:"remote",contact:"https://www.comet.co",concurrents:0,expertise:97,stack:"n8n, OpenAI GPT-4 API, WooCommerce, Python",score:0},
+  {id:66,entreprise:"Cabinet comptable (Make.com)",secteur:"Finance / Comptabilité",type:"Automatisation",demande:"Automatisation extraction et résumé documents financiers Make.com + OpenAI, pièces comptables par email.",solution:"Workflow Make.com : email → OCR → GPT-4 classification → saisie comptable auto + validation expert",budget:"3 000-5 000€ forfait",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:0,expertise:97,stack:"Make.com, OpenAI API, OCR, PDF parsing",score:0},
+  {id:67,entreprise:"Agence marketing (Make.com)",secteur:"Marketing Digital",type:"Automatisation",demande:"Expert Make.com pour automatiser création contenu IA : posts RS, emailings, landing pages, GPT-4.",solution:"Machine contenu IA : brief → GPT-4 copy → Canva visuel → programmation RS → reporting auto",budget:"3 000-5 000€ projet",urgence:"immédiat",remote:"remote",contact:"https://www.linkedin.com",concurrents:0,expertise:97,stack:"Make.com, GPT-4 API, HubSpot, Canva API",score:0},
+  {id:68,entreprise:"PropTech (annonces immo)",secteur:"Immobilier / PropTech",type:"Automatisation",demande:"Workflows n8n pour annonces immobilières auto, matching acheteur/bien, publication multi-portails.",solution:"Workflow n8n immo : données bien → GPT-4 annonce → publication SeLoger/PAP/LBC + matching acheteur",budget:"8 000-12 000€ forfait",urgence:"sous 3 mois",remote:"remote",contact:"https://www.talent.io",concurrents:1,expertise:93,stack:"n8n, OpenAI GPT-4, APIs SeLoger, Python",score:0},
+  {id:69,entreprise:"Organisme formation (Make IA)",secteur:"EdTech / Formation",type:"Automatisation",demande:"Consultant no-code IA pour parcours adaptatifs, Make + OpenAI + Airtable, certification Qualiopi.",solution:"Parcours adaptatif IA : évaluation initiale → personnalisation LLM → suivi Make.com → rapport Qualiopi",budget:"Budget OPCO disponible",urgence:"sous 3 mois",remote:"remote",contact:"https://www.apec.fr",concurrents:1,expertise:92,stack:"Make.com, OpenAI, Airtable, Python",score:0},
+  {id:70,entreprise:"Agence communication (Claude)",secteur:"Communication / Publicité",type:"Prompt",demande:"Expert API Anthropic Claude pour automatiser briefs créatifs, 5000€ budget, 60% gain temps.",solution:"Workflow Claude : cahier charges → analyse IA → brief structuré → validation humaine + templates sectoriels",budget:"5 000€ projet",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:0,expertise:97,stack:"Anthropic Claude API, Python, Make.com, Notion API",score:0},
+  {id:71,entreprise:"Contentsquare",secteur:"SaaS / Analytics",type:"Développement",demande:"ML Engineer NLP analyse comportementale, modèles prédictifs conversion, LLM insights en langage naturel.",solution:"Modèle insights IA : données UX → LLM analyse → rapport insights auto → recommandations optimisation",budget:"CDI 90-130K€/an",urgence:"sous 3 mois",remote:"remote",contact:"https://contentsquare.com/careers",concurrents:10,expertise:75,stack:"Python, PyTorch, Spark, OpenAI API",score:0},
+  {id:72,entreprise:"Dataiku",secteur:"SaaS / MLOps",type:"Développement",demande:"Solution engineers pour accompagner clients FR dans déploiement plateforme IA, formation et support.",solution:"Formation équipes Dataiku + workshops IA appliquée + développement plugins LLM + certification teams",budget:"CDI",urgence:"immédiat",remote:"hybrid",contact:"https://www.dataiku.com/fr/",concurrents:10,expertise:72,stack:"Dataiku, Python, ML, LLM",score:0},
+  {id:73,entreprise:"Finary",secteur:"Finance / FinTech",type:"RAG",demande:"Développeur LLM pour assistant financier personnel basé sur RAG, Q&A patrimoine et investissements.",solution:"Assistant financier RAG : données marchés + patrimoine user → LLM conseil → alertes personnalisées",budget:"CDI startup",urgence:"immédiat",remote:"remote",contact:"https://www.welcometothejungle.com",concurrents:4,expertise:88,stack:"LangChain, OpenAI, Qdrant, FastAPI",score:0},
+  {id:74,entreprise:"Assureur (vector DB+RAG)",secteur:"Assurance",type:"RAG",demande:"Consultant vector database + RAG chatbot interne, Weaviate + LangChain + Azure OpenAI Île-de-France.",solution:"Chatbot interne assurance : RAG sur docs sinistres + contrats + réglementation + answer avec sources",budget:"TJM estimé 800€",urgence:"immédiat",remote:"remote",contact:"https://www.hays.fr",concurrents:2,expertise:90,stack:"Weaviate, LangChain, Azure OpenAI, Python",score:0},
+  {id:75,entreprise:"Startup Healthtech (RAG)",secteur:"Santé / HealthTech",type:"RAG",demande:"AI Engineer RAG données médicales, Python + LlamaIndex + ChromaDB + Mistral AI, Bordeaux.",solution:"RAG médical souverain : ingestion données cliniques → Mistral local → chatbot médecin HDS",budget:"CDI startup",urgence:"immédiat",remote:"remote",contact:"https://www.talent.io",concurrents:3,expertise:88,stack:"LlamaIndex, ChromaDB, Mistral AI, Python",score:0},
+  {id:76,entreprise:"Startup RH (LLM matching)",secteur:"RH / Recrutement",type:"LLM",demande:"Consultant LLM pour automatiser matching CV/offres et génération fiches de poste, API OpenAI + LangChain.",solution:"Moteur matching IA RH : embeddings CV + offres → score similarité → LLM résumé fit + génération JD",budget:"Mission Paris",urgence:"immédiat",remote:"remote",contact:"https://www.linkedin.com",concurrents:3,expertise:90,stack:"OpenAI API, LangChain, Python, embeddings",score:0},
+  {id:77,entreprise:"ESN (mission prompt engineering)",secteur:"ESN / Conseil IT",type:"Prompt",demande:"Mission freelance Prompt Engineer/LLM Expert Paris ou Remote, TJM 600-800€, 6 mois renouvelable.",solution:"Prompt engineering système pour grands comptes : optimisation, évaluation, documentation + formation",budget:"TJM 600-800€",urgence:"immédiat",remote:"remote",contact:"https://www.free-work.com",concurrents:4,expertise:88,stack:"OpenAI, Anthropic, LangChain, Python",score:0},
+  {id:78,entreprise:"RAG startup EdTech (Chroma)",secteur:"EdTech / Formation",type:"RAG",demande:"Développeur Chroma + LangChain pour assistant pédagogique, Toulouse startup.",solution:"Assistant pédagogique RAG : cours → embeddings Chroma → chatbot Q&A + génération exercices auto",budget:"CDI ou mission",urgence:"immédiat",remote:"remote",contact:"https://www.welcometothejungle.com",concurrents:2,expertise:92,stack:"LangChain, ChromaDB, OpenAI, Python",score:0},
+  {id:79,entreprise:"Compagnie assurance (RAG sinistres)",secteur:"Assurance",type:"RAG",demande:"Freelance RAG chatbot sur documents sinistres, 8 000-12 000€, OpenAI + Qdrant, 200 salariés.",solution:"Chatbot sinistres RAG : ingestion docs → Qdrant → réponses avec sources → escalade gestionnaire",budget:"8 000-12 000€ projet",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:0,expertise:97,stack:"OpenAI, Qdrant, LangChain, FastAPI",score:0},
+  {id:80,entreprise:"Startup SaaS (CRM agent Lyon)",secteur:"Startup / SaaS",type:"Agent",demande:"Agent IA CRM Salesforce Lyon, automatiser CRM avec LangChain + Salesforce API + GPT-4o.",solution:"Agent CRM IA : activités → LLM analyse → mise à jour CRM auto + next best action + reporting",budget:"Mission Lyon remote",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:1,expertise:93,stack:"LangChain, Salesforce API, GPT-4o, Python",score:0},
+  // LOT 4 — Compléments pour atteindre 100
+  {id:81,entreprise:"Nexity",secteur:"Immobilier",type:"Automatisation",demande:"IA estimation biens, chatbot conseil immobilier, analyse prédictive marchés locaux, gestion locative.",solution:"Chatbot RAG immobilier + estimateur IA + analyse marché LLM + automatisation relances locatives",budget:"CDI ou appel offres",urgence:"immédiat",remote:"hybrid",contact:"https://candidat.francetravail.fr",concurrents:16,expertise:68,stack:"Python, ML, LLM, APIs immobilier",score:0},
+  {id:82,entreprise:"Meero",secteur:"Photo IA / Creative",type:"Fine-tuning",demande:"GenAI Engineer Computer Vision, Stable Diffusion fine-tuning styles clients, ComfyUI pipelines.",solution:"Solution fine-tuning SD par client : LoRA style → API génération → QA automatique → livraison",budget:"CDI 70-100K€/an",urgence:"immédiat",remote:"remote",contact:"https://www.meero.com/careers",concurrents:4,expertise:78,stack:"Stable Diffusion, ComfyUI, LoRA, PyTorch",score:0},
+  {id:83,entreprise:"Deepki",secteur:"Immobilier / Green Tech",type:"Développement",demande:"IA prédiction consommation énergétique bâtiments, rapport automatique LLM, transition ESG.",solution:"Modèle prédictif énergie bâtiment + LLM génération rapport ESG + dashboard décarbonation",budget:"CDI Paris",urgence:"sous 3 mois",remote:"remote",contact:"https://www.deepki.com",concurrents:8,expertise:75,stack:"Python, ML, LLM, APIs DPE",score:0},
+  {id:84,entreprise:"Yousign",secteur:"Startup / LegalTech SaaS",type:"Automatisation",demande:"IA dans workflow signature électronique, extraction données contrats, analyse risques.",solution:"Agent IA contractuel : extraction clauses → scoring risque → signature auto ou alerte + audit trail",budget:"CDI startup licorne",urgence:"immédiat",remote:"remote",contact:"https://www.yousign.com",concurrents:7,expertise:80,stack:"Python, LLM, OCR, APIs Yousign",score:0},
+  {id:85,entreprise:"Swile",secteur:"Startup / RH SaaS",type:"Développement",demande:"ML Engineer recommandation avantages salariés, collaborative filtering + NLP, Python.",solution:"Moteur reco avantages IA : profil salarié → LLM personnalisation → offres ciblées + A/B testing",budget:"CDI startup",urgence:"sous 3 mois",remote:"remote",contact:"https://www.swile.co",concurrents:9,expertise:75,stack:"Python, NLP, LLM, recommandation ML",score:0},
+  {id:86,entreprise:"France Travail (matching)",secteur:"Secteur Public / Emploi",type:"Développement",demande:"IA pour améliorer matching emploi-candidat, réduire délai placement, personnalisation offres.",solution:"Moteur matching IA emploi : embeddings CV/offres + LLM scoring fit + recommandations formations",budget:"Appel d'offres public",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.francetravail.fr",concurrents:20,expertise:62,stack:"Python, ML, NLP, LLM, APIs FT",score:0},
+  {id:87,entreprise:"Bayard Presse",secteur:"Médias / Édition",type:"Automatisation",demande:"IA éditoriale : recommandation contenus, personnalisation lecteur, analyse sémantique, SEO automatisé.",solution:"Pipeline éditorial IA : analyse article → SEO LLM → reco personnalisée → newsletter auto",budget:"CDI Montrouge",urgence:"immédiat",remote:"hybrid",contact:"https://www.welcometothejungle.com/fr/companies/bayard-presse/",concurrents:10,expertise:72,stack:"Python, NLP, LLM, APIs éditoriales",score:0},
+  {id:88,entreprise:"Mention",secteur:"SaaS / Social Listening",type:"Développement",demande:"NLP Engineer analyse sentiment et extraction entités, HuggingFace, BERT multilingual.",solution:"Modèle sentiment multilingue + extraction entités nommées + résumé veille auto + alertes LLM",budget:"CDI Paris",urgence:"sous 3 mois",remote:"remote",contact:"https://www.mention.com",concurrents:8,expertise:75,stack:"HuggingFace, BERT, Python, spaCy",score:0},
+  {id:89,entreprise:"Cegos",secteur:"Formation professionnelle",type:"Formation",demande:"Formateur IA & Automatisation pour formations entreprises, ChatGPT, Copilot, Python IA, IA générative.",solution:"Offre formation PromptLabs : de la prise en main à l'IA opérationnelle — 3 formats (demi-journée / 2j / 5j)",budget:"CDI ou missions formateur",urgence:"immédiat",remote:"remote",contact:"https://candidat.francetravail.fr",concurrents:15,expertise:85,stack:"ChatGPT, Copilot, Python, n8n, LangChain",score:0},
+  {id:90,entreprise:"CCI Paris Île-de-France",secteur:"Secteur Public / Formation",type:"Formation",demande:"Appel d'offres formateurs IA pour programmes montée en compétences PME franciliennes.",solution:"Programme formation IA PromptLabs certifié : audit besoins + parcours personnalisé + suivi 90 jours",budget:"Appel d'offres formation",urgence:"sous 3 mois",remote:"remote",contact:"https://www.cci-paris-idf.fr",concurrents:10,expertise:88,stack:"ChatGPT, Make.com, n8n, LangChain",score:0},
+  {id:91,entreprise:"Grandes entreprises (formation GenAI)",secteur:"ESN / Formation",type:"Formation",demande:"Consultants formateurs GenAI pour CAC40 et ETI françaises, équipes techniques et non-techniques.",solution:"Catalogue formation PromptLabs : IA pour non-tech / prompt engineering / RAG / agents — format CPF",budget:"Budget DIF/CPF entreprise",urgence:"immédiat",remote:"remote",contact:"https://www.linkedin.com",concurrents:12,expertise:88,stack:"ChatGPT, Claude, GPT-4, outils métiers IA",score:0},
+  {id:92,entreprise:"MAIF (développement Python IA)",secteur:"Assurance / Mutuelle",type:"Développement",demande:"Développeur Python IA pour modèles ML tarification, prévention sinistres, analyse déclarations.",solution:"Modèle tarification ML + détection fraud IA + pipeline analyse déclarations NLP + MLOps",budget:"CDI Niort remote partiel",urgence:"immédiat",remote:"hybrid",contact:"https://www.welcometothejungle.com/fr/companies/maif/",concurrents:12,expertise:72,stack:"Python, scikit-learn, MLflow, NLP",score:0},
+  {id:93,entreprise:"Octo Technology",secteur:"ESN / Conseil IT",type:"Conseil",demande:"Architecte IA pour concevoir plateformes IA clients grands comptes, MLOps, gouvernance, sécurisation.",solution:"Mission architecte IA : design MLOps + sécurité LLM + gouvernance données + formation équipes",budget:"CDI Paris",urgence:"immédiat",remote:"hybrid",contact:"https://www.welcometothejungle.com/fr/companies/octo-technology/",concurrents:18,expertise:70,stack:"AWS/Azure, MLOps, LangChain, gouvernance IA",score:0},
+  {id:94,entreprise:"Pigment",secteur:"Finance / SaaS",type:"Développement",demande:"Senior ML Engineer pour IA forecasting financier, séries temporelles + LLM, Python + PyTorch.",solution:"Modèle forecasting IA : LSTM + LLM explication → intégration Pigment → rapports auto direction",budget:"CDI Paris",urgence:"immédiat",remote:"remote",contact:"https://www.pigment.com",concurrents:6,expertise:80,stack:"Python, PyTorch, LLM, séries temporelles",score:0},
+  {id:95,entreprise:"Collectivités (formation agents publics)",secteur:"Secteur Public",type:"Formation",demande:"Formateurs IA pour agents publics, sensibilisation RGPD + pratique IA outils quotidien.",solution:"Formation agents publics IA : sensibilisation → outils pratiques → RGPD → cas usage admin",budget:"Budget formation publique",urgence:"sous 3 mois",remote:"remote",contact:"https://www.comet.co",concurrents:5,expertise:90,stack:"ChatGPT, Copilot gouvernement, outils admin",score:0},
+  {id:96,entreprise:"Sia Partners",secteur:"ESN / Conseil",type:"Conseil",demande:"Consultants IA pour pratiques sectorielles banque/assurance/énergie, accompagnement transformation.",solution:"Audit + roadmap IA sectorielle + POC LLM + formation C-level → déploiement production guidé",budget:"CDI senior",urgence:"immédiat",remote:"hybrid",contact:"https://www.sia-partners.com",concurrents:22,expertise:68,stack:"Tout écosystème IA",score:0},
+  {id:97,entreprise:"Artefact",secteur:"ESN / Data & IA",type:"Conseil",demande:"Consultants senior data & IA pour renforcer équipes sur projets clients variés.",solution:"Mission data IA : audit maturité + stratégie données + déploiement modèles + transfer of knowledge",budget:"CDI senior consultant",urgence:"immédiat",remote:"hybrid",contact:"https://www.artefact.com/fr/",concurrents:18,expertise:72,stack:"Python, ML, LLM, cloud IA",score:0},
+  {id:98,entreprise:"Département du Nord",secteur:"Secteur Public / Social",type:"Automatisation",demande:"IA optimisation traitement dossiers aide sociale, classification automatique, aide décision.",solution:"Système IA aide sociale : classification dossiers → priorisation → LLM résumé dossier → aide instruction",budget:"Appel d'offres",urgence:"sous 3 mois",remote:"hybrid",contact:"https://www.lenord.fr",concurrents:12,expertise:65,stack:"Python, ML, LLM, APIs collectivité",score:0},
+  {id:99,entreprise:"OpenLLM-France (Lucie)",secteur:"Recherche / Open Source IA",type:"Développement",demande:"Contributeurs LLM français open-source, fine-tuning, données françaises, évaluation, projet Lucie.",solution:"Contribution expertise : fine-tuning + curation datasets FR + benchmarks FrenchBench + publications",budget:"Contribution open-source",urgence:"projet futur",remote:"remote",contact:"https://github.com/OpenLLM-France/Lucie-Training",concurrents:4,expertise:80,stack:"PyTorch, HuggingFace, PEFT, Python",score:0},
+  {id:100,entreprise:"Cabinet conseil RH (CV matching)",secteur:"RH / Recrutement",type:"Automatisation",demande:"Développeur IA matching CV/offres, analyse profils, mise en relation automatisée, TJM 650-800€.",solution:"Moteur matching RH IA : embeddings sémantiques + scoring multi-critères + LLM justification match",budget:"TJM 650-800€",urgence:"immédiat",remote:"remote",contact:"https://www.malt.fr",concurrents:2,expertise:92,stack:"OpenAI embeddings, Python, pgvector, LangChain",score:0}
+];
+
+// Calculate scores
+function calcScore(d) {
+  let s = 0;
+  // Concurrence (moins = mieux) — max 30 pts
+  if (d.concurrents === 0) s += 30;
+  else if (d.concurrents <= 2) s += 25;
+  else if (d.concurrents <= 5) s += 20;
+  else if (d.concurrents <= 10) s += 12;
+  else if (d.concurrents <= 20) s += 5;
+  // Expertise PromptLabs — max 25 pts
+  s += Math.round((d.expertise / 100) * 25);
+  // Urgence — max 20 pts
+  if (d.urgence === 'immédiat') s += 20;
+  else if (d.urgence === 'sous 3 mois') s += 12;
+  else s += 4;
+  // Remote — max 15 pts
+  if (d.remote === 'remote') s += 15;
+  else if (d.remote === 'hybrid') s += 7;
+  // Budget favorabilité — max 10 pts
+  const b = d.budget.toLowerCase();
+  if (b.includes('tjm') || b.includes('forfait') || b.includes('000€')) s += 10;
+  else if (b.includes('cdi')) s += 5;
+  else s += 3;
+  return Math.min(s, 100);
+}
+
+DATA.forEach(d => d.score = calcScore(d));
+
+// Globals
+let filtered = [...DATA];
+let sortKey = 'score';
+let sortDir = 'desc';
+let currentPage = 1;
+const PAGE_SIZE = 20;
+let activeRow = null;
+
+const typeBadgeMap = {
+  'RAG': 'badge-rag', 'Agent': 'badge-agent', 'Fine-tuning': 'badge-finetune',
+  'Automatisation': 'badge-auto', 'Chatbot': 'badge-chatbot', 'Conseil': 'badge-conseil',
+  'Formation': 'badge-formation', 'Développement': 'badge-dev', 'Analyse': 'badge-analyse',
+  'Prompt': 'badge-prompt', 'LLM': 'badge-llm'
+};
+const urgenceBadgeMap = {
+  'immédiat': 'badge-urgent', 'sous 3 mois': 'badge-medium', 'projet futur': 'badge-long'
+};
+const remoteBadgeMap = { 'remote': 'badge-remote', 'hybrid': 'badge-hybrid' };
+
+function scoreColor(s) {
+  if (s >= 70) return 'var(--green)';
+  if (s >= 45) return 'var(--orange)';
+  return 'var(--muted)';
+}
+
+function render() {
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = filtered.slice(start, start + PAGE_SIZE);
+
+  page.forEach(d => {
+    const badgeType = typeBadgeMap[d.type] || 'badge-dev';
+    const badgeUrgence = urgenceBadgeMap[d.urgence] || 'badge-medium';
+    const badgeRemote = remoteBadgeMap[d.remote] || 'badge-hybrid';
+    const sc = d.score;
+    const sfill = `background:${scoreColor(sc)};width:${sc}%`;
+    const hotBadge = sc >= 70 ? 'badge-hot' : (sc >= 45 ? 'badge-warm' : 'badge-cold');
+    const hotText = sc >= 70 ? '🔥 Chaud' : (sc >= 45 ? '🌡️ Tiède' : '❄️ Froid');
+
+    const tr = document.createElement('tr');
+    tr.dataset.id = d.id;
+    tr.innerHTML = `
+      <td style="color:var(--muted);font-size:12px">${d.id}</td>
+      <td class="enterprise">${d.entreprise}<br><small style="color:var(--muted);font-weight:400">${d.secteur}</small></td>
+      <td class="sector" style="display:none"></td>
+      <td><span class="badge ${badgeType}">${d.type}</span></td>
+      <td class="demand"><strong>${d.demande.substring(0,60)}…</strong></td>
+      <td style="font-size:11px;color:var(--muted);max-width:180px">${d.solution.substring(0,80)}…</td>
+      <td style="font-size:11px;color:var(--muted);white-space:nowrap">${d.budget.substring(0,22)}</td>
+      <td><span class="badge ${badgeUrgence}">${d.urgence}</span></td>
+      <td><span class="badge ${badgeRemote}">${d.remote}</span></td>
+      <td>
+        <div class="score-wrap">
+          <span class="score-num" style="color:${scoreColor(sc)}">${sc}</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="${sfill}"></div></div>
+          <span class="badge ${hotBadge}" style="font-size:9px">${hotText}</span>
+        </div>
+      </td>`;
+    tr.addEventListener('click', () => toggleDetail(d, tr));
+    tbody.appendChild(tr);
+
+    // Detail row
+    const detailTr = document.createElement('tr');
+    detailTr.className = 'detail-panel';
+    detailTr.id = `detail-${d.id}`;
+    detailTr.innerHTML = `<td colspan="10"><div class="detail-inner">
+      <div class="detail-section">
+        <h4>📋 Demande complète</h4>
+        <p>${d.demande}</p>
+        <br>
+        <h4>🔗 Contact / Lien</h4>
+        <a class="contact-link" href="${d.contact}" target="_blank" rel="noopener">${d.contact}</a>
+        <br><br>
+        <h4>🛠️ Stack technique</h4>
+        <p>${d.stack || 'Non précisée'}</p>
+        <br>
+        <h4>🌐 Modalité</h4>
+        <span class="badge ${badgeRemote}">${d.remote}</span>&nbsp;
+        <span class="badge ${badgeUrgence}">${d.urgence}</span>&nbsp;
+        <span class="badge ${badgeType}">${d.type}</span>
+      </div>
+      <div class="detail-section">
+        <h4>💡 Solution PromptLabs proposée</h4>
+        <p>${d.solution}</p>
+        <br>
+        <h4>🏷️ Offre PromptLabs adaptée</h4>
+        ${getSolutionTags(d)}
+      </div>
+      <div class="detail-section">
+        <h4>🎯 Score de recevabilité : <span style="color:${scoreColor(sc)};font-size:18px;font-weight:800">${sc}/100</span></h4>
+        <div class="score-breakdown">${getScoreBreakdown(d)}</div>
+        <br>
+        <h4>💶 Budget</h4>
+        <p>${d.budget}</p>
+        <br>
+        <h4>👥 Concurrence estimée</h4>
+        <p>${d.concurrents === 0 ? '✅ Aucun candidat connu' : `~${d.concurrents} candidats/concurrents`}</p>
+      </div>
+    </div></td>`;
+    tbody.appendChild(detailTr);
+  });
+
+  renderPagination();
+  updateKPIs();
+}
+
+function getSolutionTags(d) {
+  const tags = [];
+  if (['RAG','Chatbot','LLM'].includes(d.type)) tags.push('🤖 Développement IA sur mesure');
+  if (['Fine-tuning','Développement'].includes(d.type)) tags.push('⚙️ Développement IA sur mesure');
+  if (['Agent','Automatisation'].includes(d.type)) tags.push('🔄 Automatisation processus IA');
+  if (d.type === 'Formation') tags.push('🎓 Formation IA en entreprise');
+  if (d.type === 'Conseil') tags.push('🧠 Conseil stratégie IA');
+  if (d.type === 'Analyse') tags.push('📊 Analyse données & IA');
+  if (d.type === 'Prompt') tags.push('✍️ Prompt Engineering');
+  if (d.budget.includes('490') || d.budget.includes('forfait') || parseInt(d.budget) < 5000) tags.push('💼 Pack Démarrage 490€');
+  if (d.budget.includes('TJM') || d.budget.includes('1490')) tags.push('💼 Pack Pro 1490€');
+  if (d.budget.includes('CDI') || d.budget.includes('000')) tags.push('💼 Mission sur devis');
+  return tags.map(t => `<span class="solution-tag">${t}</span>`).join('');
+}
+
+function getScoreBreakdown(d) {
+  const lines = [];
+  let pts = 0;
+  // Concurrence
+  if (d.concurrents === 0) pts = 30;
+  else if (d.concurrents <= 2) pts = 25;
+  else if (d.concurrents <= 5) pts = 20;
+  else if (d.concurrents <= 10) pts = 12;
+  else pts = 5;
+  lines.push(`<div class="score-line"><span>🏆 Concurrence (${d.concurrents === 0 ? 'aucune' : d.concurrents + ' candidats'})</span><span class="pts pos">+${pts}</span></div>`);
+  const ep = Math.round((d.expertise / 100) * 25);
+  lines.push(`<div class="score-line"><span>🎯 Adéquation expertise (${d.expertise}%)</span><span class="pts pos">+${ep}</span></div>`);
+  const up = d.urgence === 'immédiat' ? 20 : d.urgence === 'sous 3 mois' ? 12 : 4;
+  lines.push(`<div class="score-line"><span>⚡ Urgence (${d.urgence})</span><span class="pts pos">+${up}</span></div>`);
+  const rp = d.remote === 'remote' ? 15 : 7;
+  lines.push(`<div class="score-line"><span>🌐 Modalité (${d.remote})</span><span class="pts pos">+${rp}</span></div>`);
+  const b = d.budget.toLowerCase();
+  const bp = (b.includes('tjm') || b.includes('forfait') || b.includes('000€')) ? 10 : b.includes('cdi') ? 5 : 3;
+  lines.push(`<div class="score-line"><span>💶 Budget favorable</span><span class="pts pos">+${bp}</span></div>`);
+  lines.push(`<div class="score-line" style="border-top:1px solid var(--border);margin-top:6px;padding-top:6px"><strong>TOTAL</strong><span class="pts pos" style="font-size:14px"><strong>${d.score}/100</strong></span></div>`);
+  return lines.join('');
+}
+
+function toggleDetail(d, tr) {
+  const detailRow = document.getElementById(`detail-${d.id}`);
+  const isOpen = detailRow.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.detail-panel.open').forEach(r => r.classList.remove('open'));
+  document.querySelectorAll('tbody tr.active-row').forEach(r => r.classList.remove('active-row'));
+  if (!isOpen) {
+    detailRow.classList.add('open');
+    tr.classList.add('active-row');
+  }
+}
+
+function renderPagination() {
+  const total = filtered.length;
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const pg = document.getElementById('pagination');
+  pg.innerHTML = '';
+  if (pages <= 1) return;
+  const prev = document.createElement('button');
+  prev.className = 'page-btn'; prev.textContent = '←';
+  prev.onclick = () => { if (currentPage > 1) { currentPage--; render(); } };
+  pg.appendChild(prev);
+  const maxShow = 7;
+  let start = Math.max(1, currentPage - 3);
+  let end = Math.min(pages, start + maxShow - 1);
+  if (end - start < maxShow - 1) start = Math.max(1, end - maxShow + 1);
+  for (let i = start; i <= end; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+    btn.textContent = i;
+    btn.onclick = (i => () => { currentPage = i; render(); })(i);
+    pg.appendChild(btn);
+  }
+  const next = document.createElement('button');
+  next.className = 'page-btn'; next.textContent = '→';
+  next.onclick = () => { if (currentPage < pages) { currentPage++; render(); } };
+  pg.appendChild(next);
+  const info = document.createElement('span');
+  info.className = 'page-info';
+  info.textContent = `Page ${currentPage}/${pages} · ${total} résultats`;
+  pg.appendChild(info);
+}
+
+function applyFilters() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const type = document.getElementById('filter-type').value;
+  const sector = document.getElementById('filter-sector').value;
+  const score = document.getElementById('filter-score').value;
+  const urgence = document.getElementById('filter-urgence').value;
+  filtered = DATA.filter(d => {
+    if (search && !d.entreprise.toLowerCase().includes(search) && !d.demande.toLowerCase().includes(search) && !d.type.toLowerCase().includes(search) && !d.secteur.toLowerCase().includes(search)) return false;
+    if (type && !d.type.includes(type)) return false;
+    if (sector && !d.secteur.includes(sector)) return false;
+    if (score === 'hot' && d.score < 70) return false;
+    if (score === 'warm' && (d.score < 45 || d.score >= 70)) return false;
+    if (score === 'cold' && d.score >= 45) return false;
+    if (urgence && !d.urgence.includes(urgence)) return false;
+    return true;
+  });
+  sortData();
+  currentPage = 1;
+  render();
+  document.getElementById('result-count').textContent = `${filtered.length} résultats`;
+}
+
+function resetFilters() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('filter-type').value = '';
+  document.getElementById('filter-sector').value = '';
+  document.getElementById('filter-score').value = '';
+  document.getElementById('filter-urgence').value = '';
+  filtered = [...DATA];
+  sortData();
+  currentPage = 1;
+  render();
+  document.getElementById('result-count').textContent = '100 résultats';
+}
+
+function sortTable(key) {
+  if (sortKey === key) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortKey = key; sortDir = 'desc'; }
+  document.querySelectorAll('thead th').forEach(th => { th.classList.remove('sort-asc','sort-desc'); });
+  sortData();
+  render();
+}
+
+function sortData() {
+  filtered.sort((a, b) => {
+    let av = a[sortKey] ?? '', bv = b[sortKey] ?? '';
+    if (typeof av === 'number') return sortDir === 'asc' ? av - bv : bv - av;
+    return sortDir === 'asc' ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+  });
+}
+
+function updateKPIs() {
+  const hot = filtered.filter(d => d.score >= 70).length;
+  const warm = filtered.filter(d => d.score >= 45 && d.score < 70).length;
+  const avg = Math.round(filtered.reduce((s, d) => s + d.score, 0) / (filtered.length || 1));
+  const urgent = filtered.filter(d => d.urgence === 'immédiat').length;
+  document.getElementById('kpi-total').textContent = filtered.length;
+  document.getElementById('kpi-hot').textContent = hot;
+  document.getElementById('kpi-warm').textContent = warm;
+  document.getElementById('kpi-avg').textContent = avg;
+  document.getElementById('kpi-urgent').textContent = urgent;
+}
+
+function renderCharts() {
+  // Type chart
+  const types = {};
+  DATA.forEach(d => types[d.type] = (types[d.type] || 0) + 1);
+  const sortedTypes = Object.entries(types).sort((a,b) => b[1]-a[1]);
+  const colors = ['var(--accent)','var(--accent2)','var(--green)','var(--orange)','var(--cyan)','var(--pink)','var(--yellow)','#60a5fa','#a78bfa','#86efac','#fb923c'];
+  const maxT = sortedTypes[0][1];
+  document.getElementById('chart-type').innerHTML = sortedTypes.map(([k,v],i) =>
+    `<div class="bar-item"><span class="label">${k}</span><div class="bar-fill" style="background:${colors[i%colors.length]};width:${Math.round(v/maxT*120)}px"></div><span class="bar-count">${v}</span></div>`
+  ).join('');
+
+  // Sector chart
+  const sectors = {};
+  DATA.forEach(d => {
+    const s = d.secteur.split('/')[0].trim();
+    sectors[s] = (sectors[s] || 0) + 1;
+  });
+  const sortedSect = Object.entries(sectors).sort((a,b) => b[1]-a[1]).slice(0,8);
+  const maxS = sortedSect[0][1];
+  document.getElementById('chart-sector').innerHTML = sortedSect.map(([k,v],i) =>
+    `<div class="bar-item"><span class="label">${k}</span><div class="bar-fill" style="background:${colors[i%colors.length]};width:${Math.round(v/maxS*120)}px"></div><span class="bar-count">${v}</span></div>`
+  ).join('');
+
+  // Score distribution
+  const scoreGroups = [
+    ['🔥 ≥ 70 (Chaud)', DATA.filter(d => d.score >= 70).length, 'var(--green)'],
+    ['🌡️ 55–69', DATA.filter(d => d.score >= 55 && d.score < 70).length, 'var(--orange)'],
+    ['🌡️ 45–54', DATA.filter(d => d.score >= 45 && d.score < 55).length, 'var(--yellow)'],
+    ['❄️ < 45', DATA.filter(d => d.score < 45).length, 'var(--muted)'],
+  ];
+  const maxSc = Math.max(...scoreGroups.map(g => g[1]));
+  document.getElementById('chart-score').innerHTML = scoreGroups.map(([k,v,c]) =>
+    `<div class="bar-item"><span class="label">${k}</span><div class="bar-fill" style="background:${c};width:${Math.round(v/maxSc*120)}px"></div><span class="bar-count">${v}</span></div>`
+  ).join('');
+
+  // Budget chart
+  const budgetGroups = [
+    ['TJM < 600€', DATA.filter(d => d.budget.match(/[45]\d\d€/)).length, 'var(--muted)'],
+    ['TJM 600–800€', DATA.filter(d => d.budget.match(/[67]\d\d€/)).length, 'var(--accent)'],
+    ['TJM > 800€', DATA.filter(d => d.budget.match(/[89]\d\d€|1[0-9]\d\d€/)).length, 'var(--green)'],
+    ['Forfait projet', DATA.filter(d => d.budget.toLowerCase().includes('forfait') || d.budget.match(/\d{3,5}€ (projet|forfait)/i)).length, 'var(--orange)'],
+    ['CDI / appel offres', DATA.filter(d => d.budget.toLowerCase().includes('cdi') || d.budget.toLowerCase().includes('appel')).length, 'var(--accent2)'],
+  ];
+  const maxB = Math.max(...budgetGroups.map(g => g[1]));
+  document.getElementById('chart-budget').innerHTML = budgetGroups.map(([k,v,c]) =>
+    `<div class="bar-item"><span class="label">${k}</span><div class="bar-fill" style="background:${c};width:${Math.round(v/(maxB||1)*120)}px"></div><span class="bar-count">${v}</span></div>`
+  ).join('');
+}
+
+// Events
+document.getElementById('search-input').addEventListener('input', applyFilters);
+document.getElementById('filter-type').addEventListener('change', applyFilters);
+document.getElementById('filter-sector').addEventListener('change', applyFilters);
+document.getElementById('filter-score').addEventListener('change', applyFilters);
+document.getElementById('filter-urgence').addEventListener('change', applyFilters);
+
+// Init
+sortData();
+render();
+renderCharts();
+</script>
+</body>
+</html>

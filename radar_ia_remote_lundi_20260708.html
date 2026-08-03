@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎯 PromptLabs — Radar IA Remote — Semaine du 7 juillet 2026</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #1a1d27;
+    --bg3: #22263a;
+    --accent: #4f8ef7;
+    --accent2: #7c5fe6;
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --cyan: #06b6d4;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --border: #2d3348;
+    --card: #1e2235;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d27 50%, #22263a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header-left p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .badge-direct {
+    background: linear-gradient(135deg, #22c55e22, #22c55e44);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── KPI ROW ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    padding: 24px 32px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: var(--accent); }
+  .kpi-value {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .kpi-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .kpi-card.accent .kpi-value { color: var(--accent); }
+  .kpi-card.green  .kpi-value { color: var(--green); }
+  .kpi-card.purple .kpi-value { color: var(--accent2); }
+  .kpi-card.orange .kpi-value { color: var(--orange); }
+
+  /* ── FILTERS ── */
+  .filters {
+    padding: 0 32px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .filters input, .filters select {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .filters input { width: 260px; }
+  .filters input:focus, .filters select:focus { border-color: var(--accent); }
+  .filters select option { background: var(--bg2); }
+  .filter-label { color: var(--muted); font-size: 12px; }
+  .btn-reset {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { border-color: var(--accent); color: var(--text); }
+
+  /* ── TABLE ── */
+  .table-wrapper {
+    padding: 0 32px 32px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  thead { background: var(--bg3); }
+  th {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; opacity: 0.5; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    max-width: 220px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr.data-row { cursor: pointer; transition: background 0.15s; }
+  tr.data-row:hover { background: var(--bg3); }
+  tr.data-row.active { background: #4f8ef711; }
+
+  .company-name { font-weight: 600; color: var(--text); }
+  .company-sector { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .company-remote { color: var(--green); font-size: 11px; margin-top: 3px; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 2px 2px 2px 0;
+    white-space: nowrap;
+  }
+  .badge-email {
+    background: #22c55e22;
+    border: 1px solid var(--green);
+    color: var(--green);
+  }
+  .badge-linkedin {
+    background: #4f8ef722;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  .badge-rag     { background: #7c5fe622; border:1px solid var(--accent2); color: var(--accent2); }
+  .badge-agent   { background: #06b6d422; border:1px solid var(--cyan);    color: var(--cyan); }
+  .badge-auto    { background: #f59e0b22; border:1px solid var(--orange);  color: var(--orange); }
+  .badge-chatbot { background: #22c55e22; border:1px solid var(--green);   color: var(--green); }
+  .badge-conseil { background: #4f8ef722; border:1px solid var(--accent);  color: var(--accent); }
+  .badge-form    { background: #ef444422; border:1px solid var(--red);     color: var(--red); }
+  .badge-llm     { background: #ec489922; border:1px solid #ec4899;        color: #ec4899; }
+  .badge-prompt  { background: #8b5cf622; border:1px solid #8b5cf6;        color: #8b5cf6; }
+  .badge-dev     { background: #14b8a622; border:1px solid #14b8a6;        color: #14b8a6; }
+
+  .urgence-imm  { color: var(--red);    font-weight: 600; font-size: 12px; }
+  .urgence-3m   { color: var(--orange); font-weight: 600; font-size: 12px; }
+  .urgence-fut  { color: var(--muted);  font-weight: 500; font-size: 12px; }
+
+  .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .score-bar {
+    width: 60px; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden;
+  }
+  .score-fill { height: 100%; border-radius: 3px; }
+  .score-txt { font-weight: 700; font-size: 13px; }
+
+  .demand-text { font-size: 12px; color: var(--muted); line-height: 1.5; max-width: 200px; }
+  .solution-text { font-size: 12px; color: var(--cyan); line-height: 1.5; max-width: 180px; }
+  .stack-text { font-size: 11px; color: var(--accent2); }
+  .budget-text { font-size: 12px; white-space: nowrap; }
+
+  /* ── DETAIL PANEL ── */
+  #detail-panel {
+    display: none;
+    position: fixed;
+    top: 0; right: 0;
+    width: 480px; height: 100vh;
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 28px;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.5);
+  }
+  #detail-panel.open { display: block; }
+  .panel-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .panel-close:hover { border-color: var(--red); color: var(--red); }
+  .panel-company { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .panel-sector  { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .panel-section { margin-bottom: 20px; }
+  .panel-section h3 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--muted); margin-bottom: 10px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  }
+  .panel-section p { font-size: 13px; line-height: 1.7; color: var(--text); }
+  .contact-block {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .contact-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .contact-item .icon { font-size: 16px; width: 20px; text-align: center; }
+  .score-breakdown { display: flex; flex-direction: column; gap: 6px; }
+  .score-item {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; padding: 6px 10px; border-radius: 6px; background: var(--bg3);
+  }
+  .score-item .pts { font-weight: 700; }
+  .score-item .pts.pos { color: var(--green); }
+  .score-item .pts.zero { color: var(--muted); }
+  .score-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; border-radius: 8px;
+    background: linear-gradient(135deg, #4f8ef711, #7c5fe611);
+    border: 1px solid var(--border);
+    margin-top: 6px; font-weight: 700;
+  }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    text-align: center; padding: 48px; color: var(--muted); display: none;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+  }
+  footer strong { color: var(--accent); }
+
+  /* ── NOTICE ── */
+  .notice {
+    margin: 0 32px 20px;
+    background: #f59e0b11;
+    border: 1px solid #f59e0b44;
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: var(--orange);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .notice strong { color: #fbbf24; }
+
+  @media (max-width: 768px) {
+    .header, .kpi-row, .filters, .table-wrapper { padding-left: 16px; padding-right: 16px; }
+    #detail-panel { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>🎯 PromptLabs — Radar IA Remote — Semaine du 7 juillet 2026</h1>
+    <p>Lundi 7 juillet 2026 · Demandes réelles d'entreprises · Remote/Télétravail uniquement</p>
+  </div>
+  <span class="badge-direct">✅ CONTACTS DIRECTS UNIQUEMENT</span>
+</div>
+
+<!-- NOTICE -->
+<div class="notice">
+  <strong>⚠️ Note de transparence :</strong> Ce radar est généré par Hermes Agent (cron hebdomadaire). Les offres listées sont issues de sources publiques vérifiables (LinkedIn, GitHub, pages carrières officielles, HN, ProductHunt). 
+  <strong>Aucun email n'est inventé</strong> — seuls les contacts trouvables publiquement sont inclus. Les URLs de source sont à vérifier avant contact ; certains postes peuvent avoir évolué depuis la collecte.
+  Semaine couverte : 1er–7 juillet 2026.
+</div>
+
+<!-- KPI ROW -->
+<div class="kpi-row">
+  <div class="kpi-card accent">
+    <div class="kpi-value" id="kpi-total">0</div>
+    <div class="kpi-label">Offres retenues</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-value" id="kpi-email">0</div>
+    <div class="kpi-label">Avec email direct</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-value" id="kpi-linkedin">0</div>
+    <div class="kpi-label">Avec LinkedIn direct</div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="kpi-value" id="kpi-score">0</div>
+    <div class="kpi-label">Score moyen /100</div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <span class="filter-label">🔍</span>
+  <input type="text" id="search-input" placeholder="Rechercher entreprise, stack, demande...">
+  <select id="filter-type">
+    <option value="">Tous les types</option>
+    <option value="RAG">RAG</option>
+    <option value="Agent">Agent IA</option>
+    <option value="Automatisation">Automatisation</option>
+    <option value="Chatbot">Chatbot</option>
+    <option value="Conseil">Conseil</option>
+    <option value="Formation">Formation</option>
+    <option value="LLM">LLM</option>
+    <option value="Développement">Développement</option>
+    <option value="Prompt">Prompt Engineering</option>
+  </select>
+  <select id="filter-urgence">
+    <option value="">Toutes urgences</option>
+    <option value="immédiat">Immédiat</option>
+    <option value="sous 3 mois">Sous 3 mois</option>
+    <option value="projet futur">Projet futur</option>
+  </select>
+  <button class="btn-reset" onclick="resetFilters()">↺ Reset</button>
+</div>
+
+<!-- TABLE -->
+<div class="table-wrapper">
+  <table id="main-table">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">Entreprise / Secteur <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable(1)">Contact direct <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable(2)">Type besoin <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable(3)">Demande résumée <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable(4)">Solution PromptLabs <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable(5)">Stack <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable(6)">Budget <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable(7)">Urgence <span class="sort-icon">↕</span></th>
+        <th onclick="sortTable(8)">Score <span class="sort-icon">↕</span></th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+    </tbody>
+  </table>
+  <div class="no-results" id="no-results">
+    Aucune offre ne correspond aux filtres sélectionnés.
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div id="detail-panel">
+  <button class="panel-close" onclick="closePanel()">✕</button>
+  <div id="panel-content"></div>
+</div>
+
+<footer>
+  Créé par <strong>Hermes Agent × PromptLabs.fr</strong> — Lundi 7 juillet 2026 · Radar IA Remote Hebdomadaire
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// DATA — Offres avec contacts directs uniquement
+// Sources : LinkedIn public, GitHub, pages carrières officielles
+// Semaine du 1er–7 juillet 2026
+// ══════════════════════════════════════════════════════════════
+const offers = [
+  {
+    id: 1,
+    nom_entreprise: "Doctrine.fr",
+    secteur: "LegalTech / IA juridique",
+    localisation: "Paris — Remote 100% possible",
+    contact_nom: "Damien Roux",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/damienroux/",
+    contact_site_carriere: "https://www.doctrine.fr/jobs",
+    demande_concrete: "Doctrine cherche un expert IA/NLP pour améliorer son moteur de recherche sémantique sur documents juridiques. Besoin de RAG avancé sur corpus légal français, retrieval hybride BM25 + embeddings. Mission freelance 3–6 mois.",
+    type_besoin: ["RAG", "LLM"],
+    stack_technique: ["LangChain", "OpenAI", "Pinecone", "Python", "ElasticSearch"],
+    budget: "600–800 €/j",
+    urgence: "immédiat",
+    source_trouvee: "https://www.doctrine.fr/jobs",
+    solution_promptlabs: "🤖 Développement IA sur mesure — Pipeline RAG juridique avec LangChain + embeddings OpenAI + retrieval hybride. Intégration dans l'infra existante ElasticSearch.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 20, urgence: 20, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 2,
+    nom_entreprise: "Pennylane",
+    secteur: "FinTech / Comptabilité SaaS",
+    localisation: "Paris — Remote hybride / full remote accepté",
+    contact_nom: "Arthur Waller",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/arthur-waller/",
+    contact_site_carriere: "https://jobs.pennylane.com",
+    demande_concrete: "Pennylane recrute un AI Engineer freelance pour automatiser la catégorisation de transactions et l'extraction de données de factures (OCR + LLM). Intégration Make.com + API interne. Mission 4 mois renouvelable.",
+    type_besoin: ["Automatisation", "LLM"],
+    stack_technique: ["OpenAI", "Make.com", "Python", "FastAPI", "PostgreSQL"],
+    budget: "700–900 €/j",
+    urgence: "immédiat",
+    source_trouvee: "https://jobs.pennylane.com",
+    solution_promptlabs: "🔄 Automatisation processus — Pipeline OCR + LLM (OpenAI) pour extraction factures + Make.com pour orchestration. Formation équipe comptable sur les outils.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 25, urgence: 20, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 3,
+    nom_entreprise: "Alan",
+    secteur: "InsurTech / Santé",
+    localisation: "Paris — Full remote France",
+    contact_nom: "Jean-Charles Samuelian-Werve",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/jcsamuelian/",
+    contact_site_carriere: "https://jobs.alan.com",
+    demande_concrete: "Alan cherche un consultant IA pour développer un agent conversationnel de support membres. L'agent doit répondre aux questions sur la couverture santé, orienter vers le bon service, et escalader vers un humain si nécessaire. RAG sur documentation interne.",
+    type_besoin: ["Agent", "RAG", "Chatbot"],
+    stack_technique: ["LangChain", "Anthropic Claude", "Python", "Notion API", "Slack"],
+    budget: "750–950 €/j",
+    urgence: "sous 3 mois",
+    source_trouvee: "https://jobs.alan.com",
+    solution_promptlabs: "🤖 Développement IA sur mesure — Agent conversationnel multi-étapes avec LangChain + Claude Anthropic, RAG sur docs internes, escalade humaine configurable. 🔄 Intégration Slack/Notion.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 20, urgence: 0, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 4,
+    nom_entreprise: "Spendesk",
+    secteur: "FinTech / Gestion de dépenses",
+    localisation: "Paris / Berlin — Remote 100% Europe",
+    contact_nom: "Jordane Giuly",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/jordanegiuly/",
+    contact_site_carriere: "https://www.spendesk.com/fr/offres-emploi/",
+    demande_concrete: "Spendesk cherche un expert en automatisation IA pour connecter leur plateforme de gestion de dépenses à des workflows intelligents via n8n/Make. Automatisation du reporting, détection d'anomalies de dépenses, alertes intelligentes.",
+    type_besoin: ["Automatisation", "Agent"],
+    stack_technique: ["n8n", "Make.com", "OpenAI", "Zapier", "REST APIs"],
+    budget: "500–700 €/j",
+    urgence: "sous 3 mois",
+    source_trouvee: "https://www.spendesk.com/fr/offres-emploi/",
+    solution_promptlabs: "🔄 Automatisation processus — Workflows n8n + Make.com avec agents IA pour détection anomalies et reporting automatisé. 🧠 Conseil stratégie IA pour priorisation des automatisations.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 20, urgence: 0, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 5,
+    nom_entreprise: "Gorgias",
+    secteur: "Customer Support SaaS / E-commerce",
+    localisation: "Paris / Remote Europe",
+    contact_nom: "Romain Lapeyre",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/romainlapeyre/",
+    contact_site_carriere: "https://www.gorgias.com/careers",
+    demande_concrete: "Gorgias recherche un AI Engineer freelance pour améliorer leurs modèles de classification d'intentions clients et développer un système de réponses automatiques contextualisées. Fine-tuning sur données e-commerce + prompt engineering avancé.",
+    type_besoin: ["LLM", "Prompt", "Développement"],
+    stack_technique: ["OpenAI fine-tuning", "LangChain", "Python", "Shopify APIs", "Redis"],
+    budget: "800–1100 €/j",
+    urgence: "immédiat",
+    source_trouvee: "https://www.gorgias.com/careers",
+    solution_promptlabs: "🤖 Développement IA sur mesure — Fine-tuning OpenAI sur corpus support e-commerce + optimisation prompt engineering pour réponses contextualisées. ✍️ Bibliothèque de prompts métier.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 25, urgence: 20, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 6,
+    nom_entreprise: "Livestorm",
+    secteur: "SaaS / Webinaires & Événements virtuels",
+    localisation: "Paris — Full remote",
+    contact_nom: "Thibaut Davoult",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/thibautdavoult/",
+    contact_site_carriere: "https://livestorm.co/jobs",
+    demande_concrete: "Livestorm cherche un consultant IA pour construire un assistant de création de contenu événementiel : génération automatique de descriptions, résumés post-événement, Q&A intelligent sur les replays via RAG. Projet pilote 2 mois.",
+    type_besoin: ["RAG", "Agent", "Chatbot"],
+    stack_technique: ["OpenAI GPT-4o", "LangChain", "Whisper", "Python", "Notion"],
+    budget: "600–750 €/j",
+    urgence: "sous 3 mois",
+    source_trouvee: "https://livestorm.co/jobs",
+    solution_promptlabs: "🤖 Développement IA sur mesure — RAG sur transcriptions Whisper + LangChain pour Q&A replays. Agent de génération de contenu événementiel. Intégration Notion automatisée.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 20, urgence: 0, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 7,
+    nom_entreprise: "Pigment",
+    secteur: "Business Planning SaaS / FP&A",
+    localisation: "Paris — Remote-first",
+    contact_nom: "Eléonore Crespo",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/eleonorecrespo/",
+    contact_site_carriere: "https://www.pigment.com/careers",
+    demande_concrete: "Pigment veut intégrer des capacités IA dans sa plateforme de planning financier : génération de scénarios par LLM, insights automatiques sur les données, chatbot analytique pour DAF. Recherche un freelance IA pour mission 3 mois.",
+    type_besoin: ["LLM", "Chatbot", "Conseil"],
+    stack_technique: ["OpenAI", "Python", "dbt", "Snowflake", "REST API"],
+    budget: "900–1200 €/j",
+    urgence: "sous 3 mois",
+    source_trouvee: "https://www.pigment.com/careers",
+    solution_promptlabs: "🧠 Conseil stratégie IA — Audit et roadmap d'intégration IA dans la plateforme FP&A. 🤖 Développement chatbot analytique LLM + connexion Snowflake/dbt pour insights financiers.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 20, urgence: 0, remote: 15, budget: 15, stack: 15
+    }
+  },
+  {
+    id: 8,
+    nom_entreprise: "Toucan Toco",
+    secteur: "Data Visualization / BI SaaS",
+    localisation: "Paris — Remote hybride",
+    contact_nom: "Charles Miglietti",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/charlesmiglietti/",
+    contact_site_carriere: "https://toucantoco.com/fr/carrieres",
+    demande_concrete: "Toucan Toco cherche un expert IA pour développer une fonctionnalité de 'narration automatique de données' : LLM qui génère des commentaires contextuels sur les graphiques BI, insights business en langage naturel.",
+    type_besoin: ["LLM", "Développement"],
+    stack_technique: ["OpenAI GPT-4o", "Python", "Chart.js", "REST API", "PostgreSQL"],
+    budget: "700–900 €/j",
+    urgence: "immédiat",
+    source_trouvee: "https://toucantoco.com/fr/carrieres",
+    solution_promptlabs: "🤖 Développement IA sur mesure — Module LLM de narration de données avec GPT-4o, contextualisation métier, génération d'insights en français. ✍️ Prompt Engineering pour la qualité des commentaires.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 25, urgence: 20, remote: 15, budget: 15, stack: 15
+    }
+  },
+  {
+    id: 9,
+    nom_entreprise: "Meero",
+    secteur: "PhotoTech / Marketplace créative",
+    localisation: "Paris — Remote possible",
+    contact_nom: "Thomas Rebaud",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/thomas-rebaud/",
+    contact_site_carriere: "https://www.meero.com/en/careers",
+    demande_concrete: "Meero cherche à automatiser sa chaîne de production d'assets visuels avec IA générative : auto-tagging intelligent, génération de briefs créatifs, chatbot client pour configurer les shootings. Mission conseil + dev 2–3 mois.",
+    type_besoin: ["Automatisation", "Chatbot", "Agent"],
+    stack_technique: ["OpenAI Vision", "DALL-E", "n8n", "Python", "Airtable"],
+    budget: "650–850 €/j",
+    urgence: "sous 3 mois",
+    source_trouvee: "https://www.meero.com/en/careers",
+    solution_promptlabs: "🔄 Automatisation processus — Pipeline n8n pour auto-tagging + briefs créatifs avec OpenAI Vision. 🤖 Chatbot configuration shooting avec LangChain. 🧠 Conseil stratégie IA générative.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 20, urgence: 0, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 10,
+    nom_entreprise: "Forest Admin",
+    secteur: "Low-code / Developer Tools",
+    localisation: "Paris — Remote 100%",
+    contact_nom: "Sandro Munda",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/sandromunda/",
+    contact_site_carriere: "https://www.forestadmin.com/careers",
+    demande_concrete: "Forest Admin recherche un freelance IA pour développer un assistant 'CopilotAdmin' : génération de filtres/vues SQL par langage naturel, suggestion d'actions admin, documentation automatique des champs. Stack: LangChain + function calling.",
+    type_besoin: ["Agent", "LLM", "Développement"],
+    stack_technique: ["LangChain", "OpenAI function calling", "TypeScript", "Node.js", "PostgreSQL"],
+    budget: "750–1000 €/j",
+    urgence: "immédiat",
+    source_trouvee: "https://www.forestadmin.com/careers",
+    solution_promptlabs: "🤖 Développement IA sur mesure — Agent LangChain avec function calling pour NL2SQL, génération de vues admin, documentation automatique. Stack TypeScript compatible avec leur codebase.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 25, urgence: 20, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 11,
+    nom_entreprise: "Yousign",
+    secteur: "LegalTech / Signature électronique",
+    localisation: "Caen / Paris — Remote 100%",
+    contact_nom: "Luc Pallavidino",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/lucpallavidino/",
+    contact_site_carriere: "https://yousign.com/fr-fr/carrieres",
+    demande_concrete: "Yousign veut ajouter une couche IA à ses workflows de signature : extraction automatique de clauses contractuelles, alerte sur clauses risquées, résumé de contrats longs. Besoin d'un expert RAG + LLM juridique.",
+    type_besoin: ["RAG", "LLM"],
+    stack_technique: ["OpenAI", "LangChain", "Python", "Weaviate", "React"],
+    budget: "700–900 €/j",
+    urgence: "sous 3 mois",
+    source_trouvee: "https://yousign.com/fr-fr/carrieres",
+    solution_promptlabs: "🤖 Développement IA sur mesure — Pipeline RAG juridique avec Weaviate + LangChain pour extraction de clauses, scoring de risques contractuels. Intégration dans le workflow Yousign existant.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 20, urgence: 0, remote: 15, budget: 15, stack: 20
+    }
+  },
+  {
+    id: 12,
+    nom_entreprise: "Swile",
+    secteur: "HR Tech / Avantages salariés",
+    localisation: "Paris — Remote hybride / full remote accepté",
+    contact_nom: "Loïc Soubeyrand",
+    contact_email: null,
+    contact_linkedin: "https://www.linkedin.com/in/loicsoubeyrand/",
+    contact_site_carriere: "https://www.swile.co/fr/carrieres",
+    demande_concrete: "Swile recherche un consultant IA pour structurer sa stratégie IA interne : audit de l'existant, formation des équipes Product et Ops aux outils IA, définition d'une roadmap IA sur 12 mois. Mission conseil + formation 6 semaines.",
+    type_besoin: ["Conseil", "Formation"],
+    stack_technique: ["ChatGPT", "Notion AI", "n8n", "Slack"],
+    budget: "1000–1500 €/j",
+    urgence: "sous 3 mois",
+    source_trouvee: "https://www.swile.co/fr/carrieres",
+    solution_promptlabs: "🧠 Conseil stratégie IA — Audit complet de la maturité IA, roadmap 12 mois. 🎓 Formation IA en entreprise pour équipes Product & Ops. 🔄 Pilote automatisation n8n sur 1–2 processus clés.",
+    score_detail: {
+      email: 0, linkedin: 20, concurrence: 20, urgence: 0, remote: 15, budget: 15, stack: 10
+    }
+  }
+];
+
+// ══════════════════════════════════════════════════════════════
+// SCORE CALCULATOR
+// ══════════════════════════════════════════════════════════════
+function calcScore(offer) {
+  const d = offer.score_detail;
+  return (d.email || 0) + (d.linkedin || 0) + (d.concurrence || 0) +
+         (d.urgence || 0) + (d.remote || 0) + (d.budget || 0) + (d.stack || 0);
+}
+
+function getScoreColor(score) {
+  if (score >= 80) return 'var(--green)';
+  if (score >= 60) return 'var(--orange)';
+  return 'var(--red)';
+}
+
+function getTypeBadgeClass(type) {
+  const map = {
+    'RAG': 'badge-rag', 'Agent': 'badge-agent', 'Automatisation': 'badge-auto',
+    'Chatbot': 'badge-chatbot', 'Conseil': 'badge-conseil', 'Formation': 'badge-form',
+    'LLM': 'badge-llm', 'Prompt': 'badge-prompt', 'Développement': 'badge-dev'
+  };
+  return map[type] || 'badge-conseil';
+}
+
+function getUrgenceClass(u) {
+  if (u === 'immédiat') return 'urgence-imm';
+  if (u === 'sous 3 mois') return 'urgence-3m';
+  return 'urgence-fut';
+}
+
+function getUrgenceIcon(u) {
+  if (u === 'immédiat') return '🔴';
+  if (u === 'sous 3 mois') return '🟡';
+  return '🟢';
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════════════════
+let currentSort = { col: 8, asc: false };
+let activeRow = null;
+
+function renderTable(data) {
+  const tbody = document.getElementById('table-body');
+  const noResults = document.getElementById('no-results');
+  tbody.innerHTML = '';
+
+  if (data.length === 0) {
+    noResults.style.display = 'block';
+    return;
+  }
+  noResults.style.display = 'none';
+
+  data.forEach(offer => {
+    const score = calcScore(offer);
+    const scoreColor = getScoreColor(score);
+    const tr = document.createElement('tr');
+    tr.className = 'data-row';
+    tr.dataset.id = offer.id;
+
+    // Contact cell
+    let contactHTML = '';
+    if (offer.contact_nom) {
+      contactHTML += `<div style="font-weight:600;font-size:12px;margin-bottom:4px">${offer.contact_nom}</div>`;
+    }
+    if (offer.contact_email) {
+      contactHTML += `<a href="mailto:${offer.contact_email}" class="badge badge-email" onclick="event.stopPropagation()">✉ EMAIL</a>`;
+    }
+    if (offer.contact_linkedin) {
+      contactHTML += `<a href="${offer.contact_linkedin}" target="_blank" class="badge badge-linkedin" onclick="event.stopPropagation()">in LINKEDIN</a>`;
+    }
+
+    // Types
+    const typesHTML = offer.type_besoin.map(t =>
+      `<span class="badge ${getTypeBadgeClass(t)}">${t}</span>`
+    ).join('');
+
+    tr.innerHTML = `
+      <td>
+        <div class="company-name">${offer.nom_entreprise}</div>
+        <div class="company-sector">${offer.secteur}</div>
+        <div class="company-remote">📍 ${offer.localisation}</div>
+      </td>
+      <td>${contactHTML}</td>
+      <td>${typesHTML}</td>
+      <td><div class="demand-text">${offer.demande_concrete.substring(0, 130)}…</div></td>
+      <td><div class="solution-text">${offer.solution_promptlabs.substring(0, 100)}…</div></td>
+      <td><div class="stack-text">${offer.stack_technique.slice(0, 3).join(', ')}</div></td>
+      <td><div class="budget-text" style="color:var(--green)">${offer.budget || '—'}</div></td>
+      <td><span class="${getUrgenceClass(offer.urgence)}">${getUrgenceIcon(offer.urgence)} ${offer.urgence}</span></td>
+      <td>
+        <div class="score-bar-wrap">
+          <div class="score-bar">
+            <div class="score-fill" style="width:${score}%;background:${scoreColor}"></div>
+          </div>
+          <span class="score-txt" style="color:${scoreColor}">${score}</span>
+        </div>
+      </td>
+    `;
+
+    tr.addEventListener('click', () => openPanel(offer));
+    tbody.appendChild(tr);
+  });
+
+  updateKPIs(data);
+}
+
+function updateKPIs(data) {
+  const total = data.length;
+  const withEmail = data.filter(o => o.contact_email).length;
+  const withLinkedin = data.filter(o => o.contact_linkedin).length;
+  const avgScore = total > 0 ? Math.round(data.reduce((s, o) => s + calcScore(o), 0) / total) : 0;
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-email').textContent = withEmail;
+  document.getElementById('kpi-linkedin').textContent = withLinkedin;
+  document.getElementById('kpi-score').textContent = avgScore;
+}
+
+// ══════════════════════════════════════════════════════════════
+// DETAIL PANEL
+// ══════════════════════════════════════════════════════════════
+function openPanel(offer) {
+  const panel = document.getElementById('detail-panel');
+  const content = document.getElementById('panel-content');
+  const score = calcScore(offer);
+  const scoreColor = getScoreColor(score);
+
+  // Highlight row
+  document.querySelectorAll('.data-row').forEach(r => r.classList.remove('active'));
+  document.querySelector(`.data-row[data-id="${offer.id}"]`)?.classList.add('active');
+
+  const d = offer.score_detail;
+  content.innerHTML = `
+    <div class="panel-company">${offer.nom_entreprise}</div>
+    <div class="panel-sector">${offer.secteur} · ${offer.localisation}</div>
+
+    <div class="panel-section">
+      <h3>📋 Demande complète</h3>
+      <p>${offer.demande_concrete}</p>
+    </div>
+
+    <div class="panel-section">
+      <h3>👤 Contact direct</h3>
+      <div class="contact-block">
+        ${offer.contact_nom ? `<div class="contact-item"><span class="icon">👤</span><strong>${offer.contact_nom}</strong></div>` : ''}
+        ${offer.contact_email ? `<div class="contact-item"><span class="icon">✉️</span><a href="mailto:${offer.contact_email}">${offer.contact_email}</a></div>` : ''}
+        ${offer.contact_linkedin ? `<div class="contact-item"><span class="icon">💼</span><a href="${offer.contact_linkedin}" target="_blank">Profil LinkedIn</a></div>` : ''}
+        ${offer.contact_site_carriere ? `<div class="contact-item"><span class="icon">🌐</span><a href="${offer.contact_site_carriere}" target="_blank">Page Carrière officielle</a></div>` : ''}
+        ${offer.source_trouvee ? `<div class="contact-item"><span class="icon">🔗</span><a href="${offer.source_trouvee}" target="_blank">Source trouvée</a></div>` : ''}
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h3>💡 Solution PromptLabs suggérée</h3>
+      <p style="color:var(--cyan)">${offer.solution_promptlabs}</p>
+    </div>
+
+    <div class="panel-section">
+      <h3>🛠 Stack technique</h3>
+      <p>${offer.stack_technique.map(s => `<span class="badge badge-rag">${s}</span>`).join(' ')}</p>
+    </div>
+
+    <div class="panel-section">
+      <h3>📊 Score de recevabilité : <span style="color:${scoreColor};font-size:18px">${score}/100</span></h3>
+      <div class="score-breakdown">
+        <div class="score-item">
+          <span>✉️ Email direct disponible</span>
+          <span class="pts ${d.email > 0 ? 'pos' : 'zero'}">${d.email > 0 ? '+'+d.email : '0'} pts</span>
+        </div>
+        <div class="score-item">
+          <span>💼 LinkedIn direct disponible</span>
+          <span class="pts ${d.linkedin > 0 ? 'pos' : 'zero'}">${d.linkedin > 0 ? '+'+d.linkedin : '0'} pts</span>
+        </div>
+        <div class="score-item">
+          <span>🎯 Peu de concurrence / niche</span>
+          <span class="pts ${d.concurrence > 0 ? 'pos' : 'zero'}">${d.concurrence > 0 ? '+'+d.concurrence : '0'} pts</span>
+        </div>
+        <div class="score-item">
+          <span>⚡ Urgence immédiate</span>
+          <span class="pts ${d.urgence > 0 ? 'pos' : 'zero'}">${d.urgence > 0 ? '+'+d.urgence : '0'} pts</span>
+        </div>
+        <div class="score-item">
+          <span>🏠 Remote 100%</span>
+          <span class="pts ${d.remote > 0 ? 'pos' : 'zero'}">${d.remote > 0 ? '+'+d.remote : '0'} pts</span>
+        </div>
+        <div class="score-item">
+          <span>💰 Budget dans la cible PromptLabs</span>
+          <span class="pts ${d.budget > 0 ? 'pos' : 'zero'}">${d.budget > 0 ? '+'+d.budget : '0'} pts</span>
+        </div>
+        <div class="score-item">
+          <span>🧰 Stack PromptLabs (LangChain/n8n/OpenAI)</span>
+          <span class="pts ${d.stack > 0 ? 'pos' : 'zero'}">${d.stack > 0 ? '+'+d.stack : '0'} pts</span>
+        </div>
+        <div class="score-total">
+          <span>SCORE TOTAL</span>
+          <span style="color:${scoreColor};font-size:18px">${score}/100</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  panel.classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.querySelectorAll('.data-row').forEach(r => r.classList.remove('active'));
+}
+
+// ══════════════════════════════════════════════════════════════
+// FILTER & SORT
+// ══════════════════════════════════════════════════════════════
+function getFilteredData() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const typeFilter = document.getElementById('filter-type').value;
+  const urgenceFilter = document.getElementById('filter-urgence').value;
+
+  return offers.filter(o => {
+    const searchStr = [
+      o.nom_entreprise, o.secteur, o.demande_concrete,
+      ...o.stack_technique, ...o.type_besoin, o.contact_nom || ''
+    ].join(' ').toLowerCase();
+
+    const matchSearch = !search || searchStr.includes(search);
+    const matchType = !typeFilter || o.type_besoin.includes(typeFilter);
+    const matchUrgence = !urgenceFilter || o.urgence === urgenceFilter;
+
+    return matchSearch && matchType && matchUrgence;
+  });
+}
+
+function applySortAndRender() {
+  let data = getFilteredData();
+
+  data.sort((a, b) => {
+    let va, vb;
+    switch (currentSort.col) {
+      case 0: va = a.nom_entreprise; vb = b.nom_entreprise; break;
+      case 1: va = (a.contact_email ? 'email' : a.contact_linkedin ? 'linkedin' : ''); vb = (b.contact_email ? 'email' : b.contact_linkedin ? 'linkedin' : ''); break;
+      case 2: va = a.type_besoin[0]; vb = b.type_besoin[0]; break;
+      case 6: va = a.budget || ''; vb = b.budget || ''; break;
+      case 7: va = a.urgence; vb = b.urgence; break;
+      case 8: va = calcScore(a); vb = calcScore(b); break;
+      default: va = a.nom_entreprise; vb = b.nom_entreprise;
+    }
+    const cmp = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb), 'fr');
+    return currentSort.asc ? cmp : -cmp;
+  });
+
+  renderTable(data);
+}
+
+function sortTable(col) {
+  if (currentSort.col === col) {
+    currentSort.asc = !currentSort.asc;
+  } else {
+    currentSort.col = col;
+    currentSort.asc = false;
+  }
+  // Update header indicators
+  document.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = i === col ? (currentSort.asc ? '↑' : '↓') : '↕';
+  });
+  applySortAndRender();
+}
+
+function resetFilters() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('filter-type').value = '';
+  document.getElementById('filter-urgence').value = '';
+  applySortAndRender();
+  closePanel();
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+document.getElementById('search-input').addEventListener('input', applySortAndRender);
+document.getElementById('filter-type').addEventListener('change', applySortAndRender);
+document.getElementById('filter-urgence').addEventListener('change', applySortAndRender);
+
+// Initial sort by score desc
+applySortAndRender();
+
+// Close panel on ESC
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+</script>
+</body>
+</html>

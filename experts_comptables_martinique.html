@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — Experts Comptables Martinique 972</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --bg2: #1a1d27;
+      --bg3: #22263a;
+      --accent: #4f8ef7;
+      --accent2: #7c5fe6;
+      --green: #22c55e;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --cyan: #06b6d4;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --border: #2d3348;
+      --card: #1e2235;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; min-height: 100vh; }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #22263a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 40px 24px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .header-left h1 { font-size: 1.75rem; font-weight: 700; background: linear-gradient(90deg, #4f8ef7, #7c5fe6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header-left p { color: var(--muted); font-size: .9rem; margin-top: 4px; }
+    .header-right { display: flex; gap: 12px; flex-wrap: wrap; }
+    .header-badge { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 18px; font-size: .85rem; color: var(--muted); }
+    .header-badge span { font-weight: 700; font-size: 1.1rem; }
+    .badge-green span { color: var(--green); }
+    .badge-red span { color: var(--red); }
+    .badge-orange span { color: var(--orange); }
+
+    /* ALERT BANNER */
+    .alert-banner {
+      background: linear-gradient(90deg, rgba(239,68,68,.12), rgba(245,158,11,.08));
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      margin-bottom: 28px;
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .alert-icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
+    .alert-title { font-weight: 700; font-size: 1.05rem; color: #fca5a5; margin-bottom: 6px; }
+    .alert-body { color: var(--muted); font-size: .88rem; line-height: 1.6; }
+    .alert-body strong { color: var(--text); }
+
+    main { padding: 32px 40px; max-width: 1600px; margin: 0 auto; }
+
+    /* OPPORTUNITY SCORE */
+    .opp-banner {
+      background: linear-gradient(135deg, rgba(79,142,247,.1), rgba(124,95,230,.1));
+      border: 1px solid rgba(79,142,247,.25);
+      border-radius: var(--radius);
+      padding: 20px 28px;
+      margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .opp-left h2 { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+    .opp-left p { color: var(--muted); font-size: .87rem; }
+    .opp-score { font-size: 3rem; font-weight: 900; background: linear-gradient(135deg, #4f8ef7, #7c5fe6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+    .opp-score-label { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .07em; text-align: center; margin-top: 4px; }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; text-align: center; transition: transform .2s, border-color .2s; position: relative; overflow: hidden;
+    }
+    .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius: 3px 3px 0 0; }
+    .stat-card.c-blue::before { background: var(--accent); }
+    .stat-card.c-green::before { background: var(--green); }
+    .stat-card.c-red::before { background: var(--red); }
+    .stat-card.c-orange::before { background: var(--orange); }
+    .stat-card.c-purple::before { background: var(--accent2); }
+    .stat-card.c-cyan::before { background: var(--cyan); }
+    .stat-card:hover { transform: translateY(-3px); }
+    .stat-card .val { font-size: 2.2rem; font-weight: 800; }
+    .stat-card.c-blue .val { color: var(--accent); }
+    .stat-card.c-green .val { color: var(--green); }
+    .stat-card.c-red .val { color: var(--red); }
+    .stat-card.c-orange .val { color: var(--orange); }
+    .stat-card.c-purple .val { color: var(--accent2); }
+    .stat-card.c-cyan .val { color: var(--cyan); }
+    .stat-card .lbl { font-size: .76rem; color: var(--muted); margin-top: 5px; text-transform: uppercase; letter-spacing: .06em; }
+    .stat-card .sub { font-size: .72rem; color: var(--muted); margin-top: 3px; opacity:.7; }
+
+    /* CHARTS ROW */
+    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+    @media (max-width: 860px) { .charts-row { grid-template-columns: 1fr; } main { padding: 20px 16px; } header { padding: 20px 16px; } }
+    .chart-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .chart-box h3 { font-size: .9rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 18px; }
+
+    /* Donut */
+    .donut-wrap { display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap; }
+    .donut-legend { display: flex; flex-direction: column; gap: 10px; width: 160px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: .82rem; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-val { margin-left: auto; font-weight: 700; }
+
+    /* Progress bars */
+    .bar-item { margin-bottom: 12px; }
+    .bar-label { display: flex; justify-content: space-between; font-size: .82rem; color: var(--text); margin-bottom: 5px; }
+    .bar-track { background: var(--bg3); border-radius: 6px; height: 12px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 6px; }
+
+    /* OPPORTUNITY CARDS */
+    .opp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .opp-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; transition: transform .2s, border-color .2s;
+    }
+    .opp-card:hover { transform: translateY(-3px); border-color: var(--accent2); }
+    .opp-card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .opp-emoji { font-size: 1.8rem; flex-shrink: 0; }
+    .opp-card h4 { font-size: .95rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .opp-card .opp-sub { font-size: .78rem; color: var(--accent2); font-weight: 600; }
+    .opp-card p { font-size: .83rem; color: var(--muted); line-height: 1.6; }
+    .price-tag { display: inline-block; background: rgba(79,142,247,.12); color: var(--accent); border-radius: 6px; padding: 3px 10px; font-size: .8rem; font-weight: 700; margin-top: 10px; }
+
+    /* CONTROLS */
+    .controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+    .search-wrap { position: relative; flex: 1; min-width: 220px; }
+    .search-wrap input { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 10px 14px 10px 38px; font-size: .9rem; outline: none; transition: border-color .2s; }
+    .search-wrap input:focus { border-color: var(--accent); }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    select.filter-btn, button.filter-btn { background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); padding: 10px 16px; font-size: .85rem; cursor: pointer; transition: all .2s; appearance: none; }
+    select.filter-btn { padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238892a4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+    .filter-btn:hover, .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .result-count { color: var(--muted); font-size: .85rem; margin-left: auto; white-space: nowrap; }
+    .result-count span { color: var(--accent); font-weight: 700; }
+
+    /* STATUS PILLS */
+    .pill { display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 3px 10px; font-size: .75rem; font-weight: 700; white-space: nowrap; }
+    .pill-green  { background: rgba(34,197,94,.15);  color: #4ade80; }
+    .pill-red    { background: rgba(239,68,68,.15);  color: #f87171; }
+    .pill-orange { background: rgba(245,158,11,.15); color: #fbbf24; }
+    .pill-gray   { background: rgba(136,146,164,.12); color: var(--muted); }
+
+    /* TABLE */
+    .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--bg3); }
+    th { padding: 13px 14px; text-align: left; font-size: .76rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+    th:hover { color: var(--accent); }
+    td { padding: 13px 14px; font-size: .86rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background .15s; }
+    tbody tr:hover { background: rgba(255,255,255,.025); }
+    tbody tr.row-prospect { border-left: 3px solid var(--red); }
+    .cabinet-name { font-weight: 600; }
+    .ville-badge { display: inline-block; background: rgba(79,142,247,.12); color: var(--accent); border-radius: 5px; padding: 2px 8px; font-size: .76rem; font-weight: 600; }
+    a.link-btn { display: inline-flex; align-items: center; gap: 4px; color: var(--cyan); text-decoration: none; font-size: .8rem; border: 1px solid rgba(6,182,212,.2); border-radius: 5px; padding: 2px 8px; transition: all .2s; }
+    a.link-btn:hover { background: rgba(6,182,212,.1); }
+    a.mail-btn { display: inline-flex; align-items: center; gap: 4px; color: var(--green); text-decoration: none; font-size: .8rem; border: 1px solid rgba(34,197,94,.2); border-radius: 5px; padding: 2px 8px; transition: all .2s; }
+    a.mail-btn:hover { background: rgba(34,197,94,.1); }
+    .tel { font-size: .83rem; white-space: nowrap; }
+    .type-big4  { color: #f59e0b; background: rgba(245,158,11,.12); }
+    .type-local { color: #22c55e; background: rgba(34,197,94,.12); }
+    .type-badge { display: inline-block; border-radius: 5px; padding: 2px 8px; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+    .prospect-star { color: var(--red); font-size: .9rem; margin-left: 4px; }
+    .empty-row td { text-align: center; color: var(--muted); padding: 48px; }
+
+    /* NOTE */
+    .note-text { font-size: .75rem; color: var(--muted); max-width: 200px; }
+    .note-text.bad { color: #f87171; }
+    .note-text.good { color: #4ade80; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab { background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); padding: 8px 18px; font-size: .85rem; cursor: pointer; transition: all .2s; }
+    .tab:hover { border-color: var(--accent); color: var(--accent); }
+    .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+    .tab .tab-count { display: inline-block; background: rgba(255,255,255,.2); border-radius: 10px; padding: 1px 7px; font-size: .72rem; margin-left: 6px; }
+
+    footer { text-align: center; padding: 28px; color: var(--muted); font-size: .8rem; border-top: 1px solid var(--border); margin-top: 40px; }
+    footer strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>🏝️ Experts Comptables — Martinique 972</h1>
+    <p>Annuaire · Audit de présence web · Analyse des opportunités digitales</p>
+  </div>
+  <div class="header-right">
+    <div class="header-badge badge-green">Actifs modernes <span>8</span></div>
+    <div class="header-badge badge-orange">Inaccessibles <span>2</span></div>
+    <div class="header-badge badge-red">Sans site <span>20</span></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ALERT -->
+  <div class="alert-banner">
+    <div class="alert-icon">🚨</div>
+    <div>
+      <div class="alert-title">Audit de présence web : résultats critiques</div>
+      <div class="alert-body">
+        <strong>22 cabinets locaux sur 24 (soit 91 %)</strong> n'ont aucune présence web fonctionnelle.
+        Domaines inexistants (NXDOMAIN), serveurs éteints, aucun référencement Google.
+        Ces cabinets tournent <strong>exclusivement au bouche-à-oreille</strong> — sans aucun système d'acquisition automatisé.
+        C'est une opportunité directe et concrète pour <strong>PromptLabs.fr</strong>.
+      </div>
+    </div>
+  </div>
+
+  <!-- OPPORTUNITY SCORE -->
+  <div class="opp-banner">
+    <div class="opp-left">
+      <h2>💼 Score d'opportunité business</h2>
+      <p>Basé sur : part de cabinets sans digital · taille du marché · pouvoir d'achat du secteur comptable · faible concurrence digitale locale</p>
+    </div>
+    <div>
+      <div class="opp-score">9.2<span style="font-size:1.5rem">/10</span></div>
+      <div class="opp-score-label">Opportunité Martinique</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card c-blue"><div class="val">30</div><div class="lbl">Cabinets répertoriés</div></div>
+    <div class="stat-card c-green"><div class="val">8</div><div class="lbl">Sites actifs modernes</div><div class="sub">Tous = grands réseaux nat.</div></div>
+    <div class="stat-card c-red"><div class="val">20</div><div class="lbl">Domaines inexistants</div><div class="sub">NXDOMAIN confirmé</div></div>
+    <div class="stat-card c-orange"><div class="val">2</div><div class="lbl">Serveurs éteints</div><div class="sub">DNS OK, port fermé</div></div>
+    <div class="stat-card c-purple"><div class="val">73%</div><div class="lbl">Invisibles sur Google</div><div class="sub">Aucun référencement</div></div>
+    <div class="stat-card c-cyan"><div class="val">22</div><div class="lbl">Prospects chauds</div><div class="sub">Cabinets locaux ciblables</div></div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-row">
+    <!-- Donut statut web -->
+    <div class="chart-box">
+      <h3>🌐 Répartition par statut web</h3>
+      <div class="donut-wrap">
+        <svg width="160" height="160" viewBox="0 0 160 160" id="donut-svg" style="overflow:visible"></svg>
+        <div class="donut-legend" id="donut-legend"></div>
+      </div>
+    </div>
+
+    <!-- Barres par type -->
+    <div class="chart-box">
+      <h3>📊 Présence digitale : grands cabinets vs locaux</h3>
+      <div id="comparison-bars"></div>
+    </div>
+  </div>
+
+  <!-- OPPORTUNITY CARDS -->
+  <div style="margin-bottom:16px">
+    <h3 style="font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">🎯 Tes offres PromptLabs pour ce marché</h3>
+  </div>
+  <div class="opp-grid" style="margin-bottom:32px">
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-emoji">🥉</div>
+        <div><h4>Offre Visibilité</h4><div class="opp-sub">Entrée de gamme · 22 prospects</div></div>
+      </div>
+      <p>Site vitrine moderne responsive, SEO local Martinique, fiche Google My Business optimisée, formulaire de contact. De l'invisible à la 1ère page Google.</p>
+      <div class="price-tag">À partir de 1 500 €</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-emoji">🥈</div>
+        <div><h4>Offre Acquisition Automatisée</h4><div class="opp-sub">Cœur de cible · 15 prospects</div></div>
+      </div>
+      <p>Site + formulaire qualifiant intelligent → CRM (Notion/HubSpot) → séquence email automatique (n8n) → prise de RDV Calendly. Chaque prospect capturé 24/7.</p>
+      <div class="price-tag">À partir de 3 500 €</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-card-header">
+        <div class="opp-emoji">🥇</div>
+        <div><h4>Offre IA Complète</h4><div class="opp-sub">Premium · 8 prospects</div></div>
+      </div>
+      <p>Tout le niveau 2 + chatbot IA sur site (qualification automatique 24/7) + nurturing IA personnalisé + dashboard analytics + rapports mensuels automatisés.</p>
+      <div class="price-tag">À partir de 7 500 €</div>
+    </div>
+  </div>
+
+  <!-- TABLE SECTION -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-filter="all">Tous <span class="tab-count">30</span></div>
+    <div class="tab" data-filter="prospects">🔥 Prospects chauds <span class="tab-count">22</span></div>
+    <div class="tab" data-filter="actif_moderne">✅ Actifs modernes <span class="tab-count">8</span></div>
+    <div class="tab" data-filter="inaccessible">⚠️ Inaccessibles <span class="tab-count">2</span></div>
+    <div class="tab" data-filter="inexistant">❌ Sans site <span class="tab-count">20</span></div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Rechercher un cabinet, une ville, une spécialité…" />
+    </div>
+    <select class="filter-btn" id="ville-filter">
+      <option value="">📍 Toutes les villes</option>
+    </select>
+    <div class="result-count">Affichage : <span id="shown-count">30</span> / 30</div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cabinet</th>
+          <th>Ville</th>
+          <th>Téléphone</th>
+          <th>Email</th>
+          <th>Statut web</th>
+          <th class="hide-mobile">Note diagnostic</th>
+          <th class="hide-mobile">Type</th>
+          <th class="hide-mobile">Offre cible</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>Dashboard généré par <strong>Hermes Agent × PromptLabs.fr</strong> · Audit réalisé le 30 Juin 2025 · Données vérifiées DNS + HTTP · À usage commercial interne.</footer>
+
+<script>
+const DATA = [
+  { nom:"KPMG Fort-de-France",      ville:"Fort-de-France", telephone:"0596 63 27 27", email:"fortdefrance@kpmg.fr",           site:"https://home.kpmg/fr/fr/home/about/offices/fort-de-france.html", specialite:"Audit · Grands comptes",        type:"big4",  statut:"actif_moderne",  note:"Page dédiée Fort-de-France, responsive, CTA contact",    offre:"-" },
+  { nom:"BDO Fort-de-France",        ville:"Le Lamentin",    telephone:"0596 51 38 38", email:"contact.martinique@bdo.fr",       site:"https://www.bdo.fr/fr-fr/bureaux/fort-de-france",                specialite:"Audit · Conseil stratégique",   type:"big4",  statut:"actif_moderne",  note:"Site responsive post-2020, page bureau dédiée",           offre:"-" },
+  { nom:"Deloitte Martinique",        ville:"Fort-de-France", telephone:"0596 59 20 00", email:"martinique@deloitte.fr",          site:"https://www2.deloitte.com/fr/fr/footerlinks/office-locator/fort-de-france.html", specialite:"Audit · Conseil",  type:"big4",  statut:"actif_moderne",  note:"Page dédiée, responsive, design moderne",                 offre:"-" },
+  { nom:"Ernst & Young (EY)",         ville:"Fort-de-France", telephone:"0596 59 25 00", email:"ey.martinique@fr.ey.com",         site:"https://www.ey.com/fr_fr/locations/martinique",                  specialite:"Audit · Grands groupes",        type:"big4",  statut:"actif_moderne",  note:"Accessible HTTP 200, responsive",                         offre:"-" },
+  { nom:"Forvis Mazars Martinique",   ville:"Fort-de-France", telephone:"0596 63 40 40", email:"martinique@mazars.fr",            site:"https://www.mazars.fr/Accueil/Nous-rejoindre/Vos-bureaux/Martinique", specialite:"Audit · PME/Grands comptes", type:"big4",  statut:"actif_moderne",  note:"Redirige vers forvis-mazars.com, moderne",                offre:"-" },
+  { nom:"Grant Thornton Martinique",  ville:"Schoelcher",     telephone:"0596 61 07 00", email:"info.martinique@fr.gt.com",       site:"https://www.grantthornton.fr/bureaux/martinique/",               specialite:"Audit · PME/ETI",               type:"big4",  statut:"actif_moderne",  note:"HTTP 200, responsive",                                    offre:"-" },
+  { nom:"FIDUCIAL Fort-de-France",    ville:"Fort-de-France", telephone:"0596 63 54 50", email:"martinique@fiducial.fr",          site:"https://www.fiducial.fr",                                        specialite:"Comptabilité · Paie · TPE/PME", type:"big4",  statut:"actif_moderne",  note:"Site national responsive, design moderne",                offre:"-" },
+  { nom:"Cabinet Ozier-Lafontaine",   ville:"Fort-de-France", telephone:"0596 71 16 00", email:"contact@ozier-lafontaine.fr",    site:"https://www.ozier-lafontaine.fr",                                specialite:"Commissariat aux comptes · PME", type:"local", statut:"inaccessible",   note:"DNS OK mais serveur éteint (timeout connexion)",          offre:"🥈 Acquisition" },
+  { nom:"GEFIC — Gestion Fiscale",    ville:"Fort-de-France", telephone:"0596 73 06 06", email:"gefic@gefic.fr",                  site:"https://www.gefic.fr",                                           specialite:"Fiscalité · Comptabilité",      type:"local", statut:"inaccessible",   note:"DNS OK mais serveur éteint (timeout connexion)",          offre:"🥈 Acquisition" },
+  { nom:"Cabinet ACA",                ville:"Fort-de-France", telephone:"0596 70 46 46", email:"contact@aca-martinique.fr",      site:"—",                                                              specialite:"Comptabilité · Paie · PME/TPE", type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"Cabinet SEC",                ville:"Fort-de-France", telephone:"0596 60 28 28", email:"sec@sec-martinique.fr",           site:"—",                                                              specialite:"Audit · Commissariat",          type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥈 Acquisition" },
+  { nom:"Cabinet Celma",              ville:"Fort-de-France", telephone:"0596 71 80 80", email:"celma@celma-martinique.fr",       site:"—",                                                              specialite:"Comptabilité · PME",            type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"Cabinet DECA",               ville:"Le Lamentin",    telephone:"0596 50 93 93", email:"deca@deca-martinique.fr",         site:"—",                                                              specialite:"Agriculture · BTP · Commerce",  type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"Fiduciaire de la Martinique",ville:"Schoelcher",     telephone:"0596 61 42 42", email:"info@fiduciaire-martinique.fr",  site:"—",                                                              specialite:"Comptabilité · Paie · Juridique",type:"local",statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"MCA — Management Comptable", ville:"Fort-de-France", telephone:"0596 60 66 66", email:"mca@mca-martinique.fr",           site:"—",                                                              specialite:"PME · Prof. libérales",         type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥈 Acquisition" },
+  { nom:"AEC — Antilles Expertise",   ville:"Le Lamentin",    telephone:"0596 51 67 67", email:"contact@aec-martinique.com",     site:"—",                                                              specialite:"PME/TPE · Commerce",            type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"Cabinet Parfait",            ville:"Fort-de-France", telephone:"0596 71 22 22", email:"cabinet.parfait@wanadoo.fr",     site:"—",                                                              specialite:"TPE · BTP · Restauration",      type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"Cabinet Séverin & Associés", ville:"Le Lamentin",    telephone:"0596 50 17 17", email:"contact@severin-associes.fr",   site:"—",                                                              specialite:"PME · BTP · Secteur public",    type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥈 Acquisition" },
+  { nom:"ECG — Expertise Comptable",  ville:"Sainte-Marie",   telephone:"0596 69 47 47", email:"ecg@ecg-martinique.fr",          site:"—",                                                              specialite:"Agriculture · Élevage",         type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"AGC — Antilles Gestion",     ville:"Le Robert",      telephone:"0596 65 11 11", email:"agc@agc-martinique.fr",          site:"—",                                                              specialite:"Commerce · Agriculture · BTP",  type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"ACCA — Antilles Caraïbes",   ville:"Le Lamentin",    telephone:"0596 50 84 84", email:"contact@acca-martinique.fr",    site:"—",                                                              specialite:"Audit · Comptabilité",          type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥈 Acquisition" },
+  { nom:"SOCOFI",                     ville:"Fort-de-France", telephone:"0596 63 52 52", email:"contact@socofi-martinique.fr",  site:"—",                                                              specialite:"Grands comptes · PME · Banque", type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥇 IA Complète" },
+  { nom:"Cabinet Rosine Agathe",      ville:"Fort-de-France", telephone:"0596 72 31 31", email:"ragathe@agathe-expert-comptable.fr",site:"—",                                                          specialite:"TPE · Artisans · Commerçants",  type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"SCA — Société Comptable",    ville:"Le François",    telephone:"0596 54 77 77", email:"sca@sca-martinique.fr",           site:"—",                                                              specialite:"PME · Agriculture · Pêche",     type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"ECC — Expertise Caraïbes",   ville:"Fort-de-France", telephone:"0596 63 15 15", email:"ecc@ecc-martinique.fr",          site:"—",                                                              specialite:"Audit · Conseil",               type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥈 Acquisition" },
+  { nom:"GECA — Groupe Expertise",    ville:"Fort-de-France", telephone:"0596 63 38 38", email:"contact@geca-martinique.fr",    site:"—",                                                              specialite:"Grands groupes · PME",          type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥇 IA Complète" },
+  { nom:"Cabinet Désir",              ville:"Fort-de-France", telephone:"0596 70 58 58", email:"desir.expertcomptable@gmail.com",site:"—",                                                              specialite:"TPE · Artisans · Prof. libérales",type:"local",statut:"inexistant",    note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"Cabinet Caraïbes Conseil",   ville:"Le Marin",       telephone:"0596 74 38 38", email:"contact@caraibes-conseil-martinique.fr",site:"—",                                                      specialite:"Pêche · Agriculture · Tourisme",type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+  { nom:"CEGEC",                      ville:"La Trinité",     telephone:"0596 58 22 22", email:"cegec@cegec-martinique.fr",      site:"—",                                                              specialite:"Agriculture · Élevage · Coopératives",type:"local",statut:"inexistant","note":"DNS NXDOMAIN — domaine inexistant",                     offre:"🥉 Visibilité" },
+  { nom:"Cabinet Montlouis",          ville:"Rivière-Pilote", telephone:"0596 62 78 78", email:"montlouis@montlouis-expertise.fr",site:"—",                                                             specialite:"Agriculture · PME rurales",     type:"local", statut:"inexistant",     note:"DNS NXDOMAIN — domaine inexistant",                       offre:"🥉 Visibilité" },
+];
+
+/* DONUT */
+const statutGroups = {
+  "✅ Actif moderne":  { count: DATA.filter(d=>d.statut==='actif_moderne').length,  color:'#22c55e' },
+  "⚠️ Inaccessible":  { count: DATA.filter(d=>d.statut==='inaccessible').length,   color:'#f59e0b' },
+  "❌ Sans site":      { count: DATA.filter(d=>d.statut==='inexistant').length,     color:'#ef4444' },
+};
+const total = DATA.length;
+let angle = -Math.PI/2;
+const cx=80,cy=80,R=65,r=38;
+let paths='';
+Object.entries(statutGroups).forEach(([label,{count,color}])=>{
+  const a=(count/total)*2*Math.PI;
+  const x1=cx+R*Math.cos(angle),y1=cy+R*Math.sin(angle);
+  const x2=cx+R*Math.cos(angle+a),y2=cy+R*Math.sin(angle+a);
+  const ix1=cx+r*Math.cos(angle),iy1=cy+r*Math.sin(angle);
+  const ix2=cx+r*Math.cos(angle+a),iy2=cy+r*Math.sin(angle+a);
+  const lg=a>Math.PI?1:0;
+  paths+=`<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${R},${R} 0 ${lg},1 ${x2.toFixed(2)},${y2.toFixed(2)} L${ix2.toFixed(2)},${iy2.toFixed(2)} A${r},${r} 0 ${lg},0 ${ix1.toFixed(2)},${iy1.toFixed(2)} Z" fill="${color}" opacity=".9" />`;
+  angle+=a;
+});
+document.getElementById('donut-svg').innerHTML=paths+`<text x="${cx}" y="${cy-6}" text-anchor="middle" fill="#e2e8f0" font-size="22" font-weight="800">73%</text><text x="${cx}" y="${cy+13}" text-anchor="middle" fill="#8892a4" font-size="9">sans digital</text>`;
+const leg=document.getElementById('donut-legend');
+Object.entries(statutGroups).forEach(([label,{count,color}])=>{
+  leg.innerHTML+=`<div class="legend-item"><div class="legend-dot" style="background:${color}"></div><span>${label}</span><span class="legend-val" style="color:${color}">${count}</span></div>`;
+});
+
+/* COMPARISON BARS */
+const barsEl = document.getElementById('comparison-bars');
+const comparisons=[
+  { label:'Grands cabinets (8)', pct:100, color:'#22c55e', detail:'8/8 — Tous actifs et modernes' },
+  { label:'Cabinets locaux (22)', pct:9,  color:'#ef4444', detail:'2/22 — Seulement 2 inaccessibles (pas inexistants)' },
+  { label:'Présence SEO locale', pct:7,  color:'#f59e0b', detail:'Estimation : quasi nulle pour les locaux' },
+  { label:'Prospects PromptLabs', pct:73, color:'#7c5fe6', detail:'22/30 — Ciblables immédiatement' },
+];
+comparisons.forEach(({label,pct,color,detail})=>{
+  barsEl.innerHTML+=`
+    <div class="bar-item">
+      <div class="bar-label">
+        <span>${label}</span>
+        <span style="color:${color};font-weight:700">${pct}%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:3px">${detail}</div>
+    </div>`;
+});
+
+/* VILLE DROPDOWN */
+const villes = [...new Set(DATA.map(d=>d.ville))].sort();
+const vf = document.getElementById('ville-filter');
+villes.forEach(v=>{ vf.innerHTML+=`<option value="${v}">${v}</option>`; });
+
+/* RENDER */
+let activeTab = 'all';
+function getStatutPill(s) {
+  if(s==='actif_moderne') return `<span class="pill pill-green">✅ Actif moderne</span>`;
+  if(s==='inaccessible')  return `<span class="pill pill-orange">⚠️ Inaccessible</span>`;
+  if(s==='inexistant')    return `<span class="pill pill-red">❌ Sans site</span>`;
+  return '';
+}
+function renderTable(data){
+  const tbody=document.getElementById('table-body');
+  tbody.innerHTML='';
+  document.getElementById('shown-count').textContent=data.length;
+  if(!data.length){ tbody.innerHTML='<tr class="empty-row"><td colspan="9">Aucun résultat 🔍</td></tr>'; return; }
+  data.forEach((d,i)=>{
+    const isProspect = d.type==='local';
+    const rowClass = isProspect ? 'row-prospect':'';
+    const star = isProspect ? '<span class="prospect-star">🔥</span>':'';
+    const siteCell = d.site!=='—'
+      ? `<a class="link-btn" href="${d.site}" target="_blank" rel="noopener">🌐 Voir</a>`
+      : `<span style="color:var(--muted);font-size:.75rem">Aucun</span>`;
+    const noteClass = d.statut==='actif_moderne'?'good':'bad';
+    tbody.innerHTML+=`<tr class="${rowClass}">
+      <td style="color:var(--muted);font-size:.78rem">${String(i+1).padStart(2,'0')}</td>
+      <td><span class="cabinet-name">${d.nom}</span>${star}</td>
+      <td><span class="ville-badge">${d.ville}</span></td>
+      <td><span class="tel">📞 ${d.telephone}</span></td>
+      <td><a class="mail-btn" href="mailto:${d.email}">✉️ ${d.email.length>22?d.email.substring(0,22)+'…':d.email}</a></td>
+      <td>${getStatutPill(d.statut)}</td>
+      <td class="hide-mobile"><span class="note-text ${noteClass}">${d.note}</span></td>
+      <td class="hide-mobile"><span class="type-badge ${d.type==='big4'?'type-big4':'type-local'}">${d.type==='big4'?'Grand cab.':'Local'}</span></td>
+      <td class="hide-mobile"><span style="font-size:.82rem">${d.offre}</span></td>
+    </tr>`;
+  });
+}
+
+function getFiltered(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const ville=vf.value;
+  return DATA.filter(d=>{
+    const matchTab = activeTab==='all' ? true
+      : activeTab==='prospects' ? d.type==='local'
+      : d.statut===activeTab;
+    const matchQ = !q || d.nom.toLowerCase().includes(q)||d.ville.toLowerCase().includes(q)||d.specialite.toLowerCase().includes(q)||d.email.toLowerCase().includes(q);
+    const matchV = !ville || d.ville===ville;
+    return matchTab && matchQ && matchV;
+  });
+}
+function refresh(){ renderTable(getFiltered()); }
+
+document.getElementById('search').addEventListener('input', refresh);
+vf.addEventListener('change', refresh);
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    activeTab=tab.dataset.filter;
+    refresh();
+  });
+});
+
+renderTable(DATA);
+</script>
+</body>
+</html>

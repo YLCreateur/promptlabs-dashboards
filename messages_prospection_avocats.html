@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🎯 PromptLabs — Messages de Prospection par Spécialité</title>
+<style>
+:root{--bg:#08080f;--bg2:#0e0e18;--bg3:#151525;--accent:#00d4ff;--a2:#7b5cff;--green:#22c55e;--orange:#f59e0b;--red:#ef4444;--text:#c8c8d4;--muted:#8888a0;--bdr:#222238;--card:#111122;--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;min-height:100vh}
+.header{background:linear-gradient(135deg,#08080f,#0e0e18,#151525);border-bottom:1px solid var(--bdr);padding:20px 28px 14px;position:sticky;top:0;z-index:100}
+.header h1{font-size:1.1rem;font-weight:700}
+.header .g{background:linear-gradient(90deg,var(--accent),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:.68rem;color:var(--muted);margin-top:3px}
+main{max-width:1100px;margin:0 auto;padding:14px 20px 60px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:14px}
+.kpi-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:8px 10px;text-align:center}
+.kpi-card::before{content:'';display:block;height:2px;margin-bottom:6px;border-radius:2px}
+.kpi-card.a::before{background:var(--accent)}.kpi-card.b::before{background:var(--red)}.kpi-card.c::before{background:var(--a2)}
+.kpi-l{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.kpi-v{font-size:1.2rem;font-weight:800;color:var(--accent)}
+.kpi-card.b .kpi-v{color:var(--red)}.kpi-card.c .kpi-v{color:var(--a2)}
+.msg-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.msg-card.prio{border-left:3px solid var(--green)}
+.msg-header{padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;cursor:pointer}
+.msg-header:hover{background:rgba(123,92,255,.05)}
+.msg-header h3{font-size:.82rem;font-weight:700}
+.msg-header .count{font-size:.65rem;color:var(--muted);white-space:nowrap}
+.msg-body{display:none;padding:14px 18px}
+.msg-body.open{display:block}
+.msg-row{display:grid;grid-template-columns:120px 1fr;gap:10px;margin-bottom:10px;align-items:start}
+.msg-row .label{font-size:.63rem;text-transform:uppercase;letter-spacing:.5px;color:var(--a2);padding-top:2px}
+.msg-row .value{font-size:.73rem;line-height:1.5;color:var(--text)}
+.email-box{background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;padding:14px 18px;font-family:Georgia,serif;font-size:.75rem;line-height:1.7;color:#d1d5db;white-space:pre-line;margin-top:8px}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.6rem;font-weight:600}
+.t-fam{background:#ec489918;color:#ec4899}.t-com{background:#06b6d418;color:#06b6d4}.t-soc{background:#f59e0b18;color:#f59e0b}.t-pen{background:#ef444418;color:#ef4444}.t-imm{background:#7b5cff18;color:#7b5cff}
+footer{text-align:center;padding:14px;color:var(--muted);font-size:.65rem;border-top:1px solid var(--bdr);margin-top:16px}
+</style>
+</head>
+<body>
+
+<header class="header">
+<h1>📧 <span class="g">PromptLabs</span> — Messages de Prospection par Spécialité</h1>
+<div class="sub">88 avocats du Barreau de Martinique · 7 segments · Hooks, approches & emails prêts à copier</div>
+</header>
+
+<main>
+
+<div class="kpi">
+<div class="kpi-card a"><div class="kpi-l">🎯 Prospects couverts</div><div class="kpi-v">88</div></div>
+<div class="kpi-card b"><div class="kpi-l">📧 Segments distincts</div><div class="kpi-v">5</div></div>
+<div class="kpi-card c"><div class="kpi-l">🔥 Sans site web</div><div class="kpi-v">~60</div></div>
+</div>
+
+<!-- SEGMENT 1 : FAMILLE + COMMERCIAL (14 avocats) -->
+<div class="msg-card prio">
+<div class="msg-header" onclick="this.nextElementSibling.classList.toggle('open')">
+<h3>🔥 #1 — Famille + Commercial <span class="tag t-fam">Famille</span><span class="tag t-com">Commercial</span></h3>
+<span class="count">14 avocats · Priorité absolue</span>
+</div>
+<div class="msg-body">
+<div class="msg-row"><div class="label">🎣 Hook</div><div class="value">Vos clients vous cherchent sur Google après une séparation… ou avant de créer leur société. Dans les deux cas, s'ils ne vous trouvent pas, ils appellent le premier cabinet visible.</div></div>
+<div class="msg-row"><div class="label">🎯 Approche</div><div class="value">Double compétence = double visibilité. Un site vitrine qui montre vos deux domaines d'expertise. Vos clients arrivent par Google (divorce, création d'entreprise) et trouvent un cabinet crédible.</div></div>
+<div class="msg-row"><div class="label">💼 Proposition</div><div class="value">Pack Starter PromptLabs : site vitrine pro + Google My Business + fiche contact + Claude. <strong>1 500€.</strong></div></div>
+<div class="msg-row"><div class="label">📧 Objet</div><div class="value">Votre double expertise mérite un site qui la reflète</div></div>
+<div class="email-box">Bonjour Maître,
+
+Vous intervenez à la fois en droit de la famille et en droit commercial. C'est une double compétence qui mérite d'être visible. Aujourd'hui, une personne qui traverse un divorce ou un entrepreneur qui crée sa société commence par chercher sur Google. S'il ne trouve pas votre cabinet, il appelle le premier résultat.
+
+Je propose aux avocats du Barreau de Martinique un Pack Starter simple : un site vitrine professionnel, une fiche Google My Business optimisée, et un assistant Claude pour vous accompagner au quotidien. Le tout pour 1 500€, livré en deux semaines.
+
+Sans engagement, je peux vous montrer un exemple concret de ce que ça donne pour un cabinet comme le vôtre.
+
+Qu'en pensez-vous ?
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+contact.ylcrea@gmail.com · promptlabs.fr
+Martinique</div>
+</div>
+</div>
+
+<!-- SEGMENT 2 : FAMILLE SEULE (6 avocats) -->
+<div class="msg-card">
+<div class="msg-header" onclick="this.nextElementSibling.classList.toggle('open')">
+<h3>#2 — Droit de la Famille <span class="tag t-fam">Famille</span></h3>
+<span class="count">6 avocats</span>
+</div>
+<div class="msg-body">
+<div class="msg-row"><div class="label">🎣 Hook</div><div class="value">Un divorce, une garde d'enfant, une pension alimentaire. La première chose que font vos clients, c'est taper « avocat famille Martinique » sur Google. Si vous n'apparaissez pas, vous n'existez pas pour eux.</div></div>
+<div class="msg-row"><div class="label">🎯 Approche</div><div class="value">Droit de la famille = urgence émotionnelle. Le client veut un avocat tout de suite. Votre site doit refléter la confiance et l'empathie, avec une prise de contact simplifiée.</div></div>
+<div class="msg-row"><div class="label">💼 Proposition</div><div class="value">Pack Starter PromptLabs : site vitrine pro + Google My Business + fiche contact + Claude. <strong>1 500€.</strong></div></div>
+<div class="msg-row"><div class="label">📧 Objet</div><div class="value">Vos clients vous cherchent sur Google. Soyez le premier résultat.</div></div>
+<div class="email-box">Bonjour Maître,
+
+Le droit de la famille est un domaine où l'urgence et l'émotion dominent. Quand une personne traverse un divorce ou un conflit de garde, elle cherche immédiatement un avocat sur Google. Si votre cabinet n'apparaît pas dans les résultats, cette personne appelle le premier nom qu'elle voit.
+
+Je propose aux avocats du Barreau de Martinique un Pack Starter simple : un site vitrine professionnel qui inspire confiance, une fiche Google My Business pour être visible immédiatement, et un assistant Claude pour vous accompagner. Le tout pour 1 500€, livré en deux semaines.
+
+Je peux vous montrer un exemple concret. Qu'en pensez-vous ?
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+contact.ylcrea@gmail.com · promptlabs.fr
+Martinique</div>
+</div>
+</div>
+
+<!-- SEGMENT 3 : COMMERCIAL SEUL (6 avocats) -->
+<div class="msg-card">
+<div class="msg-header" onclick="this.nextElementSibling.classList.toggle('open')">
+<h3>#3 — Droit Commercial / Affaires <span class="tag t-com">Commercial</span></h3>
+<span class="count">6 avocats</span>
+</div>
+<div class="msg-body">
+<div class="msg-row"><div class="label">🎣 Hook</div><div class="value">Chaque jour, des entrepreneurs martiniquais créent leur SASU, SARL ou EURL. Ils cherchent un avocat d'affaires sur Google. Si vous n'y êtes pas, ils vont chez le premier visible.</div></div>
+<div class="msg-row"><div class="label">🎯 Approche</div><div class="value">Droit des affaires = clients professionnels. Votre site doit montrer votre crédibilité : spécialités, parcours, cas traités. Un entrepreneur qui crée sa boîte veut un avocat sérieux.</div></div>
+<div class="msg-row"><div class="label">💼 Proposition</div><div class="value">Pack Starter PromptLabs : site vitrine pro + Google My Business + fiche contact + Claude. <strong>1 500€.</strong></div></div>
+<div class="msg-row"><div class="label">📧 Objet</div><div class="value">Les entrepreneurs martiniquais vous cherchent. Aidez-les à vous trouver.</div></div>
+<div class="email-box">Bonjour Maître,
+
+Chaque mois, des dizaines d'entrepreneurs martiniquais créent leur société. Avant même de signer les statuts, ils cherchent un avocat d'affaires sur Google. Si votre cabinet n'apparaît pas, ces clients potentiels passent leur chemin.
+
+Je propose aux avocats du Barreau de Martinique un Pack Starter : un site vitrine professionnel qui reflète votre crédibilité, une fiche Google My Business pour capter ce trafic, et un assistant Claude. 1 500€, deux semaines.
+
+Je peux vous montrer un exemple adapté au droit des affaires. Qu'en pensez-vous ?
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+contact.ylcrea@gmail.com · promptlabs.fr
+Martinique</div>
+</div>
+</div>
+
+<!-- SEGMENT 4 : TRAVAIL (15 avocats) -->
+<div class="msg-card">
+<div class="msg-header" onclick="this.nextElementSibling.classList.toggle('open')">
+<h3>#4 — Droit du Travail / Social <span class="tag t-soc">Travail</span></h3>
+<span class="count">15 avocats</span>
+</div>
+<div class="msg-body">
+<div class="msg-row"><div class="label">🎣 Hook</div><div class="value">Un salarié en conflit avec son employeur, un licenciement contesté, un prud'homme qui approche. La première chose qu'il fait : chercher « avocat travail Martinique » sur Google.</div></div>
+<div class="msg-row"><div class="label">🎯 Approche</div><div class="value">Droit social = asymétrie d'information. Le salarié ne connaît pas ses droits. Votre site doit vulgariser et rassurer. Un formulaire simple pour être rappelé sous 24h.</div></div>
+<div class="msg-row"><div class="label">💼 Proposition</div><div class="value">Pack Starter PromptLabs : site vitrine pro + Google My Business + fiche contact + Claude. <strong>1 500€.</strong></div></div>
+<div class="msg-row"><div class="label">📧 Objet</div><div class="value">Vos clients vous cherchent après un licenciement. Soyez visible.</div></div>
+<div class="email-box">Bonjour Maître,
+
+Quand un salarié se fait licencier ou qu'un employeur doit gérer un contentieux prud'homal, la première chose qu'il fait, c'est chercher un avocat sur Google. Si votre cabinet n'est pas dans les premiers résultats, c'est un confrère qui décroche le dossier.
+
+Je propose aux avocats du Barreau de Martinique un Pack Starter : un site vitrine qui explique clairement vos spécialités, une fiche Google My Business, et un assistant Claude pour vous accompagner. 1 500€, deux semaines.
+
+Un exemple concret vous serait utile ?
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+contact.ylcrea@gmail.com · promptlabs.fr
+Martinique</div>
+</div>
+</div>
+
+<!-- SEGMENT 5 : PÉNAL (11 avocats) -->
+<div class="msg-card">
+<div class="msg-header" onclick="this.nextElementSibling.classList.toggle('open')">
+<h3>#5 — Droit Pénal <span class="tag t-pen">Pénal</span></h3>
+<span class="count">11 avocats</span>
+</div>
+<div class="msg-body">
+<div class="msg-row"><div class="label">🎣 Hook</div><div class="value">Une garde à vue, une convocation au tribunal, une mise en examen. Dans ces moments-là, on ne demande pas de recommandation à ses amis. On cherche « avocat pénal Martinique » sur Google. Immédiatement.</div></div>
+<div class="msg-row"><div class="label">🎯 Approche</div><div class="value">Pénal = urgence absolue. Le client potentiel est en détresse. Votre site doit montrer votre disponibilité immédiate et votre expérience. Un numéro de téléphone visible en haut de page.</div></div>
+<div class="msg-row"><div class="label">💼 Proposition</div><div class="value">Pack Starter PromptLabs : site vitrine pro + Google My Business + fiche contact + Claude. <strong>1 500€.</strong></div></div>
+<div class="msg-row"><div class="label">📧 Objet</div><div class="value">En droit pénal, la visibilité Google peut tout changer</div></div>
+<div class="email-box">Bonjour Maître,
+
+En droit pénal, le temps est un facteur critique. Une personne en garde à vue ou convoquée au tribunal ne prend pas le temps de demander des recommandations. Elle tape « avocat pénal Martinique » sur Google et appelle le premier résultat. Si ce n'est pas vous, c'est un confrère qui prend le dossier.
+
+Je propose aux avocats du Barreau de Martinique un Pack Starter : un site vitrine avec votre numéro bien visible, une fiche Google My Business, et un assistant Claude. 1 500€, livré en deux semaines.
+
+Sans engagement, je peux vous montrer un exemple.
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+contact.ylcrea@gmail.com · promptlabs.fr
+Martinique</div>
+</div>
+</div>
+
+</main>
+
+<h2 style="margin-top:30px">🛡️ Objection fréquente — « On me trouve déjà sur le site du Barreau »</h2>
+<div class="msg-card" style="border-left:3px solid var(--orange)">
+<div class="msg-header" onclick="this.nextElementSibling.classList.toggle('open')">
+<h3>🗣️ « Pourquoi un site ? Je suis déjà sur avocatsdemartinique.fr »</h3>
+<span class="count">Réponse prête</span>
+</div>
+<div class="msg-body">
+
+<div class="msg-row"><div class="label">🧠 Ce qu'il pense</div><div class="value">« Je suis déjà référencé. Pourquoi payer pour un site ? »</div></div>
+
+<div class="msg-row"><div class="label">📊 La réalité</div><div class="value">L'annuaire du Barreau liste <strong>216 avocats sur une seule page</strong>. Vous êtes un nom parmi 215 autres. Votre client potentiel doit scroller, lire, comparer. Il n'y a <strong>aucune photo de vous, aucune information sur votre approche, aucun témoignage client, aucune prise de RDV en ligne</strong>. C'est un annuaire administratif, pas un outil de conquête client.</div></div>
+
+<div class="msg-row"><div class="label">🎯 La réponse</div><div class="value">« L'annuaire du Barreau est une excellente base, mais c'est un annuaire administratif. Votre client potentiel ne peut pas y voir votre approche, votre parcours, vos spécialités en détail, ni prendre rendez-vous directement. Un site vitrine, c'est votre cabinet qui parle, avec votre photo, votre ton, vos résultats. Et surtout, un site bien référencé vous fait apparaître dans Google quand vos clients vous cherchent. L'annuaire ne fait pas ça. »</div></div>
+
+<div class="msg-row"><div class="label">📈 Chiffre clé</div><div class="value"><strong>80% des clients</strong> cherchent leur avocat sur Google. Google met les sites individuels en premier — pas l'annuaire du Barreau.</div></div>
+
+<div class="email-box" style="font-family:'Segoe UI',sans-serif;font-size:.73rem">
+<strong>Réponse type à l'objection :</strong><br><br>
+« Maître, l'annuaire du Barreau est utile, mais c'est un annuaire administratif. Vous y êtes un nom parmi 216. Pas de photo, pas de présentation de votre cabinet, pas de prise de RDV. Quand un client tape "avocat divorce Martinique" sur Google, il tombe sur les sites individuels, pas sur l'annuaire. Mon pack vous donne cette visibilité pour 1 500€. »
+</div>
+</div>
+</div>
+
+<footer>Créé par <strong>Hermes Agent × PromptLabs.fr</strong> · Pack Starter : site vitrine + Google My Business + fiche contact + Claude — 1 500€ · <strong style="color:var(--red)">Zéro email inventé</strong></footer>
+
+<script>
+// Ouvrir le premier segment par défaut
+document.querySelector('.msg-card.prio .msg-body').classList.add('open');
+</script>
+</body>
+</html>

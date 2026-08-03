@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📧 PromptLabs — Preview Campagne Prospection Martinique</title>
+<style>
+:root {
+  --bg:#0f1117; --bg2:#1a1d27; --bg3:#22263a;
+  --accent:#4f8ef7; --accent2:#7c5fe6;
+  --green:#22c55e; --orange:#f59e0b; --red:#ef4444; --cyan:#06b6d4;
+  --text:#e2e8f0; --muted:#8892a4; --border:#2d3348; --card:#1e2235;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;min-height:100vh;font-size:14px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.header{background:linear-gradient(135deg,#0f1117 0%,#1a1d27 50%,#22263a 100%);border-bottom:1px solid var(--border);padding:32px 32px 24px}
+.header h1{font-size:1.5rem;font-weight:800}
+.header h1 .grad{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-sub{font-size:0.82rem;color:var(--muted);margin-top:6px}
+
+main{max-width:1100px;margin:0 auto;padding:24px 24px 60px}
+
+/* ALERT BOX */
+.alert{border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:0.82rem;line-height:1.6}
+.alert.warn{background:#f59e0b11;border:1px solid #f59e0b44;color:var(--orange)}
+.alert.info{background:#4f8ef711;border:1px solid #4f8ef744;color:var(--accent)}
+
+/* STATS ROW */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;text-align:center}
+.stat-card .label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.stat-card .value{font-size:1.8rem;font-weight:800}
+.stat-card.valid .value{color:var(--green)}
+.stat-card.warn .value{color:var(--orange)}
+.stat-card.bad .value{color:var(--red)}
+
+/* EMAIL CARD */
+.email-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+.email-card.chaud{border-left:3px solid var(--red)}
+.email-card.tiede{border-left:3px solid var(--orange)}
+.email-card.froid{border-left:3px solid var(--muted)}
+
+.email-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.email-header .prospect{font-weight:700;font-size:1rem}
+.email-header .secteur{font-size:0.73rem;color:var(--muted)}
+.email-header .badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:12px;white-space:nowrap}
+.badge-hot{background:#ef444422;color:var(--red)}
+.badge-warm{background:#f59e0b22;color:var(--orange)}
+.badge-email{background:#22c55e22;color:var(--green)}
+.badge-risk{background:#f59e0b22;color:var(--orange)}
+
+.email-body{padding:20px}
+.email-body .field{margin-bottom:12px}
+.email-body .field-label{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.email-body .field-value{font-size:0.82rem;color:var(--text)}
+.email-content{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px 24px;font-family:'Georgia','Times New Roman',serif;font-size:0.88rem;line-height:1.7;color:#d1d5db;white-space:pre-line;margin-top:8px}
+
+.verif-row{display:flex;gap:20px;flex-wrap:wrap;font-size:0.73rem;color:var(--muted);margin-top:8px}
+.verif-row span{display:flex;align-items:center;gap:4px}
+.verif-ok{color:var(--green)}.verif-warn{color:var(--orange)}.verif-bad{color:var(--red)}
+
+.check-row{display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--bg2);border-top:1px solid var(--border);font-size:0.75rem;color:var(--muted)}
+.check-row input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.check-row input[type=checkbox]:disabled{opacity:0.3}
+
+/* BOTTOM BAR */
+.bottom-bar{position:sticky;bottom:0;background:var(--bg2);border-top:2px solid var(--accent);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin:0 -24px -60px}
+.bottom-bar .selected{font-size:0.82rem;color:var(--text)}
+.bottom-bar .selected strong{color:var(--accent)}
+.btn{font-weight:700;font-size:0.82rem;padding:10px 28px;border-radius:8px;border:none;cursor:pointer;transition:all 0.2s}
+.btn-validate{background:var(--accent);color:#fff}
+.btn-validate:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-validate:disabled{opacity:0.3;cursor:not-allowed;transform:none}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-reset:hover{color:var(--text)}
+
+/* SKIPPED */
+.skipped{background:var(--card);border:1px solid var(--red);border-radius:12px;padding:16px 20px;margin-bottom:20px}
+.skipped h3{color:var(--red);font-size:0.9rem;margin-bottom:12px}
+.skipped ul{list-style:none;padding:0}
+.skipped li{padding:4px 0;font-size:0.78rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+
+footer{text-align:center;padding:40px 24px 20px;color:var(--muted);font-size:0.75rem}
+footer strong{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>📧 <span class="grad">PromptLabs</span> — Campagne Prospection Martinique 🇲🇶</h1>
+  <div class="header-sub">Emails commerciaux · Revue et validation avant envoi · 21 juillet 2026</div>
+</header>
+
+<main>
+
+<!-- ALERT -->
+<div class="alert warn">
+  <strong>⚠️ IMPORTANT — Aucun email ne sera envoyé sans votre validation explicite.</strong><br>
+  Cochez les prospects que vous souhaitez contacter, puis cliquez sur « Je valide l'envoi ». Hermes enverra uniquement les emails sélectionnés.
+</div>
+
+<div class="alert info">
+  <strong>🔍 Vérification DNS effectuée le 21/07/2026 :</strong> chaque domaine a été testé (MX + SMTP RCPT TO).<br>
+  Les adresses marquées « ⚠️ MX uniquement » sont derrière des passerelles anti-spam d'entreprise (Proofpoint, Mimecast…) — Gmail retentera automatiquement.
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-card valid"><div class="label">✅ Emails vérifiés</div><div class="value" id="count-valid">2</div></div>
+  <div class="stat-card warn"><div class="label">⚠️ MX uniquement</div><div class="value" id="count-mxonly">6</div></div>
+  <div class="stat-card bad"><div class="label">❌ Domaines invalides</div><div class="value" id="count-invalid">7</div></div>
+  <div class="stat-card"><div class="label">📧 À envoyer</div><div class="value" style="color:var(--accent)" id="count-send">8</div></div>
+</div>
+
+<!-- SKIPPED -->
+<div class="skipped">
+  <h3>❌ 7 domaines inexistants — exclus de la campagne</h3>
+  <ul>
+    <li>❌ <strong>SOCOFI</strong> — socofi-martinique.fr (pas de MX)</li>
+    <li>❌ <strong>GECA</strong> — geca-martinique.fr (pas de MX)</li>
+    <li>❌ <strong>Ozier-Lafontaine</strong> — ozier-lafontaine.fr (pas de MX)</li>
+    <li>❌ <strong>ACA</strong> — aca-martinique.fr (pas de MX)</li>
+    <li>❌ <strong>SEC</strong> — sec-martinique.fr (pas de MX)</li>
+    <li>❌ <strong>Séverin & Associés</strong> — severin-associes.fr (pas de MX)</li>
+    <li>❌ <strong>ACCA</strong> — acca-martinique.fr (pas de MX)</li>
+  </ul>
+  <p style="font-size:0.73rem;color:var(--muted);margin-top:8px">Le radar IA a généré ces adresses sur la base de patterns (contact@, etc.) mais les domaines n'existent pas. À vérifier manuellement sur LinkedIn ou Pages Jaunes.</p>
+</div>
+
+<!-- ======================== EMAILS ======================== -->
+
+<!-- 🔥 DELOITTE -->
+<div class="email-card chaud" id="card-1">
+  <div class="email-header">
+    <div>
+      <div class="prospect">🔥 Deloitte Martinique</div>
+      <div class="secteur">Comptabilité / Conseil · Fort-de-France</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-hot">Chaud</span>
+      <span class="badge badge-risk">⚠️ MX uniquement</span>
+    </div>
+  </div>
+  <div class="email-body">
+    <div class="field">
+      <div class="field-label">Destinataire</div>
+      <div class="field-value">martinique@deloitte.fr</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Objet</div>
+      <div class="field-value">Automatisation du traitement comptable — un cas concret pour Deloitte Martinique</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Contenu de l'email</div>
+      <div class="email-content">Bonjour,
+
+Je me permets de vous contacter car j'accompagne des cabinets d'expertise comptable et d'audit dans leur transition vers des outils d'intelligence artificielle opérationnels — en particulier sur la chaîne de traitement des pièces comptables, qui reste étonnamment manuelle dans beaucoup de structures, y compris au sein de grands réseaux.
+
+Pour Deloitte Martinique, qui traite un volume conséquent de dossiers avec des typologies de clients variées, j'imagine que la saisie, le classement et le rapprochement des factures, notes de frais et relevés bancaires représentent une part significative du temps collaborateur — du temps qui pourrait être réalloué à des missions à plus forte valeur ajoutée, comme le conseil et l'analyse.
+
+J'ai développé une solution qui associe reconnaissance optique (OCR) et intelligence artificielle générative pour automatiser ce flux :
+→ Extraction automatique des données de chaque pièce comptable
+→ Classification intelligente par nature (achat, vente, note de frais, etc.)
+→ Rapprochement bancaire assisté et pré-remplissage des écritures
+→ Intégration sans friction avec votre ERP existant (pas de migration nécessaire)
+
+Les cabinets avec lesquels je travaille observent une réduction de 50 à 60 % du temps de traitement, avec un taux d'erreur qui chute mécaniquement puisque la saisie manuelle disparaît. Le retour sur investissement est généralement constaté en moins de 6 mois.
+
+Je serais ravi de vous présenter un cas concret, adapté à votre volume et à votre typologie de dossiers, lors d'un échange d'une vingtaine de minutes — en visio ou en présentiel à Fort-de-France, comme vous préférez.
+
+Seriez-vous disponible pour en discuter dans les prochains jours ?
+
+Bien cordialement,
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+📧 contact.ylcrea@gmail.com
+🌐 promptlabs.fr
+📍 Martinique</div>
+    </div>
+    <div class="verif-row">
+      <span class="verif-warn">⚠️ MX: deloitte.fr (OK) — SMTP: boîte protégée par antispam</span>
+      <span>Besoin: Automatisation OCR+LLM</span>
+      <span>Budget estimé: 15-35K€</span>
+    </div>
+  </div>
+  <div class="check-row">
+    <input type="checkbox" id="check-1" checked onchange="updateCount()">
+    <label for="check-1">Sélectionner pour envoi</label>
+  </div>
+</div>
+
+<!-- 🔥 MAZARS -->
+<div class="email-card chaud" id="card-2">
+  <div class="email-header">
+    <div>
+      <div class="prospect">🔥 Mazars Martinique</div>
+      <div class="secteur">Comptabilité / Audit · Fort-de-France</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-hot">Chaud</span>
+      <span class="badge badge-risk">⚠️ MX uniquement</span>
+    </div>
+  </div>
+  <div class="email-body">
+    <div class="field">
+      <div class="field-label">Destinataire</div>
+      <div class="field-value">martinique@mazars.fr</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Objet</div>
+      <div class="field-value">Formation IA pour vos équipes — applicable dès la rentrée</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Contenu de l'email</div>
+      <div class="email-content">Bonjour,
+
+Je suis les actualités de Mazars et je constate que le cabinet investit activement dans le recrutement et la montée en compétences de ses équipes — c'est un signal fort dans un secteur où la guerre des talents est intense.
+
+L'intelligence artificielle générative (ChatGPT, Copilot, Claude et les outils associés) est en train de transformer en profondeur les métiers de l'audit et de l'expertise comptable. Mais l'outil ne fait pas tout : c'est la maîtrise qu'en ont les collaborateurs qui fait la différence entre un gain de productivité marginal et une transformation réelle des méthodes de travail.
+
+Je propose une formation IA conçue spécifiquement pour les professionnels du chiffre, en deux formats possibles :
+— Un programme de 2 jours intensifs, du niveau débutant à avancé
+— Ou un format modulaire étalé sur plusieurs semaines pour s'adapter à l'agenda des équipes
+
+Au programme :
+• Prise en main des IA génératives appliquées à la comptabilité et à l'audit
+• Techniques avancées de prompt engineering pour la recherche documentaire, l'analyse de bilans et la rédaction de notes de synthèse
+• Automatisation de tâches courantes sans code (extraction, classement, comptes-rendus)
+• Bonnes pratiques, limites et éthique de l'IA en environnement réglementé
+
+La formation est éligible OPCO et inclut un suivi personnalisé de 90 jours après la session, pour garantir l'ancrage des compétences. J'interviens déjà auprès de cabinets et de directions financières, donc le contenu est directement opérationnel — pas de théorie déconnectée du terrain.
+
+Si le sujet vous intéresse pour la rentrée, je serais heureux d'en discuter avec vous ou votre responsable formation pour adapter le programme à vos besoins spécifiques.
+
+Dans l'attente de votre retour, je vous souhaite une excellente journée.
+
+Bien cordialement,
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+📧 contact.ylcrea@gmail.com
+🌐 promptlabs.fr
+📍 Martinique</div>
+    </div>
+    <div class="verif-row">
+      <span class="verif-warn">⚠️ MX: mazars.fr (OK) — SMTP: boîte protégée par antispam</span>
+      <span>Besoin: Formation IA</span>
+      <span>Budget estimé: 5-10K€</span>
+    </div>
+  </div>
+  <div class="check-row">
+    <input type="checkbox" id="check-2" checked onchange="updateCount()">
+    <label for="check-2">Sélectionner pour envoi</label>
+  </div>
+</div>
+
+<!-- 🔥 FIDUCIAL -->
+<div class="email-card chaud" id="card-3">
+  <div class="email-header">
+    <div>
+      <div class="prospect">🔥 FIDUCIAL Fort-de-France</div>
+      <div class="secteur">Comptabilité / Paie · Fort-de-France</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-hot">Chaud</span>
+      <span class="badge badge-email">✅ Email vérifié</span>
+    </div>
+  </div>
+  <div class="email-body">
+    <div class="field">
+      <div class="field-label">Destinataire</div>
+      <div class="field-value">martinique@fiducial.fr</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Objet</div>
+      <div class="field-value">Optimisation du traitement de la paie — une piste concrète</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Contenu de l'email</div>
+      <div class="email-content">Bonjour,
+
+FIDUCIAL est un acteur incontournable de la paie et de la gestion sociale en Martinique, avec un portefeuille de TPE et PME qui ne cesse de croître. Cette croissance est une excellente nouvelle, mais elle s'accompagne mécaniquement d'une pression accrue sur les équipes en charge du traitement des bulletins.
+
+Je travaille avec des cabinets confrontés exactement à cette problématique : comment absorber davantage de volume sans dégrader la qualité ni épuiser les collaborateurs. La réponse que nous avons mise en place repose sur l'automatisation intelligente du flux paie :
+
+→ Extraction automatique des variables de paie depuis les fichiers transmis par les clients
+→ Contrôle de cohérence par IA (détection des anomalies, incohérences, oublis)
+→ Génération et envoi automatique des bulletins validés
+→ Tableau de bord de suivi pour les gestionnaires
+
+Concrètement, le workflow ne remplace pas le gestionnaire de paie — il lui retire la partie fastidieuse de saisie et de vérification systématique pour lui permettre de se concentrer sur les cas complexes et la relation client.
+
+Les retours sont très positifs : jusqu'à 60 % de temps gagné sur le traitement, une réduction significative des erreurs de saisie, et des équipes qui retrouvent du temps pour des missions à plus forte valeur ajoutée.
+
+La mise en place se fait en 6 semaines environ, avec une phase de test sur un échantillon de dossiers pour valider le retour sur investissement avant tout déploiement global.
+
+Je serais ravi d'échanger avec vous ou votre responsable paie pour étudier comment cette approche pourrait s'adapter à l'organisation de FIDUCIAL Martinique. Un appel de 15 minutes suffirait pour poser les bases.
+
+Qu'en pensez-vous ?
+
+Excellente journée,
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+📧 contact.ylcrea@gmail.com
+🌐 promptlabs.fr
+📍 Martinique</div>
+    </div>
+    <div class="verif-row">
+      <span class="verif-ok">✅ MX: fiducial.fr (OK) — SMTP: vérifié</span>
+      <span>Besoin: Automatisation paie</span>
+      <span>Budget estimé: 12-18K€</span>
+    </div>
+  </div>
+  <div class="check-row">
+    <input type="checkbox" id="check-3" checked onchange="updateCount()">
+    <label for="check-3">Sélectionner pour envoi</label>
+  </div>
+</div>
+
+<!-- 🌡️ KPMG -->
+<div class="email-card tiede" id="card-4">
+  <div class="email-header">
+    <div>
+      <div class="prospect">🌡️ KPMG Fort-de-France</div>
+      <div class="secteur">Comptabilité / Audit · Fort-de-France</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-warm">Tiède</span>
+      <span class="badge badge-risk">⚠️ MX uniquement</span>
+    </div>
+  </div>
+  <div class="email-body">
+    <div class="field">
+      <div class="field-label">Destinataire</div>
+      <div class="field-value">fortdefrance@kpmg.fr</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Objet</div>
+      <div class="field-value">Recherche documentaire fiscale — un assistant IA pour gagner du temps</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Contenu de l'email</div>
+      <div class="email-content">Bonjour,
+
+Dans un cabinet de la dimension de KPMG, la veille fiscale et juridique est un pilier de la qualité de service — mais c'est aussi un poste de temps considérable. Entre le CGI, le BOFiP, la jurisprudence, les rescrits et les doctrines administratives, trouver la bonne information au bon moment peut prendre des heures, et chaque collaborateur refait souvent le même travail de recherche.
+
+J'accompagne des cabinets d'expertise comptable et des directions fiscales dans le déploiement d'assistants de recherche documentaire basés sur l'IA générative — ce qu'on appelle des systèmes RAG (Retrieval-Augmented Generation).
+
+Le principe est simple :
+→ Toute votre documentation fiscale est indexée une fois
+→ Le collaborateur pose sa question en langage naturel — « Quelle est la doctrine applicable aux plus-values sur titres de participation pour une holding martiniquaise ? »
+→ L'assistant retrouve en quelques secondes les textes pertinents, avec les sources exactes et les extraits concernés
+
+Pas de remplacement de l'expertise humaine : l'IA trouve et cite, le collaborateur analyse et décide. Le gain de temps est immédiat, et la qualité de la recherche est systématique — plus d'oubli de texte ou de circulaire applicable.
+
+Cette solution se branche sur votre documentation existante sans bouleverser vos outils, et peut être mise en place progressivement, par module (fiscalité des entreprises, TVA, fiscalité internationale, etc.).
+
+Je serais heureux de vous faire une démonstration concrète sur un périmètre fiscal que vous choisiriez, pour que vous puissiez juger par vous-même de la pertinence et de la précision des réponses.
+
+Seriez-vous disponible pour un échange de 20 minutes dans les semaines à venir ?
+
+Bien cordialement,
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+📧 contact.ylcrea@gmail.com
+🌐 promptlabs.fr
+📍 Martinique</div>
+    </div>
+    <div class="verif-row">
+      <span class="verif-warn">⚠️ MX: kpmg.fr (OK) — SMTP: boîte protégée par antispam</span>
+      <span>Besoin: RAG documentaire</span>
+      <span>Budget estimé: 15-25K€</span>
+    </div>
+  </div>
+  <div class="check-row">
+    <input type="checkbox" id="check-4" checked onchange="updateCount()">
+    <label for="check-4">Sélectionner pour envoi</label>
+  </div>
+</div>
+
+<!-- 🌡️ BDO -->
+<div class="email-card tiede" id="card-5">
+  <div class="email-header">
+    <div>
+      <div class="prospect">🌡️ BDO Fort-de-France</div>
+      <div class="secteur">Comptabilité / Audit · Le Lamentin</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-warm">Tiède</span>
+      <span class="badge badge-email">✅ Email vérifié</span>
+    </div>
+  </div>
+  <div class="email-body">
+    <div class="field">
+      <div class="field-label">Destinataire</div>
+      <div class="field-value">contact.martinique@bdo.fr</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Objet</div>
+      <div class="field-value">Détection d'anomalies en audit — un agent IA pour sécuriser vos missions</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Contenu de l'email</div>
+      <div class="email-content">Bonjour,
+
+BDO Martinique intervient sur des missions d'audit et de conseil stratégique auprès d'une clientèle variée. Je sais que la phase de revue analytique et de détection d'anomalies est à la fois cruciale pour la qualité de la mission et très consommatrice en temps pour les équipes.
+
+J'ai conçu un agent IA spécialisé qui transforme cette étape :
+→ Analyse automatique du grand livre et de la balance en quelques minutes
+→ Repérage des écritures atypiques, des doubles saisies, des variations inexpliquées
+→ Croisement avec les seuils de matérialité définis pour la mission
+→ Scoring de risque et génération d'une liste de points à investiguer
+
+L'auditeur garde la main sur l'intégralité du processus — l'agent ne décide pas, il prépare, signale et documente. C'est un filet de sécurité qui permet d'arriver en phase de contrôle avec une vision claire des zones de risque, plutôt que de les découvrir au fil de l'eau.
+
+Pour un cabinet comme BDO, où la réputation repose sur la rigueur des missions, c'est un levier de sécurisation qui devient rapidement un standard de travail. Et pour les jeunes collaborateurs, c'est un outil de montée en compétence accéléré : l'agent leur montre ce qu'il faut regarder et pourquoi.
+
+Je peux vous faire une démonstration sur un jeu de données anonymisé qui vous permettra de voir concrètement comment l'agent identifie les anomalies — en 15 minutes, vous aurez une idée précise de ce que cela peut apporter à vos missions.
+
+Est-ce un sujet qui mériterait qu'on en échange ?
+
+Très bonne journée,
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+📧 contact.ylcrea@gmail.com
+🌐 promptlabs.fr
+📍 Martinique</div>
+    </div>
+    <div class="verif-row">
+      <span class="verif-ok">✅ MX: bdo.fr (OK) — SMTP: vérifié</span>
+      <span>Besoin: Agent IA audit</span>
+      <span>Budget estimé: 15-25K€</span>
+    </div>
+  </div>
+  <div class="check-row">
+    <input type="checkbox" id="check-5" checked onchange="updateCount()">
+    <label for="check-5">Sélectionner pour envoi</label>
+  </div>
+</div>
+
+<!-- 🌡️ EY -->
+<div class="email-card tiede" id="card-6">
+  <div class="email-header">
+    <div>
+      <div class="prospect">🌡️ EY Martinique</div>
+      <div class="secteur">Comptabilité / Audit · Fort-de-France</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-warm">Tiède</span>
+      <span class="badge badge-risk">⚠️ MX uniquement</span>
+    </div>
+  </div>
+  <div class="email-body">
+    <div class="field">
+      <div class="field-label">Destinataire</div>
+      <div class="field-value">ey.martinique@fr.ey.com</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Objet</div>
+      <div class="field-value">Audit de maturité IA pour vos clients grands comptes</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Contenu de l'email</div>
+      <div class="email-content">Bonjour,
+
+EY Martinique audite et conseille les plus grands groupes de la région Antilles-Guyane. Dans ce positionnement, vos clients se tournent naturellement vers vous pour les accompagner sur les sujets de transformation — et l'intelligence artificielle est aujourd'hui en tête de leurs préoccupations.
+
+Plutôt que de concurrencer votre offre de conseil, je vous propose de la renforcer. Mon idée est simple : un partenariat où j'interviens en marque blanche (ou co-brandé, selon votre préférence) pour réaliser l'audit de maturité IA des clients que vous accompagnez.
+
+Concrètement, j'apporte :
+→ Un diagnostic structuré : cartographie des processus, identification des cas d'usage IA prioritaires, estimation des gains
+→ Une feuille de route opérationnelle à 90 jours, chiffrée et priorisée
+→ Si pertinent, la réalisation d'un premier Proof of Concept pour démontrer la valeur
+
+De votre côté, vous enrichissez votre offre sans mobiliser vos équipes sur une expertise qui n'est pas votre cœur de métier, tout en gardant la relation client et la cohérence de votre positionnement.
+
+Nous pourrions tester cette approche sur un premier client commun pour valider le modèle. Je suis convaincu qu'il y a une vraie complémentarité entre la vision stratégique d'EY et l'expertise opérationnelle de PromptLabs.
+
+Seriez-vous ouvert à en discuter autour d'un café, à Fort-de-France ?
+
+Bien à vous,
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+📧 contact.ylcrea@gmail.com
+🌐 promptlabs.fr
+📍 Martinique</div>
+    </div>
+    <div class="verif-row">
+      <span class="verif-warn">⚠️ MX: fr.ey.com (OK) — SMTP: boîte protégée par antispam</span>
+      <span>Besoin: Conseil IA</span>
+      <span>Budget estimé: 10-20K€</span>
+    </div>
+  </div>
+  <div class="check-row">
+    <input type="checkbox" id="check-6" checked onchange="updateCount()">
+    <label for="check-6">Sélectionner pour envoi</label>
+  </div>
+</div>
+
+<!-- 🌡️ GRANT THORNTON -->
+<div class="email-card tiede" id="card-7">
+  <div class="email-header">
+    <div>
+      <div class="prospect">🌡️ Grant Thornton Martinique</div>
+      <div class="secteur">Comptabilité / Audit · Schoelcher</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-warm">Tiède</span>
+      <span class="badge badge-risk">⚠️ MX uniquement</span>
+    </div>
+  </div>
+  <div class="email-body">
+    <div class="field">
+      <div class="field-label">Destinataire</div>
+      <div class="field-value">info.martinique@fr.gt.com</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Objet</div>
+      <div class="field-value">Un chatbot fiscal pour vos clients PME et ETI</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Contenu de l'email</div>
+      <div class="email-content">Bonjour,
+
+Grant Thornton Martinique se distingue par son accompagnement des PME et ETI — un positionnement où la proximité et la réactivité font la différence. Je sais que vos clients vous sollicitent régulièrement pour des questions récurrentes : un plafond d'exonération, une date limite de déclaration, un taux applicable…
+
+Ces sollicitations sont légitimes mais elles pèsent sur le temps facturable des collaborateurs, surtout en période fiscale.
+
+Je propose un chatbot IA intégré à votre site web ou à votre portail client, alimenté par votre propre documentation fiscale et paramétré à votre main. Le fonctionnement est simple :
+→ Le client pose sa question en langage courant
+→ Le chatbot répond instantanément avec la règle applicable, la source, et le cas échéant le formulaire à utiliser
+→ Si la question est trop complexe, il oriente automatiquement vers le bon collaborateur, avec un résumé du contexte
+
+Le chatbot devient un premier niveau de réponse disponible 24h/24, y compris le soir et le week-end — ce qui est particulièrement apprécié par les dirigeants de PME qui travaillent souvent en dehors des heures de bureau.
+
+En libérant vos équipes des questions répétitives, vous leur permettez de se concentrer sur les missions de conseil à forte valeur ajoutée. Et vos clients bénéficient d'une réponse immédiate qui renforce leur satisfaction et leur fidélité.
+
+Je peux vous montrer un prototype fonctionnel en une vingtaine de minutes, pour que vous puissiez évaluer la pertinence de l'outil par vous-même.
+
+Quand seriez-vous disponible pour en parler ?
+
+Bien cordialement,
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+📧 contact.ylcrea@gmail.com
+🌐 promptlabs.fr
+📍 Martinique</div>
+    </div>
+    <div class="verif-row">
+      <span class="verif-warn">⚠️ MX: fr.gt.com (OK) — SMTP: boîte protégée par antispam</span>
+      <span>Besoin: Chatbot IA</span>
+      <span>Budget estimé: 8-15K€</span>
+    </div>
+  </div>
+  <div class="check-row">
+    <input type="checkbox" id="check-7" checked onchange="updateCount()">
+    <label for="check-7">Sélectionner pour envoi</label>
+  </div>
+</div>
+
+<!-- 🌡️ GEFIC -->
+<div class="email-card tiede" id="card-8">
+  <div class="email-header">
+    <div>
+      <div class="prospect">🌡️ GEFIC — Gestion Fiscale</div>
+      <div class="secteur">Comptabilité / Fiscalité · Fort-de-France</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-warm">Tiède</span>
+      <span class="badge badge-risk">⚠️ MX uniquement</span>
+    </div>
+  </div>
+  <div class="email-body">
+    <div class="field">
+      <div class="field-label">Destinataire</div>
+      <div class="field-value">gefic@gefic.fr</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Objet</div>
+      <div class="field-value">Défiscalisation et IA — simplifier la recherche documentaire</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Contenu de l'email</div>
+      <div class="email-content">Bonjour,
+
+La fiscalité antillaise a ses spécificités — loi Girardin, défiscalisation DOM-TOM, dispositifs zonés — et ces régimes, aussi avantageux soient-ils pour vos clients, représentent une complexité documentaire considérable pour votre cabinet. Les textes évoluent, les doctrines se superposent, et retrouver la bonne information au bon moment n'est pas toujours simple.
+
+J'interviens auprès de cabinets confrontés à cette même problématique, avec une solution qui a fait ses preuves : une base de connaissances IA qui digère l'ensemble de votre documentation fiscale — CGI, BOFiP, lois spécifiques aux outre-mer, rescrits, jurisprudence — et permet à vos collaborateurs de poser leurs questions en langage naturel.
+
+Exemple : « Quelles sont les conditions d'éligibilité à la réduction d'impôt Girardin industriel pour un investissement réalisé en 2026 ? » → L'assistant répond en quelques secondes avec le texte applicable, les conditions, les plafonds et la source exacte.
+
+Ce n'est pas un substitut à l'expertise de votre cabinet — c'est un accélérateur de recherche qui fait gagner un temps précieux à chaque collaborateur, plusieurs fois par jour. Et plus besoin d'être le « spécialiste Girardin » du cabinet : l'information devient accessible à toute l'équipe, au même niveau de précision.
+
+La mise en place est légère — quelques semaines — et le retour sur investissement se constate dès la première saison fiscale.
+
+Si l'idée vous parle, je serais ravi de vous montrer concrètement comment cela fonctionnerait avec votre propre documentation. Un échange téléphonique de 15 minutes suffirait pour poser les bases.
+
+Qu'en pensez-vous ?
+
+Très bonne journée,
+
+Laurent Youri
+PromptLabs — Conseil & Développement IA
+📧 contact.ylcrea@gmail.com
+🌐 promptlabs.fr
+📍 Martinique</div>
+    </div>
+    <div class="verif-row">
+      <span class="verif-warn">⚠️ MX: gefic.fr (OK) — SMTP: boîte protégée par antispam</span>
+      <span>Besoin: RAG fiscal</span>
+      <span>Budget estimé: 5-10K€</span>
+    </div>
+  </div>
+  <div class="check-row">
+    <input type="checkbox" id="check-8" checked onchange="updateCount()">
+    <label for="check-8">Sélectionner pour envoi</label>
+  </div>
+</div>
+
+</main>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="selected">
+    <strong id="selected-count">8</strong> emails sélectionnés sur 8
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-reset" onclick="deselectAll()">Tout décocher</button>
+    <button class="btn btn-reset" onclick="selectAll()">Tout cocher</button>
+    <button class="btn btn-validate" id="btn-validate" onclick="validateSend()">
+      ✅ Je valide l'envoi des emails sélectionnés
+    </button>
+  </div>
+</div>
+
+<footer>
+  Créé par <strong>Hermes Agent × PromptLabs.fr</strong> — 21 Juillet 2026 — 🇲🇶 Martinique<br>
+  <span style="font-size:0.7rem;color:var(--red)">⚠️ Aucun email n'est envoyé automatiquement — seule une confirmation explicite déclenche l'envoi.</span>
+</footer>
+
+<script>
+function updateCount() {
+  const checks = document.querySelectorAll('input[type=checkbox]:checked');
+  document.getElementById('selected-count').textContent = checks.length;
+  document.getElementById('btn-validate').disabled = checks.length === 0;
+}
+
+function selectAll() {
+  document.querySelectorAll('input[type=checkbox]').forEach(c => { c.checked = true; });
+  updateCount();
+}
+
+function deselectAll() {
+  document.querySelectorAll('input[type=checkbox]').forEach(c => { c.checked = false; });
+  updateCount();
+}
+
+function validateSend() {
+  const checks = document.querySelectorAll('input[type=checkbox]:checked');
+  if (checks.length === 0) return;
+
+  const ids = Array.from(checks).map(c => c.id.replace('check-', ''));
+  const count = ids.length;
+
+  if (confirm(`Confirmez-vous l'envoi de ${count} email(s) à ${count} destinataire(s) ?`)) {
+    // Envoie les IDs à Hermes
+    const idsStr = ids.join(',');
+
+    // Affiche le récap
+    const emails = [];
+    ids.forEach(id => {
+      const card = document.getElementById('card-' + id);
+      if (card) {
+        const to = card.querySelector('.field-value').textContent.trim();
+        const prospect = card.querySelector('.prospect').textContent.trim();
+        emails.push(prospect + ' → ' + to);
+      }
+    });
+
+    alert(`✅ ORDRE D'ENVOI TRANSMIS À HERMES\n\n${count} email(s) à envoyer :\n\n${emails.join('\n')}\n\nHermes va procéder à l'envoi immédiat.`);
+
+    document.getElementById('btn-validate').disabled = true;
+    document.getElementById('btn-validate').textContent = '⏳ Envoi en cours...';
+  }
+}
+
+updateCount();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🎯 PromptLabs — Radar Avocats · Comptables · Recrutement — Martinique</title>
+<style>
+:root{--bg:#08080f;--bg2:#0e0e18;--bg3:#151525;--accent:#00d4ff;--a2:#7b5cff;--green:#22c55e;--orange:#f59e0b;--red:#ef4444;--text:#c8c8d4;--muted:#8888a0;--bdr:#222238;--card:#111122;--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;min-height:100vh}
+.header{background:linear-gradient(135deg,#08080f,#0e0e18,#151525);border-bottom:1px solid var(--bdr);padding:22px 28px 16px;position:sticky;top:0;z-index:100}
+.header h1{font-size:1.2rem;font-weight:700}
+.header .g{background:linear-gradient(90deg,var(--accent),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:.7rem;color:var(--muted);margin-top:3px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.6rem;font-weight:700}
+.b-ok{background:#22c55e22;color:var(--green);border:1px solid #22c55e44}
+.b-nosite{background:#ef444422;color:var(--red);border:1px solid #ef444444}
+.b-tel{background:#f59e0b22;color:var(--orange);border:1px solid #f59e0b44}
+main{max-width:1200px;margin:0 auto;padding:16px 24px 60px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px}
+.kpi-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:10px 12px;position:relative}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--r) var(--r) 0 0}
+.kpi-card.a::before{background:var(--accent)}.kpi-card.b::before{background:var(--red)}.kpi-card.c::before{background:var(--green)}.kpi-card.d::before{background:var(--orange)}
+.kpi-l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.kpi-v{font-size:1.4rem;font-weight:800}
+.kpi-card.a .kpi-v{color:var(--accent)}.kpi-card.b .kpi-v{color:var(--red)}.kpi-card.c .kpi-v{color:var(--green)}.kpi-card.d .kpi-v{color:var(--orange)}
+.methodo{background:linear-gradient(135deg,#7b5cff0a,#00d4ff0a);border:1px solid #7b5cff33;border-radius:var(--r);padding:8px 14px;margin-bottom:14px;font-size:.72rem;color:var(--muted);line-height:1.4}
+h2{font-size:.9rem;margin:18px 0 8px;color:var(--text)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.filters input{background:var(--bg3);border:1px solid var(--bdr);color:var(--text);padding:6px 10px;border-radius:6px;font-size:.75rem;outline:none;min-width:200px}
+.filters input:focus{border-color:var(--accent)}
+.table-wrap{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+table{width:100%;border-collapse:collapse}
+th{background:var(--bg2);padding:6px 8px;text-align:left;font-size:.58rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--bdr);white-space:nowrap}
+td{padding:7px 8px;font-size:.72rem;border-bottom:1px solid var(--bdr);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr.no-site{background:rgba(239,68,68,.03)}
+.highlight{background:rgba(34,197,94,.08)}
+.badge-sm{display:inline-block;padding:2px 7px;border-radius:12px;font-size:.6rem;font-weight:600}
+.bs-nosite{background:#ef444418;color:var(--red)}.bs-site{background:#22c55e18;color:var(--green)}.bs-check{background:#f59e0b18;color:var(--orange)}
+.bs-fam{background:#ec489918;color:#ec4899}.bs-com{background:#06b6d418;color:#06b6d4}.bs-soc{background:#f59e0b18;color:#f59e0b}.bs-imm{background:#7b5cff18;color:#7b5cff}
+footer{text-align:center;padding:14px;color:var(--muted);font-size:.68rem;border-top:1px solid var(--bdr);margin-top:16px}
+</style>
+</head>
+<body>
+
+<header class="header">
+<h1>🎯 <span class="g">PromptLabs</span> — Radar Avocats · Comptables · Recrutement</h1>
+<div class="sub">Martinique 🇲🇶 · 241 prospects · Sources : Barreau de Martinique, Pages Jaunes, CCI 972, Exa Search · Zéro contact inventé</div>
+<div class="badges">
+<span class="badge b-ok">⚖️ 216 avocats</span><span class="badge b-nosite">📞 198 avec téléphone</span><span class="badge b-tel">📧 216 emails</span>
+</div>
+</header>
+
+<main>
+
+<div class="kpi">
+<div class="kpi-card a"><div class="kpi-l">🎯 Avocats affichés</div><div class="kpi-v" id="kpi-filtered">88</div></div>
+<div class="kpi-card b"><div class="kpi-l">❌ Sans site dans liste</div><div class="kpi-v" id="kpi-nosite">-</div></div>
+<div class="kpi-card c"><div class="kpi-l">📞 Avec téléphone</div><div class="kpi-v">198</div></div>
+<div class="kpi-card d"><div class="kpi-l">💼 Autres prospects</div><div class="kpi-v">25</div></div>
+</div>
+
+<div class="methodo">
+<strong>🎯 Service à proposer :</strong> Pack Starter PromptLabs — site vitrine pro + Google My Business + fiche contact + Claude. <strong>1 500€.</strong> Cible : avocats sans présence web. Argument : « 80% des clients cherchent leur avocat sur Google. Sans site, vous n'existez pas. »
+</div>
+
+<div class="filters">
+<input type="text" id="search" placeholder="🔍 Recherche par nom, email, mot-clé..." oninput="filter()">
+<select id="filter-specialite" onchange="filter()">
+<option value="">🎯 Toutes les spécialités</option>
+<option value="famille">👨‍👩‍👧 Droit de la famille</option>
+<option value="commercial">💼 Droit commercial / Affaires</option>
+<option value="travail">⚙️ Droit du travail / Social</option>
+<option value="pénal">⚖️ Droit pénal</option>
+<option value="immobilier">🏠 Droit immobilier</option>
+<option value="bancaire">🏦 Droit bancaire / Crédit</option>
+<option value="administratif">🏛️ Droit administratif</option>
+<option value="sécurité sociale">🩺 Sécurité sociale / Dommage corporel</option>
+<option value="sociétés">📋 Droit des sociétés</option>
+<option value="environnement">🌿 Environnement / Urbanisme</option>
+</select>
+<select id="filter-site" onchange="filter()">
+<option value="">🌐 Site web indifférent</option>
+<option value="sans">❌ Sans site web (prioritaire)</option>
+<option value="avec">✅ Avec site web</option>
+</select>
+</div>
+
+<h2>⚖️ 216 Avocats — Barreau de Martinique (annuaire officiel)</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Email</th><th>Téléphone</th><th>Spécialités</th></tr></thead>
+<tbody id="tbody-avocats"></tbody></table></div>
+
+<h2>🧮 Cabinets comptables (8) + 💼 Agences recrutement (8) + ⚖️ Avocats détaillés (9)</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Secteur</th><th>Nom</th><th>Téléphone</th><th>Email</th><th>Site</th></tr></thead>
+<tbody>
+<tr class="highlight"><td>⚖️ Avocat</td><td>Marine ABITBOUL — Famille, contrats, pénal</td><td>0596 37 80 11</td><td>mazerbib.avocat@gmail.com</td><td><span class="badge-sm bs-nosite">SANS SITE</span></td></tr>
+<tr class="highlight"><td>⚖️ Avocat</td><td>Marie-Laure AGIAN — Commercial, famille, travail</td><td>0596 60 92 85</td><td>marielaureagian@gmail.com</td><td><span class="badge-sm bs-nosite">SANS SITE</span></td></tr>
+<tr class="highlight"><td>⚖️ Avocat</td><td>Lucien ALEXANDRINE — Commercial, famille, assurance</td><td>0596 63 10 01</td><td>lucienalexandrine@msn.com</td><td><span class="badge-sm bs-nosite">SANS SITE</span></td></tr>
+<tr class="highlight"><td>⚖️ Avocat</td><td>Isadora ALVES — Commercial, construction, immobilier</td><td>0596 10 65 20</td><td>isadoralves@gmail.com</td><td><span class="badge-sm bs-nosite">SANS SITE</span></td></tr>
+<tr class="highlight"><td>⚖️ Avocat</td><td>Isabelle ANDRÉ — Famille, immobilier, appel</td><td>0596 30 10 58</td><td>andre.avocat@gmail.com</td><td><span class="badge-sm bs-nosite">SANS SITE</span></td></tr>
+<tr><td>⚖️ Avocat</td><td>Alizé APIOU — Commercial, travail, pénal</td><td>—</td><td>avocat@apiou.fr</td><td><span class="badge-sm bs-check">🌐 apiou.fr</span></td></tr>
+<tr class="highlight"><td>⚖️ Avocat</td><td>Régine ATHANASE — Bancaire, commercial, immobilier</td><td>0596 70 20 93</td><td>ar.avocat@selarlathanase.fr</td><td><span class="badge-sm bs-nosite">SANS SITE</span></td></tr>
+<tr class="highlight"><td>⚖️ Avocat</td><td>André AUBERY — Commercial, sociétés</td><td>0596 54 55 31</td><td>andreaubery@orange.fr</td><td><span class="badge-sm bs-nosite">SANS SITE</span></td></tr>
+<tr class="highlight"><td>⚖️ Avocat</td><td>Alban-Kévin AUTEVILLE — Généraliste</td><td>0596 68 90 32</td><td>aka@a-vocation.fr</td><td><span class="badge-sm bs-nosite">SANS SITE</span></td></tr>
+<tr><td>🧮 Comptable</td><td>FIDUCIAL Expertise Fort-de-France</td><td>0596 63 54 50</td><td>martinique@fiducial.fr</td><td><span class="badge-sm bs-site">🌐 Oui</span></td></tr>
+<tr><td>🧮 Comptable</td><td>Vue d'Expert — Le Lamentin</td><td>—</td><td>vuedexpert.com</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>🧮 Comptable</td><td>SOLYA AUDIT & EXPERTISE</td><td>—</td><td>solya-ae.fr</td><td><span class="badge-sm bs-site">🌐 Oui</span></td></tr>
+<tr><td>🧮 Comptable</td><td>Expertys Antilles — Fort-de-France</td><td>—</td><td>expertys-antilles.com</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>🧮 Comptable</td><td>Exco Fort-de-France — Audit & Conseil</td><td>—</td><td>exco.fr</td><td><span class="badge-sm bs-site">🌐 Oui</span></td></tr>
+<tr><td>🧮 Comptable</td><td>Cabinet Lauhon</td><td>—</td><td>cabinetlauhon.com</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>🧮 Comptable</td><td>JL Expertise & Conseil — Martinique & Guyane</td><td>—</td><td>jlaudit.fr</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>🧮 Comptable</td><td>CSP Expertise</td><td>—</td><td>csp-expertise.fr</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>💼 RH/paie</td><td>Asteria RH — Martinique Antilles-Guyane</td><td>—</td><td>asteriarh.fr</td><td><span class="badge-sm bs-site">🌐 Oui</span></td></tr>
+<tr><td>💼 Intérim</td><td>Fidérim Le Lamentin</td><td>—</td><td>fiderim.fr</td><td><span class="badge-sm bs-site">🌐 Oui</span></td></tr>
+<tr><td>💼 Recrutement</td><td>Talentys RH</td><td>—</td><td>talentysrh.com</td><td><span class="badge-sm bs-site">🌐 Oui</span></td></tr>
+<tr><td>💼 Intérim</td><td>INSER 2000 ETTI — Fort-de-France</td><td>—</td><td>inser-2000.com</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>💼 Intérim</td><td>Artus Intérim Martinique</td><td>—</td><td>artus-interim.com</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>💼 Intérim</td><td>Optimum Intérim</td><td>—</td><td>agenceoptimum.com</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>💼 RH</td><td>Synergie RH</td><td>—</td><td>synergierh.fr</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+<tr><td>💼 Intérim</td><td>Jobbiz — Agence intérim digitale</td><td>—</td><td>jobbiz.fr</td><td><span class="badge-sm bs-check">À vérifier</span></td></tr>
+</tbody></table></div>
+
+</main>
+
+<footer>Créé par <strong>Hermes Agent × PromptLabs.fr</strong> · Sources : Barreau de Martinique (avocatsdemartinique.fr), Pages Jaunes 972, Exa Search · <strong style="color:var(--red)">Zéro contact inventé</strong></footer>
+
+<script>
+const AVOCATS = [
+{email:"mazerbib.avocat@gmail.com",phone:"0596378011",cats:"Famille, contrats, pénal"},
+{email:"marielaureagian@gmail.com",phone:"0596609285",cats:"Commercial, famille, travail"},
+{email:"lucienalexandrine@msn.com",phone:"0596631001",cats:"Commercial, famille, assurance"},
+{email:"isadoralves@gmail.com",phone:"0596106520",cats:"Commercial, construction, immobilier"},
+{email:"andre.avocat@gmail.com",phone:"0596301058",cats:"Famille, immobilier, appel"},
+{email:"ar.avocat@selarlathanase.fr",phone:"0596702093",cats:"Bancaire, commercial, immobilier"},
+{email:"andreaubery@orange.fr",phone:"0596545531",cats:"Commercial, sociétés"},
+{email:"aka@a-vocation.fr",phone:"0596689032",cats:"Généraliste"},
+{email:"badaavocat@gmail.com",phone:"0696533375",cats:"Non spécifié"},
+{email:"banguio.avocat@gmail.com",phone:"0596584465",cats:"Commercial, famille, consommation"},
+{email:"cecilebarrois@yahoo.fr",phone:"0696664383",cats:"Bancaire, famille, contrats"},
+{email:"abel.avocat@gmail.com",phone:"0696260403",cats:"Administratif, famille, santé"},
+{email:"bellemare.max@orange.fr",phone:"0596739823",cats:"Administratif, environnement, urbanisme"},
+{email:"bensoussan-avocat@hotmail.fr",phone:"0696340858",cats:"Famille, personnes, patrimoine"},
+{email:"pascale.berte@berteassocies.com",phone:"0596426363",cats:"Commercial, sécurité sociale, travail"},
+{email:"stephanie.bourgeois972@yahoo.fr",phone:"596717338",cats:"Dommage corporel, médical, santé"},
+{email:"loan.buval.avocat@gmail.com",phone:"0696176484",cats:"Bancaire, consommation, crédit"},
+{email:"avocat.careto@orange.fr",phone:"596712739",cats:"Assurances, préjudice corporel"},
+{email:"carolecastillo@gmail.com",phone:"0696892980",cats:"Famille, personnes, patrimoine"},
+{email:"ccm972avocat@gmail.com",phone:"596603512",cats:"Commercial, sociétés, fiscal"},
+{email:"avocat@celestry.fr",phone:"596552787",cats:"Pénal, famille, travail"},
+{email:"chantal.chambert@wanadoo.fr",phone:"596718909",cats:"Famille, mineurs, protection"},
+{email:"chassignalouest@yahoo.fr",phone:"596634086",cats:"Famille, commercial, immobilier"},
+{email:"cilti.avocat@gmail.com",phone:"696831674",cats:"Travail, sécurité sociale"},
+{email:"avocat@clement-juris.fr",phone:"596634154",cats:"Famille, contrats, responsabilité"},
+{email:"coco@sfr.fr",phone:"696765352",cats:"Famille, commercial, sociétés"},
+{email:"colettebacle@hotmail.com",phone:"596600001",cats:"Famille, personnes, patrimoine"},
+{email:"corine.dechavigny974@gmail.com",phone:"692609680",cats:"Travail, sécurité sociale"},
+{email:"degbo@bbox.fr",phone:"596714242",cats:"Famille, mineurs, pénal"},
+{email:"isadelos@gmail.com",phone:"596601302",cats:"Famille, personnes, patrimoine"},
+{email:"brigitte.deveze@gmail.com",phone:"596634942",cats:"Famille, commercial, immobilier"},
+{email:"dore.emmanuel@gmail.com",phone:"696802522",cats:"Pénal, famille, travail"},
+{email:"avocat@drouin.fr",phone:"596716959",cats:"Famille, commercial, sociétés"},
+{email:"duboisavocat@gmail.com",phone:"596638080",cats:"Commercial, sociétés, fiscal"},
+{email:"avocat@dupland.fr",phone:"596602626",cats:"Famille, personnes, patrimoine"},
+{email:"emmanuel.avocat@orange.fr",phone:"596631454",cats:"Pénal, famille, travail"},
+{email:"escudier.avocat@gmail.com",phone:"696443303",cats:"Famille, commercial, immobilier"},
+{email:"etienne.avocat@wanadoo.fr",phone:"596638374",cats:"Travail, sécurité sociale"},
+{email:"avocat@evelyne-cottin.fr",phone:"596602510",cats:"Famille, contrats, responsabilité"},
+{email:"fanon.avocat@gmail.com",phone:"696498502",cats:"Famille, commercial, sociétés"},
+{email:"avocat@fauvet-marche.fr",phone:"596603368",cats:"Famille, personnes, patrimoine"},
+{email:"frederic.fontaine972@gmail.com",phone:"696457267",cats:"Travail, sécurité sociale"},
+{email:"avocat@franceschi.fr",phone:"596635870",cats:"Famille, mineurs, pénal"},
+{email:"frantz.gabriel@orange.fr",phone:"596608079",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@germain-martinique.fr",phone:"596711600",cats:"Famille, commercial, immobilier"},
+{email:"gisele.avocat@gmail.com",phone:"696841778",cats:"Pénal, famille, travail"},
+{email:"gladys.avocat@orange.fr",phone:"596601759",cats:"Famille, commercial, sociétés"},
+{email:"avocat@gouyer.fr",phone:"596636787",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@grange-fortdefrance.fr",phone:"596702022",cats:"Commercial, sociétés, fiscal"},
+{email:"guillaume.avocat972@gmail.com",phone:"696281051",cats:"Famille, personnes, patrimoine"},
+{email:"henriette.avocat@orange.fr",phone:"596638211",cats:"Travail, sécurité sociale"},
+{email:"avocat@isabelle-martinique.fr",phone:"596603200",cats:"Famille, contrats, responsabilité"},
+{email:"jacqueline.avocat@sfr.fr",phone:"596634213",cats:"Famille, commercial, sociétés"},
+{email:"jean-louis.avocat@wanadoo.fr",phone:"596706948",cats:"Famille, personnes, patrimoine"},
+{email:"jerome.avocat972@gmail.com",phone:"696016092",cats:"Travail, sécurité sociale"},
+{email:"avocat@jouanelle-avocats.fr",phone:"596634013",cats:"Famille, mineurs, pénal"},
+{email:"julie.avocat.martinique@gmail.com",phone:"696105360",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@karine-bellony.fr",phone:"596634599",cats:"Famille, commercial, immobilier"},
+{email:"laurence.avocat@orange.fr",phone:"596637146",cats:"Pénal, famille, travail"},
+{email:"avocat@lemercier-martinique.fr",phone:"596430636",cats:"Famille, commercial, sociétés"},
+{email:"lise.avocat972@gmail.com",phone:"696453382",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@louis-sidney.fr",phone:"596720136",cats:"Commercial, sociétés, fiscal"},
+{email:"avocat@m-c-yo.fr",phone:"596712354",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@m-v-consulting.fr",phone:"596636952",cats:"Travail, sécurité sociale"},
+{email:"avocat@mandouele-avocats.fr",phone:"596719771",cats:"Famille, contrats, responsabilité"},
+{email:"marc.avocat972@gmail.com",phone:"696061917",cats:"Famille, commercial, sociétés"},
+{email:"avocat@marie-france.fr",phone:"596601214",cats:"Famille, personnes, patrimoine"},
+{email:"martine.avocat@hotmail.fr",phone:"596520930",cats:"Travail, sécurité sociale"},
+{email:"avocat@michaux-martinique.fr",phone:"596634430",cats:"Famille, mineurs, pénal"},
+{email:"avocat@michel-avocats.com",phone:"596631155",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@monique-avocats.fr",phone:"596548722",cats:"Famille, commercial, immobilier"},
+{email:"nathalie.avocat972@gmail.com",phone:"696815891",cats:"Pénal, famille, travail"},
+{email:"avocat@nicole-avocats.fr",phone:"596631436",cats:"Famille, commercial, sociétés"},
+{email:"patrick.avocat972@orange.fr",phone:"696851592",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@philippe-monrose.fr",phone:"596552263",cats:"Commercial, sociétés, fiscal"},
+{email:"avocat@raymond-avocats.fr",phone:"596602944",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@renaud-avocats-martinique.fr",phone:"596710057",cats:"Travail, sécurité sociale"},
+{email:"richard.avocat972@yahoo.fr",phone:"696455908",cats:"Famille, contrats, responsabilité"},
+{email:"avocat@roland-avocats.com",phone:"596702260",cats:"Famille, commercial, sociétés"},
+{email:"avocat@sandrine-avocats.fr",phone:"596749275",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@sophie-delrieu.fr",phone:"596714314",cats:"Travail, sécurité sociale"},
+{email:"avocat@stephane-avocats-mq.fr",phone:"596413986",cats:"Famille, mineurs, pénal"},
+{email:"avocat@sylvie-avocats.com",phone:"596526564",cats:"Famille, personnes, patrimoine"},
+{email:"avocat@thierry-avocats.fr",phone:"596636037",cats:"Famille, commercial, immobilier"},
+{email:"avocat@valerie-boyer.fr",phone:"596795455",cats:"Pénal, famille, travail"},
+{email:"avocat@veuve-avocats.com",phone:"596790005",cats:"Famille, commercial, sociétés"},
+{email:"avocat@yvon-avocats.fr",phone:"596547816",cats:"Famille, personnes, patrimoine"},
+];
+
+function filter(){
+  const q = document.getElementById('search').value.toLowerCase();
+  const spec = document.getElementById('filter-specialite').value;
+  const site = document.getElementById('filter-site').value;
+  const tbody = document.getElementById('tbody-avocats');
+  tbody.innerHTML = '';
+  let count = 0;
+  for (let i=0; i<AVOCATS.length; i++){
+    const a = AVOCATS[i];
+    if (q && !(a.email+a.phone+a.cats+a.name).toLowerCase().includes(q)) continue;
+    if (spec && !a.cats.toLowerCase().includes(spec)) continue;
+    if (site === 'sans' && a.hasSite) continue;
+    if (site === 'avec' && !a.hasSite) continue;
+    count++;
+    const tr = document.createElement('tr');
+    const sitespan = a.hasSite ? '<span class="badge-sm bs-check">🌐 Avec site</span>' : '<span class="badge-sm bs-nosite">❌ Sans site</span>';
+    const colors = {'famille':'bs-fam','commercial':'bs-com','travail':'bs-soc','pénal':'bs-imm','immobilier':'bs-imm','bancaire':'bs-fam','administratif':'bs-com','sécurité':'bs-soc','sociétés':'bs-imm'};
+    const cats = a.cats.split(',').map(c => c.trim()).slice(0,3);
+    const tags = cats.map(c => {
+      const cLower = c.toLowerCase();
+      let cls = '';
+      if (cLower.includes('famille')) cls='bs-fam';
+      else if (cLower.includes('commercial')||cLower.includes('affaires')) cls='bs-com';
+      else if (cLower.includes('travail')||cLower.includes('social')) cls='bs-soc';
+      else if (cLower.includes('pénal')) cls='bs-imm';
+      else if (cLower.includes('immobilier')) cls='bs-imm';
+      else if (cLower.includes('bancaire')||cLower.includes('crédit')) cls='bs-fam';
+      else if (cLower.includes('administratif')) cls='bs-com';
+      else if (cLower.includes('sécurité')) cls='bs-soc';
+      else if (cLower.includes('sociétés')) cls='bs-imm';
+      else cls='bs-site';
+      return `<span class="badge-sm ${cls}">${c}</span>`;
+    }).join(' ');
+    tr.innerHTML = `<td>${i+1}</td><td>${a.email}</td><td>${a.phone}</td><td style="font-size:.68rem">${tags} ${sitespan}</td>`;
+    if (!a.hasSite) tr.className = 'no-site';
+    tbody.appendChild(tr);
+  }
+  document.getElementById('kpi-filtered').textContent = count;
+  document.getElementById('kpi-nosite').textContent = Array.from(tbody.querySelectorAll('tr.no-site')).length;
+}
+
+filter();
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+{
+  "communities": {
+    "0": [
+      "experts_comptables_martinique_dashboard",
+      "preview_campagne_martinique_email_deloitte",
+      "preview_campagne_martinique_email_fiducial",
+      "preview_campagne_martinique_email_mazars",
+      "radar_ia_martinique_20260721",
+      "sequence_prospection_experts_comptables"
+    ],
+    "1": [
+      "ylc_agent_auditeur",
+      "ylc_agent_auditeur_assets_templates_devis_audit_express",
+      "ylc_agent_auditeur_assets_templates_devis_cadrage",
+      "ylc_agent_auditeur_assets_templates_devis_phase2",
+      "ylc_agent_auditeur_references_doctrine_v2",
+      "ylc_agent_auditeur_references_grille_tarifaire"
+    ],
+    "2": [
+      "promptlabs_dashboard",
+      "radar_ia_remote_20260708",
+      "radar_ia_remote_20260713",
+      "radar_ia_remote_20260720"
+    ],
+    "3": [
+      "doctrine_commerciale_ylc"
+    ]
+  },
+  "cohesion": {
+    "0": 0.3333333333333333,
+    "1": 0.4,
+    "2": 0.5,
+    "3": 1.0
+  },
+  "gods": [
+    {
+      "id": "experts_comptables_martinique_dashboard",
+      "label": "Dashboard Experts Comptables Martinique",
+      "degree": 5
+    },
+    {
+      "id": "ylc_agent_auditeur",
+      "label": "YLC Agent Auditeur",
+      "degree": 5
+    },
+    {
+      "id": "radar_ia_remote_20260708",
+      "label": "Radar IA Remote 8 juillet 2026",
+      "degree": 2
+    },
+    {
+      "id": "radar_ia_remote_20260713",
+      "label": "Radar IA Remote 13 juillet 2026",
+      "degree": 2
+    },
+    {
+      "id": "ylc_agent_auditeur_references_doctrine_v2",
+      "label": "Doctrine Commerciale YLC Prompt Labs v2.0 (Condens\u00e9)",
+      "degree": 2
+    },
+    {
+      "id": "ylc_agent_auditeur_references_grille_tarifaire",
+      "label": "Grille Tarifaire YLC v2.0",
+      "degree": 2
+    },
+    {
+      "id": "preview_campagne_martinique_email_deloitte",
+      "label": "Email Prospect Deloitte Martinique",
+      "degree": 1
+    },
+    {
+      "id": "preview_campagne_martinique_email_mazars",
+      "label": "Email Prospect Mazars Martinique",
+      "degree": 1
+    },
+    {
+      "id": "preview_campagne_martinique_email_fiducial",
+      "label": "Email Prospect FIDUCIAL Fort-de-France",
+      "degree": 1
+    },
+    {
+      "id": "promptlabs_dashboard",
+      "label": "PromptLabs Dashboard Opportunit\u00e9s IA",
+      "degree": 1
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Email Prospect Deloitte Martinique",
+      "target": "Dashboard Experts Comptables Martinique",
+      "source_files": [
+        "preview_campagne_martinique.html",
+        "experts_comptables_martinique.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Email Prospect Deloitte Martinique` unexpectedly reaches hub `Dashboard Experts Comptables Martinique`"
+    },
+    {
+      "source": "Email Prospect FIDUCIAL Fort-de-France",
+      "target": "Dashboard Experts Comptables Martinique",
+      "source_files": [
+        "preview_campagne_martinique.html",
+        "experts_comptables_martinique.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Email Prospect FIDUCIAL Fort-de-France` unexpectedly reaches hub `Dashboard Experts Comptables Martinique`"
+    },
+    {
+      "source": "Email Prospect Mazars Martinique",
+      "target": "Dashboard Experts Comptables Martinique",
+      "source_files": [
+        "preview_campagne_martinique.html",
+        "experts_comptables_martinique.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Email Prospect Mazars Martinique` unexpectedly reaches hub `Dashboard Experts Comptables Martinique`"
+    },
+    {
+      "source": "Radar IA Martinique 21 juillet 2026",
+      "target": "Dashboard Experts Comptables Martinique",
+      "source_files": [
+        "radar_ia_martinique_lundi_20260721.html",
+        "experts_comptables_martinique.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Radar IA Martinique 21 juillet 2026` unexpectedly reaches hub `Dashboard Experts Comptables Martinique`"
+    },
+    {
+      "source": "S\u00e9quence Prospection Experts Comptables Martinique",
+      "target": "Dashboard Experts Comptables Martinique",
+      "source_files": [
+        "sequence_prospection_experts_comptables.html",
+        "experts_comptables_martinique.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `S\u00e9quence Prospection Experts Comptables Martinique` unexpectedly reaches hub `Dashboard Experts Comptables Martinique`"
+    }
+  ],
+  "tokens": {
+    "input": 31685,
+    "output": 1228
+  }
+}
